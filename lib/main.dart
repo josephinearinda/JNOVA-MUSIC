@@ -1,0 +1,251 @@
+import 'package:flutter/material.dart';
+
+import 'models/order_model.dart';
+import 'models/product.dart';
+import 'screens/splash_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/favorite_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/cart_screen.dart';
+import 'screens/all_products_screen.dart';
+import 'screens/search_screen.dart';
+import 'screens/product_detail_screen.dart';
+import 'screens/checkout_screen.dart';
+import 'screens/pickup_detail_screen.dart';
+import 'screens/order_detail_screen.dart';
+import 'screens/tracking_screen.dart';
+import 'screens/game_selection_page.dart';
+import 'screens/game/motion_permission_page.dart';
+import 'screens/game/beat_tilt_home_page.dart';
+import 'screens/game/beat_tilt_gameplay_page.dart';
+import 'screens/game/beat_tilt_result_page.dart';
+import 'screens/game2/jnova_dodge_game_page.dart';
+import 'screens/profile_screen.dart';
+import 'screens/edit_profile_page.dart';
+import 'screens/address_edit_page.dart';
+import 'screens/notification_settings_page.dart';
+import 'screens/account_security_page.dart';
+import 'screens/currency_preferences_page.dart';
+import 'screens/music_preferences_page.dart';
+import 'screens/world_clock_page.dart';
+import 'screens/membership_settings_page.dart';
+import 'screens/point_history_page.dart';
+import 'screens/suggestion_review_page.dart';
+import 'screens/ai_chat_page.dart';
+import 'core/config/app_config.dart';
+import 'data/datasources/local/app_database.dart';
+import 'data/datasources/remote/supabase_client_service.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 1. Inisialisasi Environment Variables (.env)
+  await AppConfig.initialize();
+
+  // 2. Inisialisasi Supabase SDK jika kredensial tersedia
+  await SupabaseClientService.instance.initialize();
+
+  // 3. Inisialisasi Database SQLite Lokal
+  await AppDatabase.instance.database;
+
+  runApp(const MyApp());
+}
+
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'JNOVAMUSIC',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFF58A45)),
+        scaffoldBackgroundColor: const Color(0xFFFFFFFF),
+        useMaterial3: true,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => SplashScreen(
+          onAnimationFinished: () {
+            Navigator.of(context).pushReplacementNamed('/login');
+          },
+        ),
+        '/login': (context) => LoginScreen(
+          onLoginSuccess: () {
+            Navigator.of(context).pushReplacementNamed('/home');
+          },
+          onRegisterPressed: () {
+            Navigator.of(context).pushNamed('/register');
+          },
+        ),
+        '/register': (context) => RegisterScreen(
+          onRegisterSuccess: () {
+            Navigator.of(context).pushReplacementNamed('/home');
+          },
+          onLoginPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        '/home': (context) => const HomeScreen(),
+        '/favorite': (context) => FavoriteScreen(
+          onBack: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              Navigator.pushReplacementNamed(context, '/home');
+            }
+          },
+          onOpenCart: () {
+            Navigator.pushNamed(context, '/cart');
+          },
+          onOpenProfile: () {
+            Navigator.pushNamed(context, '/profile');
+          },
+        ),
+        '/cart': (context) => CartScreen(
+          onBack: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              Navigator.pushReplacementNamed(context, '/home');
+            }
+          },
+          onOpenProfile: () {
+            Navigator.pushNamed(context, '/profile');
+          },
+        ),
+        '/membership': (context) => const MembershipSettingsPage(),
+        '/all-products': (context) => const AllProductsScreen(),
+        '/search': (context) => const SearchScreen(),
+        '/product-detail': (context) {
+          final product =
+              ModalRoute.of(context)?.settings.arguments as Product? ??
+              Product.allCatalog.first;
+          return ProductDetailScreen(product: product);
+        },
+        '/checkout': (context) {
+          final method =
+              ModalRoute.of(context)?.settings.arguments
+                  as FulfillmentMethod? ??
+              FulfillmentMethod.pickup;
+          return CheckoutScreen(initialMethod: method);
+        },
+        '/pickup-detail': (context) => const PickupDetailScreen(),
+        '/order-detail': (context) => const OrderDetailScreen(),
+        '/tracking': (context) => const TrackingScreen(),
+        '/games': (context) => const GameSelectionPage(),
+        '/game-permission': (context) => const MotionPermissionPage(),
+        '/game-home': (context) => const BeatTiltHomePage(),
+        '/game-play': (context) => const BeatTiltGameplayPage(),
+        '/game2': (context) => const JNovaDodgeGamePage(),
+        '/game-result': (context) {
+          final result =
+              ModalRoute.of(context)?.settings.arguments as GameResultData?;
+          return BeatTiltResultPage(resultData: result);
+        },
+        '/profile': (context) => const ProfileScreen(),
+        '/profile-edit': (context) => const EditProfilePage(),
+        '/address-edit': (context) => const AddressEditPage(),
+        '/notifications': (context) => const NotificationSettingsPage(),
+        '/account-security': (context) => const AccountSecurityPage(),
+        '/currency-preferences': (context) => const CurrencyPreferencesPage(),
+        '/music-preferences': (context) => const MusicPreferencesPage(),
+        '/world-clock': (context) => const WorldClockPage(),
+        '/membership-settings': (context) => const MembershipSettingsPage(),
+        '/point-history': (context) => const PointHistoryPage(),
+        '/suggestion-review': (context) => const SuggestionReviewPage(),
+        '/ai-chat': (context) => const AIChatPage(),
+      },
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  // This widget is the home page of your application. It is stateful, meaning
+  // that it has a State object (defined below) that contains fields that affect
+  // how it looks.
+
+  // This class is the configuration for the state. It holds the values (in this
+  // case the title) provided by the parent (in this case the App widget) and
+  // used by the build method of the State. Fields in a Widget subclass are
+  // always marked "final".
+
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // This method is rerun every time setState is called, for instance as done
+    // by the _incrementCounter method above.
+    //
+    // The Flutter framework has been optimized to make rerunning build methods
+    // fast, so that you can just rebuild anything that needs updating rather
+    // than having to individually change instances of widgets.
+    return Scaffold(
+      appBar: AppBar(
+        // TRY THIS: Try changing the color here to a specific color (to
+        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+        // change color while the other colors stay the same.
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+      ),
+      body: Center(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        child: Column(
+          // Column is also a layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+          //
+          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+          // action in the IDE, or press "p" in the console), to see the
+          // wireframe for each widget.
+          mainAxisAlignment: .center,
+          children: [
+            const Text('You have pushed the button this many times:'),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
