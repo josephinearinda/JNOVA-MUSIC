@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import '../core/constants/app_colors.dart';
+import '../core/storage/secure_storage_service.dart';
 import '../services/auth_service.dart';
+import '../services/biometric_service.dart';
+import '../services/membership_service.dart';
+import '../services/order_service.dart';
+import '../services/user_profile_service.dart';
 import '../widgets/google_logo.dart';
 import 'register_screen.dart';
 
@@ -11,6 +16,7 @@ import 'register_screen.dart';
 /// - Field input Email dengan validasi format
 /// - Field input Kata Sandi dengan tombol tampilkan/sembunyikan
 /// - Tombol Masuk dengan drop shadow oranye dan state loading
+/// - Tombol Login Biometrik Sidik Jari resmi
 /// - Pemisah "ATAU" dan tombol "Lanjutkan dengan Google"
 /// - 3 kartu kategori toko (Gitar & Bass, Keyboard, Audio & Studio)
 /// - Tautan registrasi ("Daftar")
@@ -19,12 +25,14 @@ class LoginScreen extends StatefulWidget {
   final VoidCallback? onRegisterPressed;
   final VoidCallback? onForgotPasswordPressed;
   final VoidCallback? onLoginSuccess;
+  final String? initialEmail;
 
   const LoginScreen({
     super.key,
     this.onRegisterPressed,
     this.onForgotPasswordPressed,
     this.onLoginSuccess,
+    this.initialEmail,
   });
 
   @override
@@ -38,6 +46,39 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _obscurePassword = true;
   bool _isLoading = false;
+  bool _isBiometricLoading = false;
+  bool _isDeviceBiometricSupported = false;
+  bool _isBiometricEnabledForLastUser = false;
+  String? _lastBiometricUser;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialEmail != null && widget.initialEmail!.isNotEmpty) {
+      _emailController.text = widget.initialEmail!;
+    }
+    _checkBiometrics();
+  }
+
+  Future<void> _checkBiometrics() async {
+    final supported = await BiometricService.instance.isDeviceSupported();
+    final lastUser = await SecureStorageService.instance.getLastBiometricUser();
+    bool enabled = false;
+    if (lastUser != null && lastUser.isNotEmpty) {
+      enabled =
+          await SecureStorageService.instance.isBiometricEnabledForUser(lastUser);
+    }
+    if (mounted) {
+      setState(() {
+        _isDeviceBiometricSupported = supported;
+        _isBiometricEnabledForLastUser = enabled;
+        _lastBiometricUser = lastUser;
+        if (_emailController.text.isEmpty && lastUser != null && enabled) {
+          _emailController.text = lastUser;
+        }
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -86,7 +127,132 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (result.isSuccess) {
-      widget.onLoginSuccess?.call();
+      final email = _emailController.text.trim().toLowerCase();
+      await UserProfileService.instance.loadProfileForUser(email);
+      await MembershipService.instance.loadPointsForUser(email);
+      await OrderService.instance.loadOrdersForUser(email);
+      if (!mounted) return;
+      if (widget.onLoginSuccess != null) {
+        widget.onLoginSuccess!();
+      } else {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    }
+  }
+
+  /// Penanganan Login dengan Sidik Jari (Biometrik)
+  Future<void> _handleBiometricLogin() async {
+    FocusScope.of(context).unfocus();
+
+    // 1. Periksa dukungan hardware biometrik
+    final isSupported = await BiometricService.instance.isDeviceSupported();
+    if (!isSupported) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Perangkat ini tidak mendukung sensor sidik jari.'),
+          backgroundColor: AppColors.darkGrey,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    // 2. Periksa apakah fitur sudah diaktifkan untuk akun
+    final lastUser = await SecureStorageService.instance.getLastBiometricUser();
+    final isEnabled = lastUser != null &&
+        await SecureStorageService.instance.isBiometricEnabledForUser(lastUser);
+
+    if (lastUser == null || !isEnabled) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Fitur login sidik jari belum diaktifkan. Silakan masuk terlebih dahulu dengan kata sandi, lalu aktifkan melalui menu Keamanan Akun.',
+          ),
+          backgroundColor: AppColors.darkGrey,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    // 3. Periksa apakah sidik jari sudah didaftarkan pada OS
+    final hasEnrolled = await BiometricService.instance.hasEnrolledBiometrics();
+    if (!hasEnrolled) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Belum ada sidik jari yang terdaftar di perangkat. Silakan atur sidik jari di pengaturan ponsel Android Anda.',
+          ),
+          backgroundColor: AppColors.darkGrey,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    // 4. Munculkan dialog autentikasi biometrik resmi Android
+    final bioResult = await BiometricService.instance.authenticate(
+      localizedReason: 'Pindai sidik jari Anda untuk masuk sebagai $lastUser',
+    );
+
+    if (!mounted) return;
+
+    if (!bioResult.isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(bioResult.message),
+          backgroundColor: AppColors.darkGrey,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    // 5. Autentikasi biometrik sukses -> pulihkan sesi akun secara aman
+    setState(() {
+      _isBiometricLoading = true;
+    });
+
+    final authResult = await AuthService.instance.loginWithBiometrics();
+
+    if (!mounted) return;
+
+    setState(() {
+      _isBiometricLoading = false;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(authResult.message),
+        backgroundColor:
+            authResult.isSuccess ? Colors.green : AppColors.darkGrey,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      ),
+    );
+
+    if (authResult.isSuccess) {
+      final bioRecord =
+          await SecureStorageService.instance.getBiometricAuthRecord(lastUser);
+      final fullName = bioRecord?['fullName'] as String?;
+      await UserProfileService.instance.loadProfileForUser(
+        lastUser,
+        fullName: fullName != null && fullName.isNotEmpty ? fullName : null,
+      );
+      await MembershipService.instance.loadPointsForUser(lastUser);
+      await OrderService.instance.loadOrdersForUser(lastUser);
+      if (!mounted) return;
+      if (widget.onLoginSuccess != null) {
+        widget.onLoginSuccess!();
+      } else {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
     }
   }
 
@@ -142,8 +308,13 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => RegisterScreen(
-            onRegisterSuccess: () {
-              widget.onLoginSuccess?.call();
+            onRegisterSuccess: (registeredEmail) {
+              Navigator.pop(context);
+              if (registeredEmail != null && registeredEmail.isNotEmpty) {
+                setState(() {
+                  _emailController.text = registeredEmail;
+                });
+              }
             },
             onLoginPressed: () {
               Navigator.pop(context);
@@ -399,54 +570,125 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 14),
 
-                // E. Tombol Masuk
-                Container(
-                  width: double.infinity,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryOrange.withValues(alpha: 0.35),
-                        blurRadius: 14,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryOrange,
-                      disabledBackgroundColor:
-                          AppColors.primaryOrange.withValues(alpha: 0.6),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                // E. Tombol Masuk & Tombol Sidik Jari
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color:
+                                  AppColors.primaryOrange.withValues(alpha: 0.35),
+                              blurRadius: 14,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton(
+                          onPressed: (_isLoading || _isBiometricLoading)
+                              ? null
+                              : _handleLogin,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryOrange,
+                            disabledBackgroundColor: AppColors.primaryOrange
+                                .withValues(alpha: 0.6),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: _isLoading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Masuk \u2192',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.5,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        ),
                       ),
                     ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.2,
-                              color: Colors.white,
+                    if (_isDeviceBiometricSupported ||
+                        _isBiometricEnabledForLastUser) ...[
+                      const SizedBox(width: 10),
+                      Tooltip(
+                        message: _lastBiometricUser != null &&
+                                _isBiometricEnabledForLastUser
+                            ? 'Masuk dengan Sidik Jari ($_lastBiometricUser)'
+                            : 'Masuk dengan Sidik Jari',
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: _isBiometricEnabledForLastUser
+                                ? const Color(0xFFFFEDDF)
+                                : const Color(0xFFF7F6F4),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _isBiometricEnabledForLastUser
+                                  ? AppColors.primaryOrange
+                                  : AppColors.borderLight,
+                              width: 1.2,
                             ),
-                          )
-                        : const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Masuk \u2192',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14.5,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
+                            boxShadow: _isBiometricEnabledForLastUser
+                                ? [
+                                    BoxShadow(
+                                      color: AppColors.primaryOrange
+                                          .withValues(alpha: 0.18),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ]
+                                : null,
                           ),
-                  ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: (_isLoading || _isBiometricLoading)
+                                  ? null
+                                  : _handleBiometricLogin,
+                              child: Center(
+                                child: _isBiometricLoading
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.2,
+                                          color: AppColors.primaryOrange,
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.fingerprint_rounded,
+                                        color: _isBiometricEnabledForLastUser
+                                            ? AppColors.primaryOrange
+                                            : const Color(0xFF6E6560),
+                                        size: 26,
+                                      ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
 
                 const SizedBox(height: 18),

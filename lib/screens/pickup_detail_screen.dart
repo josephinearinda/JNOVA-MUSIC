@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../core/constants/app_colors.dart';
 import '../core/utils/currency_formatter.dart';
@@ -41,11 +42,33 @@ class PickupDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orders = OrderService.instance.orders;
     final activeOrder =
         order ??
         (ModalRoute.of(context)?.settings.arguments as OrderModel?) ??
         OrderService.instance.currentOrder ??
-        OrderService.instance.orders.first;
+        (orders.isNotEmpty ? orders.first : null);
+
+    if (activeOrder == null) {
+      return Scaffold(
+        backgroundColor: AppColors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildHeader(context),
+              const Expanded(
+                child: Center(
+                  child: Text(
+                    'Tidak ada pesanan pickup aktif.',
+                    style: TextStyle(fontSize: 12, color: Color(0xFF7E756F)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     final store = activeOrder.pickupStore;
     final item = activeOrder.items.isNotEmpty ? activeOrder.items.first : null;
@@ -513,11 +536,21 @@ class PickupDetailScreen extends StatelessWidget {
             width: double.infinity,
             height: 32,
             child: OutlinedButton(
-              onPressed: () {
+              onPressed: () async {
+                if (store != null) {
+                  final uri = Uri.parse(store.getDirectionsUrl());
+                  try {
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      return;
+                    }
+                  } catch (_) {}
+                }
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Membuka peta navigasi ke toko.'),
-                    duration: Duration(seconds: 1),
+                  SnackBar(
+                    content: Text('Membuka peta ke ${store?.name ?? 'toko'}...'),
+                    duration: const Duration(seconds: 1),
                   ),
                 );
               },

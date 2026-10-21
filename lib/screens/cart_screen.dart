@@ -128,12 +128,7 @@ class _CartScreenState extends State<CartScreen> {
 
                           const SizedBox(height: 14),
 
-                          // E. Kartu Garansi Instrumen & Kayu Aman
-                          _buildGuaranteeCard(),
-
-                          const SizedBox(height: 14),
-
-                          // F. Ringkasan Belanja
+                          // E. Ringkasan Belanja
                           _buildPriceSummary(selectedCount, discountAmount, totalPayment),
 
                           const SizedBox(height: 24),
@@ -349,11 +344,13 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  /// Kartu Silver Member
+  /// Kartu Membership
   Widget _buildMembershipCard(int discountAmount) {
     final int points = _cartService.currentPoints;
     final int target = _cartService.targetPoints;
-    final double progress = (points / target).clamp(0.0, 1.0);
+    final double progress = target > 0 ? (points / target).clamp(0.0, 1.0) : 1.0;
+    final int pointsNeeded = (target - points).clamp(0, target);
+    final String tierTitle = '${_cartService.tierName} Terdeteksi';
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -382,9 +379,9 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
               const SizedBox(width: 10),
-              const Text(
-                'Silver Member Terdeteksi',
-                style: TextStyle(
+              Text(
+                tierTitle,
+                style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
                   color: AppColors.textPrimaryDark,
@@ -412,7 +409,9 @@ class _CartScreenState extends State<CartScreen> {
 
           // Teks Benefit Diskon
           Text(
-            'Diskon 10% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Kumpulkan ${target - points} poin lagi menuju Gold untuk benefit Bebas Ongkir se-Indonesia!',
+            pointsNeeded > 0
+                ? 'Diskon ${_cartService.discountPercentage}% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Kumpulkan $pointsNeeded poin lagi menuju ${_cartService.nextTierName} untuk benefit VIP & hadiah eksklusif!'
+                : 'Diskon ${_cartService.discountPercentage}% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Tingkat membership maksimal tercapai!',
             style: const TextStyle(
               fontSize: 10,
               color: Color(0xFF6E6560),
@@ -426,7 +425,7 @@ class _CartScreenState extends State<CartScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Silver (${points.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')} Poin)',
+                '${_cartService.tierName} (${points.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')} Poin)',
                 style: const TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w700,
@@ -434,7 +433,7 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
               Text(
-                'Target Gold: ${target.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')}',
+                'Target ${_cartService.nextTierName}: ${target.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')}',
                 style: const TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w600,
@@ -460,64 +459,6 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  /// Kartu Garansi Instrumen & Kayu Aman
-  Widget _buildGuaranteeCard() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEEEEEE), width: 1),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: const BoxDecoration(
-              color: Color(0xFFF6F3EE),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.verified_user_outlined,
-              color: Color(0xFF9E562A),
-              size: 16,
-            ),
-          ),
-          const SizedBox(width: 10),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Garansi Instrumen & Kayu Aman',
-                  style: TextStyle(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimaryDark,
-                  ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  'Kemasan packing kayu standar ekspor + asuransi 100% penggantian unit.',
-                  style: TextStyle(
-                    fontSize: 9.5,
-                    color: Color(0xFF7E756F),
-                    height: 1.25,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Icon(
-            Icons.chevron_right,
-            size: 18,
-            color: Color(0xFFBBBBBB),
-          ),
-        ],
-      ),
-    );
-  }
 
   /// Ringkasan Belanja
   Widget _buildPriceSummary(int selectedCount, int discountAmount, int totalPayment) {
@@ -551,21 +492,21 @@ class _CartScreenState extends State<CartScreen> {
           ),
           const SizedBox(height: 8),
 
-          // Diskon Silver Member
+          // Diskon Member
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
-                children: const [
+                children: [
                   Text(
-                    'Diskon Silver Member (10%)',
-                    style: TextStyle(
+                    'Diskon ${_cartService.tierName} (${_cartService.discountPercentage}%)',
+                    style: const TextStyle(
                       fontSize: 11,
                       color: Color(0xFF6E6560),
                     ),
                   ),
-                  SizedBox(width: 4),
-                  Icon(
+                  const SizedBox(width: 4),
+                  const Icon(
                     Icons.info_outline,
                     size: 13,
                     color: Color(0xFFA64A13),
@@ -584,7 +525,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
           const SizedBox(height: 8),
 
-          // Estimasi Ongkir & Asuransi
+          // Metode Pengambilan di Toko Resmi
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -593,7 +534,7 @@ class _CartScreenState extends State<CartScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Estimasi Ongkir & Asuransi',
+                    'Metode Pemenuhan',
                     style: TextStyle(
                       fontSize: 11,
                       color: Color(0xFF6E6560),
@@ -603,28 +544,41 @@ class _CartScreenState extends State<CartScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF3F2F0),
+                      color: const Color(0xFFFFEFE5),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: const Text(
-                      'Packing Kayu',
+                      'Ambil di Toko Resmi',
                       style: TextStyle(
                         fontSize: 8.5,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF5A524D),
+                        color: Color(0xFFC2410C),
                       ),
                     ),
                   ),
                 ],
               ),
-              const Text(
-                'Dihitung saat\ncheckout',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontSize: 10.5,
-                  color: Color(0xFF7E756F),
-                  height: 1.25,
-                ),
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'Gratis (Rp 0)',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF16A34A),
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    '5 Cabang Tersedia',
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: Color(0xFF7E756F),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

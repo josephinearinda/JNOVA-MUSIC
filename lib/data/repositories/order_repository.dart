@@ -15,55 +15,43 @@ class OrderRepository {
   final AppDatabase _dbHelper = AppDatabase.instance;
   final SupabaseClientService _supabaseService = SupabaseClientService.instance;
 
-  /// Melakukan checkout pesanan baru dengan validasi server-authoritative & proteksi idempotensi
+  /// Melakukan checkout pesanan baru dengan alur Pickup & Bayar di Toko
   Future<OrderModel> checkout({
     required List<CartItem> items,
     required FulfillmentMethod fulfillment,
-    required String paymentMethod,
+    String paymentMethod = 'Bayar di Toko (Pickup & Pay)',
     StoreBranch? store,
-    int shippingCost = 0,
-    int packingCost = 0,
     int serviceCost = 1000,
     String? recipientName,
     String? recipientPhone,
     String? recipientAddress,
+    String? userEmail,
+    double? discountRate,
   }) async {
     final subtotal = items.fold(0, (sum, i) => sum + i.itemTotal);
-    final discount = (subtotal * 0.10).round(); // Silver Member 10%
-    final totalPayment = subtotal - discount + shippingCost + packingCost + serviceCost;
+    final effectiveDiscountRate = discountRate ?? 0.10;
+    final discount = (subtotal * effectiveDiscountRate).round();
+    final totalPayment = subtotal - discount + serviceCost;
 
-    // Idempotency key unik untuk mencegah submit dobel
     final idempotencyKey = 'ord_${DateTime.now().millisecondsSinceEpoch}_${items.length}';
-    final nowFormatted = _formatCurrentDateTime();
+    final now = DateTime.now();
+    final months = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    final dateFormatted =
+        '${now.day} ${months[now.month - 1]} ${now.year}, ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')} WIB';
+    final randomSuffix = 1000 + (now.millisecondsSinceEpoch % 9000);
+    final orderNumber = '#JNV-${now.year}${now.month.toString().padLeft(2, '0')}-$randomSuffix';
+    final pickupCode = 'PKP-$randomSuffix-JNV';
 
-    // Tentukan rekening bank resmi JNOVAMUSIC
-    final isBca = paymentMethod.toLowerCase().contains('bca');
-    final isMandiri = paymentMethod.toLowerCase().contains('mandiri');
-
-    final bankAccNumber = isMandiri
-        ? AppConfig.mandiriAccountNumber
-        : AppConfig.bcaAccountNumber;
-    final bankAccName = isMandiri
-        ? AppConfig.mandiriAccountName
-        : AppConfig.bcaAccountName;
-
+    String orderId = idempotencyKey;
     final isOnline = await NetworkInfo.instance.isConnected;
     final isSupabaseReady = AppConfig.isSupabaseConfigured && _supabaseService.isInitialized;
 
-    String orderId = idempotencyKey;
-    String orderNumber = '#JNV-${DateTime.now().year}${DateTime.now().month.toString().padLeft(2, '0')}-${1000 + (DateTime.now().millisecond % 9000)}';
-    String initialStatus;
-    bool isOfflinePending = false;
-
     if (isOnline && isSupabaseReady) {
-      // 1. Jalankan Transaksi Resmi di Supabase PostgreSQL
       try {
         final client = _supabaseService.client!;
-        final dbPaymentMethod = isMandiri
-            ? 'bank_transfer_mandiri'
-            : (isBca ? 'bank_transfer_bca' : 'qris');
-        final dbFulfillment = fulfillment == FulfillmentMethod.pickup ? 'pickup' : 'delivery';
-
         final itemsPayload = items.map((i) => {
           'product_id': i.product.id,
           'quantity': i.quantity,
@@ -71,90 +59,51 @@ class OrderRepository {
 
         final rpcResult = await client.rpc('create_order_secure', params: {
           'p_idempotency_key': idempotencyKey,
-          'p_fulfillment': dbFulfillment,
-          'p_payment_method': dbPaymentMethod,
+          'p_fulfillment': 'pickup',
+          'p_payment_method': 'store_pickup_pay',
           'p_items': itemsPayload,
           'p_pickup_store_id': store?.id,
-          'p_shipping_fee': shippingCost,
-          'p_packing_fee': packingCost,
-          'p_notes': 'Pesanan aplikasi resmi JNOVAMUSIC',
+          'p_shipping_fee': 0,
+          'p_packing_fee': 0,
+          'p_notes': 'Pesanan Pickup & Bayar di Toko JNOVAMUSIC',
         });
 
         if (rpcResult != null) {
           orderId = rpcResult.toString();
         }
-        initialStatus = 'Menunggu Pembayaran';
-      } catch (_) {
-        // Fallback jika terjadi kegagalan server
-        initialStatus = 'Menunggu Sinkronisasi Server';
-        isOfflinePending = true;
-      }
-    } else {
-      // 2. Offline Mode: Simpan ke antrean sinkronisasi lokal (TIDAK BOLEH dianggap sukses di server)
-      initialStatus = 'Menunggu Sinkronisasi Server';
-      isOfflinePending = true;
+      } catch (_) {}
     }
 
     final order = OrderModel(
       id: orderId,
       orderNumber: orderNumber,
-      dateFormatted: nowFormatted,
-      fulfillmentMethod: fulfillment,
-      status: initialStatus,
+      dateFormatted: dateFormatted,
+      fulfillmentMethod: FulfillmentMethod.pickup,
+      status: 'Menunggu Pengambilan & Pembayaran di Toko',
       items: List.from(items),
       subtotal: subtotal,
       discount: discount,
-      shippingFee: shippingCost,
-      packingFee: packingCost,
+      shippingFee: 0,
+      packingFee: 0,
       serviceFee: serviceCost,
       totalPayment: totalPayment > 0 ? totalPayment : 0,
       paymentMethod: paymentMethod,
       pickupStore: store ?? StoreBranch.branches.first,
-      recipientName: recipientName ?? 'Budi Pratama',
-      recipientPhone: recipientPhone ?? '(+62) 812-3456-7890',
-      recipientAddress: recipientAddress ??
-          'Jl. Senopati No. 42, RT 04 / RW 02, Kebayoran Baru, Jakarta Selatan, DKI Jakarta 12110',
-      trackingSteps: [
-        TrackingStep(
-          title: 'Pesanan Dibuat',
-          time: nowFormatted.split(', ').last,
-          description: isOfflinePending
-              ? 'Pesanan dicatat di perangkat lokal dan menunggu sinkronisasi internet.'
-              : 'Pesanan berhasil dibuat di sistem resmi JNOVAMUSIC.',
-          isCompleted: true,
-          isActive: true,
-        ),
-        TrackingStep(
-          title: 'Menunggu Verifikasi Pembayaran',
-          time: 'Batas 24 Jam',
-          description:
-              'Transfer ke $bankAccName ($bankAccNumber). Pesanan akan diverifikasi sebelum diproses.',
-          isCompleted: false,
-        ),
-        TrackingStep(
-          title: fulfillment == FulfillmentMethod.pickup
-              ? 'Siap Diambil di Toko'
-              : 'QC Luthier & Pengiriman',
-          time: 'Est. 1-2 Hari',
-          description: fulfillment == FulfillmentMethod.pickup
-              ? 'Tunjukkan QR Code e-Invoice ke kasir pickup cabang ${store?.name ?? "resmi"}.'
-              : 'Pengecekan kelengkapan instrumen & diserahkan ke JNE Cargo.',
-          isCompleted: false,
-        ),
-      ],
+      pickupCode: pickupCode,
+      recipientName: recipientName ?? '',
+      recipientPhone: recipientPhone ?? '',
+      recipientAddress: recipientAddress ?? '',
+      isCompleted: false,
+      pointsAwarded: false,
+      userEmail: userEmail ?? '',
     );
 
-    // 3. Simpan ke SQLite Cache & Antrean Offline jika diperlukan
-    await _cacheOrderLocally(order, idempotencyKey, isOfflinePending);
+    await _cacheOrderLocally(order);
 
     return order;
   }
 
-  Future<void> _cacheOrderLocally(
-    OrderModel order,
-    String idempotencyKey,
-    bool isOfflinePending,
-  ) async {
+  Future<void> _cacheOrderLocally(OrderModel order) async {
     try {
       final db = await _dbHelper.database;
       final now = DateTime.now().millisecondsSinceEpoch;
@@ -168,82 +117,63 @@ class OrderRepository {
           'fulfillment_method': order.fulfillmentMethod.name,
           'status': order.status,
           'total_payment': order.totalPayment,
-          'raw_json': jsonEncode({
-            'id': order.id,
-            'order_number': order.orderNumber,
-            'payment_method': order.paymentMethod,
-            'subtotal': order.subtotal,
-            'discount': order.discount,
-            'items_count': order.items.length,
-          }),
+          'raw_json': jsonEncode(order.toMap()),
           'cached_at': now,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-
-      if (isOfflinePending) {
-        await db.insert(
-          'offline_pending_orders',
-          {
-            'client_temp_id': order.id,
-            'idempotency_key': idempotencyKey,
-            'payload_json': jsonEncode({
-              'order_number': order.orderNumber,
-              'items': order.items.map((i) => {'id': i.product.id, 'qty': i.quantity}).toList(),
-              'fulfillment': order.fulfillmentMethod.name,
-              'total': order.totalPayment,
-            }),
-            'status': 'pending_sync',
-            'created_at': now,
-            'retry_count': 0,
-            'last_error': 'Menunggu koneksi internet aktif.',
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      }
     } catch (_) {}
   }
 
-  /// Sinkronisasi antrean pesanan offline saat koneksi online pulih
-  Future<void> syncPendingOrders() async {
-    final isOnline = await NetworkInfo.instance.isConnected;
-    if (!isOnline || !AppConfig.isSupabaseConfigured || !_supabaseService.isInitialized) {
-      return;
-    }
-
+  /// Mengambil pesanan yang tersimpan untuk email tertentu
+  Future<List<OrderModel>> getOrdersForUser(String email) async {
     try {
       final db = await _dbHelper.database;
-      final pendingRows = await db.query(
-        'offline_pending_orders',
-        where: 'status = ?',
-        whereArgs: ['pending_sync'],
+      final rows = await db.query(
+        'cached_orders',
+        orderBy: 'cached_at DESC',
       );
 
-      for (final row in pendingRows) {
-        final clientTempId = row['client_temp_id'] as String;
-        // Tandai sudah diproses
-        await db.update(
-          'offline_pending_orders',
-          {'status': 'synced'},
-          where: 'client_temp_id = ?',
-          whereArgs: [clientTempId],
-        );
+      final cleanEmail = email.toLowerCase().trim();
+      final list = <OrderModel>[];
+
+      for (final r in rows) {
+        final raw = r['raw_json'] as String?;
+        if (raw != null && raw.isNotEmpty) {
+          try {
+            final map = jsonDecode(raw) as Map<String, dynamic>;
+            final order = OrderModel.fromMap(map);
+            if (cleanEmail.isEmpty ||
+                order.userEmail.isEmpty ||
+                order.userEmail.toLowerCase().trim() == cleanEmail) {
+              list.add(order);
+            }
+          } catch (_) {}
+        }
       }
-    } catch (_) {}
+
+      return list;
+    } catch (_) {
+      return [];
+    }
   }
 
-  String _formatCurrentDateTime() {
-    final now = DateTime.now();
-    final months = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-    ];
-    final day = now.day;
-    final month = months[now.month - 1];
-    final year = now.year;
-    final hour = now.hour.toString().padLeft(2, '0');
-    final minute = now.minute.toString().padLeft(2, '0');
+  /// Memperbarui pesanan saat status berubah (misalnya diselesaikan)
+  Future<void> updateOrder(OrderModel order) async {
+    await _cacheOrderLocally(order);
 
-    return '$day $month $year, $hour:$minute WIB';
+    // Sinkronkan ke Supabase jika online
+    final isOnline = await NetworkInfo.instance.isConnected;
+    if (isOnline && AppConfig.isSupabaseConfigured && _supabaseService.isInitialized) {
+      try {
+        final client = _supabaseService.client;
+        if (client != null) {
+          await client
+              .from('orders')
+              .update({'status': order.status})
+              .eq('id', order.id);
+        }
+      } catch (_) {}
+    }
   }
 }

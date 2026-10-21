@@ -81,29 +81,35 @@ class AppBottomNav extends StatelessWidget {
     final bool isActive = index == currentIndex;
     final Color color = isActive ? AppColors.primaryOrange : const Color(0xFF6E6560);
 
-    return InkWell(
-      onTap: () => onTap?.call(index),
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isActive ? activeIcon : icon,
-              size: 21,
-              color: color,
-            ),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              style: TextStyle(
+    return Expanded(
+      child: InkWell(
+        onTap: () => onTap?.call(index),
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isActive ? activeIcon : icon,
+                size: 21,
                 color: color,
-                fontSize: 10,
-                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
               ),
-            ),
-          ],
+              const SizedBox(height: 3),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 10,
+                    fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

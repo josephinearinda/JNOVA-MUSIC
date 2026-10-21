@@ -187,7 +187,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              childAspectRatio: 0.60,
+                              mainAxisExtent: 295,
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 14,
                             ),
@@ -228,11 +228,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                     ),
 
                     const SizedBox(height: 18),
-
-                    // Informasi Pengiriman Cepat & Aman
-                    _buildShippingCard(),
-
-                    const SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -483,12 +478,15 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Jumlah produk
-          Text(
-            'Menampilkan $count Produk',
-            style: const TextStyle(
-              color: AppColors.textSecondaryBrown,
-              fontSize: 11.5,
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              'Menampilkan $count Produk',
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppColors.textSecondaryBrown,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
 
@@ -584,59 +582,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     );
   }
 
-  Widget _buildShippingCard() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF9F8F6),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFEDDF),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: const Icon(
-              Icons.local_shipping_outlined,
-              size: 20,
-              color: AppColors.primaryOrange,
-            ),
-          ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Pengiriman Cepat & Aman',
-                  style: TextStyle(
-                    color: AppColors.textPrimaryDark,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  'Packing kayu & asuransi resmi ke seluruh Indonesia.',
-                  style: TextStyle(
-                    color: AppColors.textMuted,
-                    fontSize: 10.5,
-                    height: 1.25,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   void _showFilterBottomSheet() {
     showModalBottomSheet(

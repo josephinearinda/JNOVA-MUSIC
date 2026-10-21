@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../core/constants/app_colors.dart';
 import '../models/user_profile.dart';
@@ -130,10 +132,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _isLoading = true;
     });
 
+    final profile = _profileService.profile;
     final success = await _profileService.updateProfile(
       fullName: _fullNameController.text.trim(),
       username: _usernameController.text.trim(),
-      email: _emailController.text.trim(),
+      email: profile.email.isNotEmpty ? profile.email : _emailController.text.trim(),
       phoneNumber: _phoneController.text.trim(),
       birthDate: _birthDateController.text.trim(),
       streetAddress: _streetAddressController.text.trim(),
@@ -199,7 +202,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       const SizedBox(height: 18),
 
                       // Bagian 1: Informasi Akun & Kontak
-                      _buildAccountInfoCard(),
+                      _buildAccountInfoCard(profile),
 
                       const SizedBox(height: 16),
 
@@ -392,67 +395,53 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget _buildAvatarSection(UserProfileModel profile) {
     return Column(
       children: [
-        Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            Container(
-              width: 84,
-              height: 84,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFFFD8BF), width: 2.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/images/hero_splash_center.png',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: const Color(0xFFF7F6F4),
-                    child: const Icon(
-                      Icons.person_rounded,
-                      size: 44,
-                      color: Color(0xFF8E837D),
+        GestureDetector(
+          onTap: _showPhotoSourcePicker,
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              Container(
+                width: 84,
+                height: 84,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFFFFD8BF), width: 2.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
                     ),
-                  ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: _buildAvatarImage(profile.photoUrl),
                 ),
               ),
-            ),
-            Container(
-              width: 26,
-              height: 26,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primaryOrange,
-                border: Border.all(color: Colors.white, width: 2),
+              Container(
+                width: 26,
+                height: 26,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.primaryOrange,
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                child: const Icon(
+                  Icons.camera_alt_rounded,
+                  size: 13,
+                  color: Colors.white,
+                ),
               ),
-              child: const Icon(
-                Icons.camera_alt_rounded,
-                size: 13,
-                color: Colors.white,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Pilih foto baru dari galeri/kamera.'),
-                    duration: Duration(seconds: 1),
-                  ),
-                );
-              },
+              onTap: _showPhotoSourcePicker,
+              borderRadius: BorderRadius.circular(12),
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -474,21 +463,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             const SizedBox(width: 12),
             InkWell(
-              onTap: () {
-                _profileService.removePhoto();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Foto profil dihapus.'),
-                    duration: Duration(seconds: 1),
+              onTap: _handleRemovePhoto,
+              borderRadius: BorderRadius.circular(12),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                child: Text(
+                  'Hapus Foto',
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFFDC2626),
                   ),
-                );
-              },
-              child: const Text(
-                'Hapus Foto',
-                style: TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFFDC2626),
                 ),
               ),
             ),
@@ -503,7 +488,139 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget _buildAccountInfoCard() {
+  Widget _buildAvatarImage(String photoUrl) {
+    if (photoUrl.isNotEmpty) {
+      if (photoUrl.startsWith('http')) {
+        return Image.network(
+          photoUrl,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildAvatarFallback(),
+        );
+      } else if (photoUrl.startsWith('assets/')) {
+        return Image.asset(
+          photoUrl,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildAvatarFallback(),
+        );
+      } else if (File(photoUrl).existsSync()) {
+        return Image.file(
+          File(photoUrl),
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildAvatarFallback(),
+        );
+      }
+    }
+    return _buildAvatarFallback();
+  }
+
+  Widget _buildAvatarFallback() {
+    return Container(
+      color: const Color(0xFFF7F6F4),
+      child: const Icon(
+        Icons.person_rounded,
+        size: 44,
+        color: Color(0xFF8E837D),
+      ),
+    );
+  }
+
+  void _showPhotoSourcePicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD4D0C8),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Ubah Foto Profil',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimaryDark,
+              ),
+            ),
+            const SizedBox(height: 14),
+            ListTile(
+              leading: const Icon(Icons.camera_alt_rounded, color: AppColors.primaryOrange),
+              title: const Text('Ambil Foto (Kamera)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+              onTap: () {
+                Navigator.pop(ctx);
+                _pickPhoto(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_rounded, color: AppColors.primaryOrange),
+              title: const Text('Pilih dari Galeri', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+              onTap: () {
+                Navigator.pop(ctx);
+                _pickPhoto(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickPhoto(ImageSource source) async {
+    final result = await _profileService.pickAndUploadPhoto(source: source);
+    if (!mounted) return;
+
+    if (result['cancelled'] == true) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(result['message'] as String),
+        backgroundColor: (result['success'] as bool? ?? false)
+            ? Colors.green
+            : const Color(0xFFDC2626),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> _handleRemovePhoto() async {
+    if (_profileService.profile.photoUrl.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Foto profil sudah menggunakan avatar default.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final success = await _profileService.removePhoto();
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(success ? 'Foto profil berhasil dihapus.' : 'Gagal menghapus foto profil.'),
+        backgroundColor: success ? Colors.green : const Color(0xFFDC2626),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Widget _buildAccountInfoCard(UserProfileModel profile) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
@@ -595,7 +712,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
           // Alamat Email
           _buildInputLabel(
             'Alamat Email',
-            customRightWidget: _buildVerifiedBadge(),
+            customRightWidget: profile.email.isNotEmpty
+                ? (profile.isEmailVerified
+                    ? _buildVerifiedBadge('Terverifikasi')
+                    : _buildUnverifiedBadge('Belum Verifikasi'))
+                : null,
           ),
           const SizedBox(height: 4),
           _buildTextFormField(
@@ -603,14 +724,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
             prefixIcon: Icons.mail_outline_rounded,
             hintText: 'Email Anda',
             keyboardType: TextInputType.emailAddress,
-            suffixWidget: _buildChangeButton('Ubah'),
+            readOnly: true,
+            suffixWidget: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: Icon(Icons.lock_outline_rounded, size: 14, color: Color(0xFF8E837D)),
+            ),
           ),
           const SizedBox(height: 10),
 
           // Nomor Handphone
           _buildInputLabel(
             'Nomor Handphone',
-            customRightWidget: _buildVerifiedBadge(),
+            customRightWidget: profile.phoneNumber.isNotEmpty
+                ? (profile.isPhoneVerified
+                    ? _buildVerifiedBadge('Terverifikasi')
+                    : _buildUnverifiedBadge('Belum Verifikasi'))
+                : null,
           ),
           const SizedBox(height: 4),
           _buildTextFormField(
@@ -618,7 +747,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             prefixIcon: Icons.phone_outlined,
             hintText: '+62 ...',
             keyboardType: TextInputType.phone,
-            suffixWidget: _buildChangeButton('Ubah'),
           ),
         ],
       ),
@@ -944,21 +1072,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget _buildVerifiedBadge() {
+  Widget _buildVerifiedBadge([String label = 'Terverifikasi']) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: const Color(0xFFDCFCE7),
         borderRadius: BorderRadius.circular(6),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.check_circle_rounded, size: 9, color: Color(0xFF15803D)),
-          SizedBox(width: 3),
+          const Icon(Icons.check_circle_rounded, size: 9, color: Color(0xFF15803D)),
+          const SizedBox(width: 3),
           Text(
-            'Terverifikasi',
-            style: TextStyle(
+            label,
+            style: const TextStyle(
               fontSize: 8.5,
               fontWeight: FontWeight.w700,
               color: Color(0xFF15803D),
@@ -969,36 +1097,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  Widget _buildChangeButton(String text) {
-    return Padding(
-      padding: const EdgeInsets.all(6.0),
-      child: InkWell(
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Proses verifikasi $text dibuka.'),
-              duration: const Duration(seconds: 1),
-            ),
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF2F0ED),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Text(
-            text,
+  Widget _buildUnverifiedBadge([String label = 'Belum Verifikasi']) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFEF3C7),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.info_outline_rounded, size: 9, color: Color(0xFFB45309)),
+          const SizedBox(width: 3),
+          Text(
+            label,
             style: const TextStyle(
-              fontSize: 9.5,
+              fontSize: 8.5,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF5A524D),
+              color: Color(0xFFB45309),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
+
 
   Widget _buildTextFormField({
     required TextEditingController controller,
@@ -1007,15 +1130,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
     TextInputType? keyboardType,
     String? Function(String?)? validator,
     Widget? suffixWidget,
+    bool readOnly = false,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: readOnly ? const Color(0xFFF7F6F4) : Colors.white,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: const Color(0xFFE5E2DC), width: 1.0),
       ),
       child: TextFormField(
         controller: controller,
+        readOnly: readOnly,
         keyboardType: keyboardType,
         validator: validator,
         style: const TextStyle(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../core/config/app_config.dart';
 import '../core/constants/app_colors.dart';
 import '../models/product.dart';
 import '../services/gemini_service.dart';
@@ -19,6 +21,7 @@ class AIChatMessage {
   final String? productDescription;
   final List<String>? chips;
   final String? selectedChip;
+  final String? errorCode;
 
   const AIChatMessage({
     required this.id,
@@ -34,6 +37,7 @@ class AIChatMessage {
     this.productDescription,
     this.chips,
     this.selectedChip,
+    this.errorCode,
   });
 
   AIChatMessage copyWith({
@@ -45,6 +49,7 @@ class AIChatMessage {
     String? productOriginalPrice,
     String? productPoints,
     String? productDescription,
+    String? errorCode,
   }) {
     return AIChatMessage(
       id: id,
@@ -61,6 +66,7 @@ class AIChatMessage {
       productDescription: productDescription ?? this.productDescription,
       chips: chips,
       selectedChip: selectedChip ?? this.selectedChip,
+      errorCode: errorCode ?? this.errorCode,
     );
   }
 }
@@ -86,13 +92,6 @@ class _AIChatPageState extends State<AIChatPage> {
   Product get _yamahaF310Product {
     return Product.allCatalog.firstWhere(
       (p) => p.id == 'p6',
-      orElse: () => Product.allCatalog.first,
-    );
-  }
-
-  Product get _fenderProduct {
-    return Product.allCatalog.firstWhere(
-      (p) => p.id == 'p1',
       orElse: () => Product.allCatalog.first,
     );
   }
@@ -168,6 +167,8 @@ class _AIChatPageState extends State<AIChatPage> {
   }
 
   Future<void> _handleChipSelected(String chipText) async {
+    if (_isAITyping) return;
+
     final queryText = chipText == 'Gitar Elektrik'
         ? 'Saya lebih tertarik dengan gitar elektrik.'
         : 'Saya lebih tertarik dengan gitar akustik.';
@@ -197,19 +198,14 @@ class _AIChatPageState extends State<AIChatPage> {
           isUser: false,
           text: response.text,
           time: _formatCurrentTime(),
-          recommendedProduct: response.recommendedProduct ??
-              (chipText == 'Gitar Elektrik' ? _fenderProduct : _yamahaF310Product),
-          productBadge: response.badge ??
-              (chipText == 'Gitar Elektrik'
-                  ? 'PILIHAN UTAMA MUSISI'
-                  : 'REKOMENDASI TERBAIK PEMULA'),
-          productOriginalPrice:
-              chipText == 'Gitar Elektrik' ? 'Rp15.500.000' : 'Rp2.000.000',
-          productPoints: response.pointsLabel ??
-              (chipText == 'Gitar Elektrik'
-                  ? '+742 Poin Member'
-                  : '+93 Poin Member'),
-          productDescription: response.recommendedProduct?.description,
+          recommendedProduct: response.isSuccess ? response.recommendedProduct : null,
+          productBadge: response.isSuccess ? response.badge : null,
+          productOriginalPrice: response.isSuccess && response.recommendedProduct != null
+              ? 'Rp${((response.recommendedProduct!.price * 1.15) / 1000).round() * 1000}'
+              : null,
+          productPoints: response.isSuccess ? response.pointsLabel : null,
+          productDescription: response.isSuccess ? response.recommendedProduct?.description : null,
+          errorCode: response.errorCode,
         ),
       );
     });
@@ -224,6 +220,7 @@ class _AIChatPageState extends State<AIChatPage> {
   }
 
   Future<void> _sendMessage() async {
+    if (_isAITyping) return;
     final query = _inputController.text.trim();
     if (query.isEmpty) return;
 
@@ -254,14 +251,529 @@ class _AIChatPageState extends State<AIChatPage> {
           isUser: false,
           text: response.text,
           time: _formatCurrentTime(),
-          recommendedProduct: response.recommendedProduct,
-          productBadge: response.badge,
-          productPoints: response.pointsLabel,
-          productDescription: response.recommendedProduct?.description,
+          recommendedProduct: response.isSuccess ? response.recommendedProduct : null,
+          productBadge: response.isSuccess ? response.badge : null,
+          productPoints: response.isSuccess ? response.pointsLabel : null,
+          productDescription: response.isSuccess ? response.recommendedProduct?.description : null,
+          errorCode: response.errorCode,
         ),
       );
     });
     _scrollToBottom();
+  }
+
+  Future<void> _retryLastUserMessage() async {
+    if (_isAITyping) return;
+    for (int i = _messages.length - 1; i >= 0; i--) {
+      if (_messages[i].isUser) {
+        final lastText = _messages[i].text;
+        if (lastText.isNotEmpty) {
+          _inputController.text = lastText;
+          _sendMessage();
+          break;
+        }
+      }
+    }
+  }
+
+  void _showApiKeyConfigModal(BuildContext context) {
+    final keyController = TextEditingController(
+      text: AppConfig.geminiApiKey.contains('your-gemini-api-key')
+          ? ''
+          : AppConfig.geminiApiKey,
+    );
+    bool obscureText = true;
+    String selectedModel = AppConfig.geminiModel;
+    bool isTesting = false;
+    ({bool success, String message})? testResult;
+
+    final availableModels = const [
+      'gemini-1.5-flash',
+      'gemini-2.0-flash',
+      'gemini-2.5-flash',
+      'gemini-1.5-pro',
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setModalState) {
+          final isConfigured = AppConfig.isGeminiConfigured;
+          final currentKey = AppConfig.geminiApiKey;
+          final maskedKey = currentKey.length > 8
+              ? '${currentKey.substring(0, 6)}...${currentKey.substring(currentKey.length - 4)}'
+              : (currentKey.isNotEmpty ? '********' : 'Belum diatur');
+
+          return Container(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE2DDD8),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 38,
+                            height: 38,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFFFEDDF),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.vpn_key_rounded,
+                              size: 20,
+                              color: AppColors.primaryOrange,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Konfigurasi Gemini API',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.textPrimaryDark,
+                                ),
+                              ),
+                              Text(
+                                'Google AI Studio API Key & Model',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Color(0xFF8E837D),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        icon: const Icon(Icons.close_rounded, color: Color(0xFF6E6560)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: isConfigured ? const Color(0xFFF0FDF4) : const Color(0xFFFFF7ED),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isConfigured ? const Color(0xFFBBF7D0) : const Color(0xFFFFEDD5),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          isConfigured ? Icons.check_circle_rounded : Icons.info_outline_rounded,
+                          size: 18,
+                          color: isConfigured ? const Color(0xFF16A34A) : AppColors.primaryOrange,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                isConfigured
+                                    ? 'Status: Terhubung (${AppConfig.geminiModel})'
+                                    : 'Status: Belum Dikonfigurasi',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: isConfigured ? const Color(0xFF15803D) : const Color(0xFFC2410C),
+                                ),
+                              ),
+                              if (isConfigured) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Kunci Aktif: $maskedKey',
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Color(0xFF166534),
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const Text(
+                    'Dapatkan API Key resmi gratis dari Google AI Studio:',
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimaryDark,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  const SelectableText(
+                    'https://aistudio.google.com/',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.primaryOrange,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Model Selection
+                  const Text(
+                    'Pilihan Model Gemini:',
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimaryDark,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFAF9F7),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE8E5DF)),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: availableModels.contains(selectedModel)
+                            ? selectedModel
+                            : availableModels.first,
+                        isExpanded: true,
+                        icon: const Icon(Icons.arrow_drop_down, color: AppColors.primaryOrange),
+                        style: const TextStyle(fontSize: 12, color: AppColors.textPrimaryDark),
+                        items: availableModels.map((m) {
+                          String label = m;
+                          if (m == 'gemini-1.5-flash') label = '$m (Rekomendasi Cepat & Stabil)';
+                          if (m == 'gemini-2.0-flash') label = '$m (Kecepatan Tinggi)';
+                          if (m == 'gemini-2.5-flash') label = '$m (Versi Terbaru)';
+                          if (m == 'gemini-1.5-pro') label = '$m (Penalaran Mendalam)';
+                          return DropdownMenuItem(
+                            value: m,
+                            child: Text(label, style: const TextStyle(fontSize: 11.5)),
+                          );
+                        }).toList(),
+                        onChanged: (val) {
+                          if (val != null) {
+                            setModalState(() {
+                              selectedModel = val;
+                              testResult = null;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // API Key Input
+                  const Text(
+                    'Google Gemini API Key:',
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimaryDark,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFAF9F7),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE8E5DF)),
+                    ),
+                    child: TextField(
+                      controller: keyController,
+                      obscureText: obscureText,
+                      style: const TextStyle(fontSize: 12, color: AppColors.textPrimaryDark),
+                      onChanged: (_) {
+                        if (testResult != null) {
+                          setModalState(() => testResult = null);
+                        }
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Tempel Gemini API Key (AIzaSy...)',
+                        hintStyle: const TextStyle(fontSize: 11, color: Color(0xFF9E958F)),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                        suffixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                obscureText ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                                size: 18,
+                                color: const Color(0xFF8E837D),
+                              ),
+                              onPressed: () {
+                                setModalState(() {
+                                  obscureText = !obscureText;
+                                });
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.paste_rounded, size: 18, color: AppColors.primaryOrange),
+                              tooltip: 'Tempel dari Clipboard',
+                              onPressed: () async {
+                                final data = await Clipboard.getData('text/plain');
+                                if (data?.text != null && data!.text!.trim().isNotEmpty) {
+                                  keyController.text = data.text!.trim();
+                                  setModalState(() => testResult = null);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Test Connection Result Banner
+                  if (testResult != null) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: testResult!.success ? const Color(0xFFF0FDF4) : const Color(0xFFFEF2F2),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: testResult!.success ? const Color(0xFFBBF7D0) : const Color(0xFFFECACA),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            testResult!.success ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                            size: 16,
+                            color: testResult!.success ? const Color(0xFF16A34A) : Colors.redAccent,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              testResult!.message,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: testResult!.success ? const Color(0xFF15803D) : const Color(0xFFB91C1C),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+
+                  const SizedBox(height: 14),
+
+                  // Action Buttons: Uji Koneksi & Simpan
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: SizedBox(
+                          height: 44,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: AppColors.primaryOrange),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: isTesting
+                                ? null
+                                : () async {
+                                    final key = keyController.text.trim();
+                                    if (key.isEmpty || key.length < 10) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Masukkan API Key yang valid terlebih dahulu.'),
+                                          backgroundColor: Colors.redAccent,
+                                        ),
+                                      );
+                                      return;
+                                    }
+
+                                    setModalState(() {
+                                      isTesting = true;
+                                      testResult = null;
+                                    });
+
+                                    final res = await GeminiService.instance.testConnection(
+                                      apiKey: key,
+                                      model: selectedModel,
+                                    );
+
+                                    setModalState(() {
+                                      isTesting = false;
+                                      testResult = res;
+                                    });
+                                  },
+                            child: isTesting
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColors.primaryOrange,
+                                    ),
+                                  )
+                                : const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.network_check_rounded, size: 16, color: AppColors.primaryOrange),
+                                      SizedBox(width: 6),
+                                      Text(
+                                        'Uji Koneksi',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.primaryOrange,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 2,
+                        child: SizedBox(
+                          height: 44,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryOrange,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () async {
+                              final key = keyController.text.trim();
+                              if (key.isEmpty || key.length < 10) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Masukkan API Key yang valid dari Google AI Studio.'),
+                                    backgroundColor: Colors.redAccent,
+                                  ),
+                                );
+                                return;
+                              }
+
+                              await AppConfig.saveGeminiApiKey(key);
+                              await AppConfig.saveGeminiModel(selectedModel);
+                              GeminiService.instance.reconfigure();
+                              if (!mounted || !context.mounted) return;
+                              setState(() {});
+                              Navigator.pop(ctx);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Gemini API ($selectedModel) berhasil dikonfigurasi & aktif!'),
+                                  backgroundColor: const Color(0xFF16A34A),
+                                ),
+                              );
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.save_rounded, size: 18, color: Colors.white),
+                                SizedBox(width: 6),
+                                Text(
+                                  'Simpan & Aktifkan',
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (isConfigured) ...[
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 40,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Color(0xFFE8E5DF)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await AppConfig.clearCustomGeminiApiKey();
+                          await AppConfig.clearCustomGeminiModel();
+                          GeminiService.instance.reconfigure();
+                          if (!mounted || !context.mounted) return;
+                          setState(() {});
+                          Navigator.pop(ctx);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Kunci kustom dihapus. Menggunakan setelan default.'),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Hapus Kunci Kustom / Reset ke Default',
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF6E6560),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -416,12 +928,119 @@ class _AIChatPageState extends State<AIChatPage> {
           ),
           Row(
             children: [
+              InkWell(
+                onTap: () => _showApiKeyConfigModal(context),
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppConfig.isGeminiConfigured
+                        ? const Color(0xFFF0FDF4)
+                        : const Color(0xFFFFEDDF),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: AppConfig.isGeminiConfigured
+                          ? const Color(0xFFBBF7D0)
+                          : const Color(0xFFFFD8BF),
+                      width: 1.0,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.vpn_key_rounded,
+                        size: 13,
+                        color: AppConfig.isGeminiConfigured
+                            ? const Color(0xFF16A34A)
+                            : AppColors.primaryOrange,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        AppConfig.isGeminiConfigured ? 'API AKTIF' : 'ATUR API',
+                        style: TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w800,
+                          color: AppConfig.isGeminiConfigured
+                              ? const Color(0xFF16A34A)
+                              : AppColors.primaryOrange,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
               IconButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Riwayat percakapan tersimpan secara lokal.'),
-                      duration: Duration(seconds: 1),
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      title: const Row(
+                        children: [
+                          Icon(
+                            Icons.history_rounded,
+                            color: AppColors.primaryOrange,
+                            size: 22,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Sesi Obrolan Jnova AI',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ],
+                      ),
+                      content: Text(
+                        'Terdapat ${_messages.length} pesan dalam sesi aktif ini.\n\nApakah Anda ingin memulai obrolan baru dengan Jnova AI?',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF5A524D),
+                          height: 1.4,
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text(
+                            'Tutup',
+                            style: TextStyle(color: Color(0xFF7E756F)),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            GeminiService.instance.resetChat();
+                            setState(() {
+                              _initializeDefaultChat();
+                            });
+                            Navigator.pop(ctx);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Sesi percakapan baru telah dimulai.'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryOrange,
+                            elevation: 0,
+                          ),
+                          child: const Text(
+                            'Obrolan Baru',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 },
@@ -433,7 +1052,7 @@ class _AIChatPageState extends State<AIChatPage> {
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               InkWell(
                 onTap: () => Navigator.pushNamed(context, '/profile'),
                 borderRadius: BorderRadius.circular(15),
@@ -654,6 +1273,93 @@ class _AIChatPageState extends State<AIChatPage> {
                 points: msg.productPoints ?? '+93 Poin Member',
                 description: msg.productDescription ??
                     msg.recommendedProduct!.description,
+              ),
+            ),
+          ],
+          // Tombol Tindakan Cepat jika API Key belum disetel atau tidak valid
+          if (msg.errorCode == 'unconfigured_key' || msg.errorCode == 'invalid_key') ...[
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.only(left: 36),
+              child: InkWell(
+                onTap: () => _showApiKeyConfigModal(context),
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFEDDF),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFFFCC80), width: 1.0),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.vpn_key_rounded,
+                        size: 13,
+                        color: AppColors.primaryOrange,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        msg.errorCode == 'invalid_key'
+                            ? 'Perbarui Gemini API Key'
+                            : 'Konfigurasi Gemini API Key Sekarang',
+                        style: const TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primaryOrange,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 9,
+                        color: AppColors.primaryOrange,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+          // Tombol Coba Lagi untuk error jaringan, timeout, atau server
+          if (msg.errorCode == 'offline' ||
+              msg.errorCode == 'timeout' ||
+              msg.errorCode == 'network_error' ||
+              msg.errorCode == 'server_error') ...[
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.only(left: 36),
+              child: InkWell(
+                onTap: () => _retryLastUserMessage(),
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F4F0),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFE2DDD8), width: 1.0),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.refresh_rounded,
+                        size: 13,
+                        color: Color(0xFF6E6560),
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        'Coba Kirim Ulang',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF6E6560),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],

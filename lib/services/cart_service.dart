@@ -1,16 +1,19 @@
 import 'package:flutter/foundation.dart';
 import '../data/repositories/cart_repository.dart';
 import '../models/product.dart';
+import 'membership_service.dart';
 
 /// Layanan state management Keranjang Belanja JNOVAMUSIC dengan penyimpanan SQLite
 class CartService extends ChangeNotifier {
   CartService._() {
+    _membershipService.addListener(_handleMembershipChanged);
     _initializeDefaultItems();
     _loadFromDatabase();
   }
 
   static final CartService instance = CartService._();
   final CartRepository _repository = CartRepository.instance;
+  final MembershipService _membershipService = MembershipService.instance;
 
   final List<CartItem> _items = [];
   bool _isLoaded = false;
@@ -18,12 +21,18 @@ class CartService extends ChangeNotifier {
   List<CartItem> get items => List.unmodifiable(_items);
   bool get isLoaded => _isLoaded;
 
-  // Data membership pengguna saat ini (Silver Member - Tier 2)
-  final String userTier = 'TIER 2';
-  final String tierName = 'Silver';
-  final int currentPoints = 1400;
-  final int targetPoints = 2000;
-  final double discountRate = 0.10; // 10% diskon Silver Member
+  void _handleMembershipChanged() {
+    notifyListeners();
+  }
+
+  // Data membership pengguna terhubung langsung dari sumber utama (MembershipService)
+  String get userTier => _membershipService.userTier;
+  String get tierName => _membershipService.tierName;
+  int get currentPoints => _membershipService.currentPoints;
+  int get targetPoints => _membershipService.targetPoints;
+  int get discountPercentage => _membershipService.discountPercentage;
+  double get discountRate => _membershipService.discountRate;
+  String get nextTierName => _membershipService.nextTierName;
 
   Future<void> _loadFromDatabase() async {
     try {

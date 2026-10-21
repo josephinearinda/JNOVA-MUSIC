@@ -5,7 +5,7 @@ import '../services/user_profile_service.dart';
 /// Halaman Registrasi Akun Baru JNOVAMUSIC
 /// Dibuat persis sesuai desain referensi visual resmi JNOVAMUSIC.
 class RegisterScreen extends StatefulWidget {
-  final VoidCallback? onRegisterSuccess;
+  final ValueChanged<String?>? onRegisterSuccess;
   final VoidCallback? onLoginPressed;
 
   const RegisterScreen({
@@ -21,44 +21,25 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // Bagian Data Diri
+  // Form Controllers
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _birthDateController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-
-  // Bagian Alamat Pengiriman
   final TextEditingController _streetAddressController = TextEditingController();
-  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _kelurahanController = TextEditingController();
   final TextEditingController _kecamatanController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _provinceController = TextEditingController();
   final TextEditingController _postalCodeController = TextEditingController();
-  String? _selectedProvince;
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _agreeTerms = false;
   bool _isLoading = false;
-
-  final List<String> _provinces = const [
-    'DKI Jakarta',
-    'Jawa Barat',
-    'Jawa Tengah',
-    'DI Yogyakarta',
-    'Jawa Timur',
-    'Banten',
-    'Bali',
-    'Sumatera Utara',
-    'Sumatera Barat',
-    'Riau',
-    'Kepulauan Riau',
-    'Sumatera Selatan',
-    'Lampung',
-    'Kalimantan Barat',
-    'Kalimantan Timur',
-    'Sulawesi Selatan',
-  ];
 
   static const List<String> _indonesianMonths = [
     'Januari',
@@ -75,17 +56,61 @@ class _RegisterScreenState extends State<RegisterScreen> {
     'Desember',
   ];
 
+  static const List<String> _provinces = [
+    'Aceh',
+    'Sumatera Utara',
+    'Sumatera Barat',
+    'Riau',
+    'Kepulauan Riau',
+    'Jambi',
+    'Sumatera Selatan',
+    'Kepulauan Bangka Belitung',
+    'Bengkulu',
+    'Lampung',
+    'DKI Jakarta',
+    'Banten',
+    'Jawa Barat',
+    'Jawa Tengah',
+    'DI Yogyakarta',
+    'Jawa Timur',
+    'Bali',
+    'Nusa Tenggara Barat',
+    'Nusa Tenggara Timur',
+    'Kalimantan Barat',
+    'Kalimantan Tengah',
+    'Kalimantan Selatan',
+    'Kalimantan Timur',
+    'Kalimantan Utara',
+    'Sulawesi Utara',
+    'Gorontalo',
+    'Sulawesi Tengah',
+    'Sulawesi Barat',
+    'Sulawesi Selatan',
+    'Sulawesi Tenggara',
+    'Maluku',
+    'Maluku Utara',
+    'Papua',
+    'Papua Barat',
+    'Papua Selatan',
+    'Papua Tengah',
+    'Papua Pegunungan',
+    'Papua Barat Daya',
+  ];
+
   @override
   void dispose() {
     _nameController.dispose();
     _usernameController.dispose();
     _birthDateController.dispose();
+    _phoneController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _streetAddressController.dispose();
-    _cityController.dispose();
+    _kelurahanController.dispose();
     _kecamatanController.dispose();
+    _cityController.dispose();
+    _provinceController.dispose();
     _postalCodeController.dispose();
     super.dispose();
   }
@@ -128,70 +153,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  /// Memilih provinsi menggunakan BottomSheet
+  /// Memilih provinsi melalui Bottom Sheet
   void _showProvincePicker() {
     FocusScope.of(context).unfocus();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (ctx) {
+      builder: (context) {
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 12),
               Container(
-                width: 40,
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                width: 36,
                 height: 4,
                 decoration: BoxDecoration(
                   color: const Color(0xFFE0E0E0),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(height: 14),
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Pilih Provinsi',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF1E1E1E),
-                    ),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text(
+                  'Pilih Provinsi',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1E1E1E),
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
-              const Divider(height: 1, color: Color(0xFFEEEEEE)),
-              Flexible(
+              const Divider(height: 1),
+              Expanded(
                 child: ListView.builder(
-                  shrinkWrap: true,
                   itemCount: _provinces.length,
                   itemBuilder: (context, index) {
-                    final prov = _provinces[index];
-                    final isSelected = prov == _selectedProvince;
+                    final province = _provinces[index];
+                    final isSelected = _provinceController.text == province;
                     return ListTile(
                       title: Text(
-                        prov,
+                        province,
                         style: TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color: isSelected ? const Color(0xFFFF5500) : const Color(0xFF262626),
+                          fontSize: 13,
+                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
+                          color: isSelected ? const Color(0xFFFF5500) : const Color(0xFF1E1E1E),
                         ),
                       ),
                       trailing: isSelected
-                          ? const Icon(Icons.check_rounded, color: Color(0xFFFF5500), size: 18)
+                          ? const Icon(Icons.check, color: Color(0xFFFF5500), size: 18)
                           : null,
                       onTap: () {
                         setState(() {
-                          _selectedProvince = prov;
+                          _provinceController.text = province;
                         });
-                        Navigator.pop(ctx);
+                        Navigator.pop(context);
                       },
                     );
                   },
@@ -234,16 +253,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _isLoading = true;
     });
 
-    // Simpan data profil lengkap secara lokal
+    // Simpan data profil lengkap ke UserProfileService
     await UserProfileService.instance.updateProfile(
       fullName: _nameController.text.trim(),
       username: _usernameController.text.trim(),
       birthDate: _birthDateController.text.trim(),
+      phoneNumber: _phoneController.text.trim(),
       email: _emailController.text.trim(),
       streetAddress: _streetAddressController.text.trim(),
-      city: _cityController.text.trim(),
+      kelurahan: _kelurahanController.text.trim(),
       kecamatan: _kecamatanController.text.trim(),
-      province: _selectedProvince ?? '',
+      city: _cityController.text.trim(),
+      province: _provinceController.text.trim(),
       postalCode: _postalCodeController.text.trim(),
     );
 
@@ -263,7 +284,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          result.message,
+          result.isSuccess
+              ? 'Registrasi berhasil! Silakan masuk dengan akun baru Anda.'
+              : result.message,
           style: const TextStyle(fontSize: 12.5),
         ),
         backgroundColor: result.isSuccess ? Colors.green : const Color(0xFF2E2E2E),
@@ -276,10 +299,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
 
     if (result.isSuccess) {
+      final registeredEmail = _emailController.text.trim();
       if (widget.onRegisterSuccess != null) {
-        widget.onRegisterSuccess!();
+        widget.onRegisterSuccess!(registeredEmail);
       } else {
-        Navigator.of(context).pushReplacementNamed('/favorite');
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/login',
+          (route) => false,
+          arguments: registeredEmail,
+        );
       }
     }
   }
@@ -400,37 +428,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 22),
 
-                // 3. Bagian 1: Data Diri Header
+                // 3. Header Bagian Data Diri
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 6.5,
-                          height: 6.5,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFFF5500),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Text(
-                          'Data Diri',
-                          style: TextStyle(
-                            fontSize: 14.5,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF1E1E1E),
-                          ),
-                        ),
-                      ],
+                    Container(
+                      width: 6.5,
+                      height: 6.5,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFFF5500),
+                        shape: BoxShape.circle,
+                      ),
                     ),
+                    const SizedBox(width: 8),
                     const Text(
-                      'Langkah 1 dari 2',
+                      'Data Diri',
                       style: TextStyle(
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF9E9E9E),
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF1E1E1E),
                       ),
                     ),
                   ],
@@ -521,7 +536,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 12),
 
-                // Field 3: Alamat Email
+                // Field 4: Nomor HP
+                _buildFieldLabel('Nomor HP'),
+                const SizedBox(height: 6),
+                TextFormField(
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.next,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    color: Color(0xFF1E1E1E),
+                  ),
+                  decoration: _buildInputDecoration(
+                    hint: 'Contoh: 081234567890',
+                    prefixIcon: Icons.phone_outlined,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Nomor HP wajib diisi';
+                    }
+                    final clean = value.replaceAll(RegExp(r'[\s\-]'), '');
+                    if (clean.length < 10) {
+                      return 'Format nomor HP tidak valid (minimal 10 digit)';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                // Field 5: Alamat Email
                 _buildFieldLabel('Alamat Email'),
                 const SizedBox(height: 6),
                 TextFormField(
@@ -550,7 +594,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 12),
 
-                // Field 4: Kata Sandi
+                // Field 6: Kata Sandi
                 _buildFieldLabel('Kata Sandi'),
                 const SizedBox(height: 6),
                 TextFormField(
@@ -592,7 +636,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 12),
 
-                // Field 5: Konfirmasi Kata Sandi
+                // Field 7: Konfirmasi Kata Sandi
                 _buildFieldLabel('Konfirmasi Kata Sandi'),
                 const SizedBox(height: 6),
                 TextFormField(
@@ -632,168 +676,171 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
 
-                const SizedBox(height: 22),
+                const SizedBox(height: 12),
 
-                // 4. Bagian 2: Alamat Pengiriman Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Row(
-                      children: [
-                        Icon(
-                          Icons.local_shipping_outlined,
-                          color: Color(0xFFFF5500),
-                          size: 19,
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          'Alamat Pengiriman',
-                          style: TextStyle(
-                            fontSize: 14.5,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF1E1E1E),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Text(
-                      'Tujuan Kirim',
-                      style: TextStyle(
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF9E9E9E),
-                      ),
-                    ),
-                  ],
+                // Field 8: Alamat Lengkap
+                _buildFieldLabel('Alamat Lengkap'),
+                const SizedBox(height: 6),
+                TextFormField(
+                  controller: _streetAddressController,
+                  keyboardType: TextInputType.streetAddress,
+                  textInputAction: TextInputAction.next,
+                  maxLines: 2,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    color: Color(0xFF1E1E1E),
+                  ),
+                  decoration: _buildInputDecoration(
+                    hint: 'Masukkan nama jalan, nomor bangunan, RT/RW',
+                    prefixIcon: Icons.home_outlined,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Alamat lengkap wajib diisi';
+                    }
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 12),
 
-                // Card Kontainer Alamat Pengiriman
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8F8F9),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: const Color(0xFFEEEEEE),
-                      width: 0.8,
+                // Field 9: Kelurahan
+                _buildFieldLabel('Kelurahan'),
+                const SizedBox(height: 6),
+                TextFormField(
+                  controller: _kelurahanController,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    color: Color(0xFF1E1E1E),
+                  ),
+                  decoration: _buildInputDecoration(
+                    hint: 'Masukkan kelurahan / desa',
+                    prefixIcon: Icons.location_on_outlined,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Kelurahan wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                // Field 10: Kecamatan
+                _buildFieldLabel('Kecamatan'),
+                const SizedBox(height: 6),
+                TextFormField(
+                  controller: _kecamatanController,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    color: Color(0xFF1E1E1E),
+                  ),
+                  decoration: _buildInputDecoration(
+                    hint: 'Masukkan kecamatan',
+                    prefixIcon: Icons.location_city_outlined,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Kecamatan wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                // Field 11: Kota/Kabupaten
+                _buildFieldLabel('Kota/Kabupaten'),
+                const SizedBox(height: 6),
+                TextFormField(
+                  controller: _cityController,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    color: Color(0xFF1E1E1E),
+                  ),
+                  decoration: _buildInputDecoration(
+                    hint: 'Contoh: Jakarta Pusat',
+                    prefixIcon: Icons.apartment_outlined,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Kota/Kabupaten wajib diisi';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                // Field 12: Provinsi
+                _buildFieldLabel('Provinsi'),
+                const SizedBox(height: 6),
+                GestureDetector(
+                  onTap: _showProvincePicker,
+                  child: AbsorbPointer(
+                    child: TextFormField(
+                      controller: _provinceController,
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        color: Color(0xFF1E1E1E),
+                      ),
+                      decoration: _buildInputDecoration(
+                        hint: 'Pilih provinsi',
+                        prefixIcon: Icons.map_outlined,
+                        suffixIcon: const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: Color(0xFF757575),
+                          size: 20,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Provinsi wajib dipilih';
+                        }
+                        return null;
+                      },
                     ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Alamat Lengkap
-                      _buildFieldLabel('Alamat Lengkap'),
-                      const SizedBox(height: 6),
-                      TextFormField(
-                        controller: _streetAddressController,
-                        maxLines: 3,
-                        minLines: 2,
-                        textInputAction: TextInputAction.next,
-                        style: const TextStyle(
-                          fontSize: 12.5,
-                          color: Color(0xFF1E1E1E),
-                        ),
-                        decoration: _buildAddressInputDecoration(
-                          hint: 'Nama jalan, nomor rumah, RT/RW, dan detail lainnya',
-                        ),
-                      ),
+                ),
 
-                      const SizedBox(height: 12),
+                const SizedBox(height: 12),
 
-                      // Kabupaten/Kota
-                      _buildFieldLabel('Kabupaten/Kota'),
-                      const SizedBox(height: 6),
-                      TextFormField(
-                        controller: _cityController,
-                        textInputAction: TextInputAction.next,
-                        style: const TextStyle(
-                          fontSize: 12.5,
-                          color: Color(0xFF1E1E1E),
-                        ),
-                        decoration: _buildAddressInputDecoration(
-                          hint: 'Masukkan kabupaten/kota',
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // Kecamatan
-                      _buildFieldLabel('Kecamatan'),
-                      const SizedBox(height: 6),
-                      TextFormField(
-                        controller: _kecamatanController,
-                        textInputAction: TextInputAction.next,
-                        style: const TextStyle(
-                          fontSize: 12.5,
-                          color: Color(0xFF1E1E1E),
-                        ),
-                        decoration: _buildAddressInputDecoration(
-                          hint: 'Masukkan kecamatan',
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // Provinsi (Dropdown / Picker)
-                      _buildFieldLabel('Provinsi'),
-                      const SizedBox(height: 6),
-                      GestureDetector(
-                        onTap: _showProvincePicker,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.transparent),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                _selectedProvince ?? 'Pilih provinsi',
-                                style: TextStyle(
-                                  fontSize: 12.5,
-                                  color: _selectedProvince != null
-                                      ? const Color(0xFF1E1E1E)
-                                      : const Color(0xFFA8A8A8),
-                                ),
-                              ),
-                              const Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: Color(0xFF757575),
-                                size: 20,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // Kode Pos
-                      _buildFieldLabel('Kode Pos'),
-                      const SizedBox(height: 6),
-                      TextFormField(
-                        controller: _postalCodeController,
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.done,
-                        style: const TextStyle(
-                          fontSize: 12.5,
-                          color: Color(0xFF1E1E1E),
-                        ),
-                        decoration: _buildAddressInputDecoration(
-                          hint: 'Masukkan kode pos',
-                        ),
-                      ),
-                    ],
+                // Field 13: Kode Pos
+                _buildFieldLabel('Kode Pos'),
+                const SizedBox(height: 6),
+                TextFormField(
+                  controller: _postalCodeController,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.done,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    color: Color(0xFF1E1E1E),
                   ),
+                  decoration: _buildInputDecoration(
+                    hint: 'Contoh: 10110',
+                    prefixIcon: Icons.markunread_mailbox_outlined,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Kode Pos wajib diisi';
+                    }
+                    if (!RegExp(r'^\d{5}$').hasMatch(value.trim())) {
+                      return 'Kode Pos harus 5 digit angka';
+                    }
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 18),
 
-                // 5. Checkbox Persetujuan Syarat & Ketentuan
+                // Checkbox Persetujuan Syarat & Ketentuan
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -874,7 +921,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 20),
 
-                // 6. Tombol Daftar
+                // Tombol Daftar
                 GestureDetector(
                   onTap: _isLoading ? null : _handleRegister,
                   child: Container(
@@ -927,7 +974,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 20),
 
-                // 7. Tautan Kembali ke Login
+                // Tautan Kembali ke Login
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -955,7 +1002,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 14),
 
-                // 8. Badge Jaminan Transaksi Aman
+                // Badge Jaminan Transaksi Aman
                 Center(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
@@ -1025,7 +1072,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  /// Dekorasi input field Bagian 1 (Data Diri)
+  /// Dekorasi input field
   InputDecoration _buildInputDecoration({
     required String hint,
     required IconData prefixIcon,
@@ -1075,43 +1122,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(
           color: Colors.redAccent,
-          width: 1.2,
-        ),
-      ),
-    );
-  }
-
-  /// Dekorasi input field Bagian 2 (Alamat Pengiriman di dalam Card)
-  InputDecoration _buildAddressInputDecoration({
-    required String hint,
-    Widget? suffixIcon,
-  }) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: const TextStyle(
-        fontSize: 12,
-        color: Color(0xFFA8A8A8),
-        height: 1.35,
-      ),
-      suffixIcon: suffixIcon,
-      filled: true,
-      fillColor: Colors.white,
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 12,
-      ),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(
-          color: Color(0xFFFF5500),
           width: 1.2,
         ),
       ),

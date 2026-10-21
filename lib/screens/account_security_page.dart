@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_colors.dart';
+import '../services/auth_service.dart';
+import '../services/biometric_service.dart';
 import '../services/user_profile_service.dart';
 import '../widgets/app_bottom_nav.dart';
 
@@ -22,13 +24,165 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _isSavingPassword = false;
+  bool _isRefreshingRecovery = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileService.addListener(_handleProfileChanged);
+  }
+
+  void _handleProfileChanged() {
+    if (mounted) setState(() {});
+  }
 
   @override
   void dispose() {
+    _profileService.removeListener(_handleProfileChanged);
     _oldPasswordController.dispose();
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleRefreshRecovery() async {
+    setState(() => _isRefreshingRecovery = true);
+    await _profileService.refreshProfile();
+    if (!mounted) return;
+    setState(() => _isRefreshingRecovery = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Metode pemulihan & verifikasi telah disinkronkan.'),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+
+  void _showEmailInfoDialog(String email) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        title: const Row(
+          children: [
+            Icon(Icons.mail_outline_rounded, color: AppColors.primaryOrange, size: 20),
+            SizedBox(width: 8),
+            Text(
+              'Email Autentikasi',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        content: Text(
+          email.isNotEmpty
+              ? 'Alamat email "$email" terhubung langsung dengan kredensial autentikasi akun Anda.\n\nUntuk menjaga keamanan akun dari pengambilalihan yang tidak sah, perubahan alamat email harus melalui verifikasi keamanan autentikasi.'
+              : 'Belum ada email yang terhubung dengan akun ini. Silakan masuk atau lengkapi data profil Anda.',
+          style: const TextStyle(fontSize: 12, height: 1.4),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text(
+              'Tutup',
+              style: TextStyle(color: AppColors.primaryOrange, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditPhoneDialog(String currentPhone) {
+    final phoneController = TextEditingController(text: currentPhone);
+    bool isSaving = false;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            title: const Row(
+              children: [
+                Icon(Icons.phone_outlined, color: AppColors.primaryOrange, size: 20),
+                SizedBox(width: 8),
+                Text(
+                  'Ubah Nomor Telepon',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Nomor telepon ini tersinkron langsung dengan Profil akun JNOVAMUSIC Anda dan digunakan untuk verifikasi keamanan.',
+                  style: TextStyle(fontSize: 11.5, color: Color(0xFF6E6560), height: 1.3),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: phoneController,
+                  keyboardType: TextInputType.phone,
+                  style: const TextStyle(fontSize: 12),
+                  decoration: InputDecoration(
+                    hintText: 'Contoh: +62 812-3456-7890',
+                    prefixIcon: const Icon(Icons.phone_iphone_rounded, size: 18),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: isSaving ? null : () => Navigator.pop(ctx),
+                child: const Text('Batal', style: TextStyle(color: Color(0xFF7E756F))),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryOrange,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                onPressed: isSaving
+                    ? null
+                    : () async {
+                        final newPhone = phoneController.text.trim();
+                        final messenger = ScaffoldMessenger.of(context);
+                        setDialogState(() => isSaving = true);
+                        final success = await _profileService.updateProfile(phoneNumber: newPhone);
+                        if (ctx.mounted) {
+                          Navigator.pop(ctx);
+                        }
+                        if (success) {
+                          messenger.showSnackBar(
+                            const SnackBar(
+                              content: Text('Nomor telepon berhasil diperbarui & tersinkron.'),
+                              backgroundColor: Color(0xFF15803D),
+                            ),
+                          );
+                        } else {
+                          messenger.showSnackBar(
+                            const SnackBar(
+                              content: Text('Gagal menyimpan nomor telepon.'),
+                              backgroundColor: Color(0xFFDC2626),
+                            ),
+                          );
+                        }
+                      },
+                child: isSaving
+                    ? const SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Text('Simpan', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   void _handleBack() {
@@ -95,6 +249,133 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     );
   }
 
+  Future<void> _handleBiometricToggle(bool val) async {
+    final profile = _profileService.profile;
+
+    if (!val) {
+      final res =
+          await AuthService.instance.disableBiometricsForUser(profile.email);
+      await _profileService.toggleBiometric(false);
+      if (!mounted) return;
+      setState(() {});
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(res.message),
+          backgroundColor: const Color(0xFF2E2E2E),
+        ),
+      );
+      return;
+    }
+
+    // 1. Periksa dukungan hardware perangkat
+    final isSupported = await BiometricService.instance.isDeviceSupported();
+    if (!isSupported) {
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          title: const Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: Color(0xFFDC2626)),
+              SizedBox(width: 8),
+              Text(
+                'Perangkat Tidak Mendukung',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          content: const Text(
+            'Perangkat Anda tidak memiliki sensor biometrik atau hardware sidik jari tidak didukung.',
+            style: TextStyle(fontSize: 12.5),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text(
+                'Tutup',
+                style: TextStyle(
+                  color: AppColors.primaryOrange,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    // 2. Periksa apakah sidik jari sudah didaftarkan
+    final hasEnrolled = await BiometricService.instance.hasEnrolledBiometrics();
+    if (!hasEnrolled) {
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          title: const Row(
+            children: [
+              Icon(Icons.fingerprint_rounded, color: AppColors.primaryOrange),
+              SizedBox(width: 8),
+              Text(
+                'Sidik Jari Belum Ada',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          content: const Text(
+            'Belum ada sidik jari yang terdaftar di perangkat Anda.\n\nSilakan daftarkan sidik jari Anda terlebih dahulu melalui Pengaturan Keamanan ponsel Android Anda, kemudian aktifkan kembali opsi ini.',
+            style: TextStyle(fontSize: 12.5, height: 1.4),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text(
+                'Mengerti',
+                style: TextStyle(
+                  color: AppColors.primaryOrange,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    // 3. Autentikasi dan simpan kredensial aman
+    final result = await AuthService.instance.enableBiometricsForUser(
+      email: profile.email,
+      fullName: profile.fullName,
+    );
+
+    if (!mounted) return;
+
+    if (result.isSuccess) {
+      await _profileService.toggleBiometric(true);
+      if (!mounted) return;
+      setState(() {});
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.message),
+          backgroundColor: const Color(0xFF15803D),
+        ),
+      );
+    } else {
+      await _profileService.toggleBiometric(false);
+      if (!mounted) return;
+      setState(() {});
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.message),
+          backgroundColor: const Color(0xFFDC2626),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final profile = _profileService.profile;
@@ -123,7 +404,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                     const SizedBox(height: 14),
 
                     // Metode Pemulihan & Verifikasi
-                    _buildRecoveryMethodsCard(),
+                    _buildRecoveryMethodsCard(profile),
 
                     const SizedBox(height: 14),
 
@@ -377,7 +658,15 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     );
   }
 
-  Widget _buildRecoveryMethodsCard() {
+  Widget _buildRecoveryMethodsCard(dynamic profile) {
+    final String email = profile.email as String? ?? '';
+    final String phone = profile.phoneNumber as String? ?? '';
+    final bool isEmailVerif = profile.isEmailVerified as bool? ?? false;
+    final bool isPhoneVerif = profile.isPhoneVerified as bool? ?? false;
+
+    final hasEmail = email.isNotEmpty;
+    final hasPhone = phone.isNotEmpty;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
@@ -401,15 +690,17 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                 ),
               ),
               IconButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Status pemulihan diperbarui.'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.refresh_rounded, size: 16),
+                onPressed: _isRefreshingRecovery ? null : _handleRefreshRecovery,
+                icon: _isRefreshingRecovery
+                    ? const SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primaryOrange,
+                        ),
+                      )
+                    : const Icon(Icons.refresh_rounded, size: 16),
                 color: AppColors.primaryOrange,
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
@@ -434,26 +725,54 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   color: Color(0xFF7E756F),
                 ),
                 const SizedBox(width: 8),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Email Terdaftar',
                         style: TextStyle(fontSize: 9, color: Color(0xFF8E837D)),
                       ),
                       Text(
-                        'b***.p******@email.com',
+                        hasEmail ? email : 'Belum tersedia',
                         style: TextStyle(
                           fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimaryDark,
+                          fontWeight: hasEmail ? FontWeight.w700 : FontWeight.normal,
+                          fontStyle: hasEmail ? FontStyle.normal : FontStyle.italic,
+                          color: hasEmail ? AppColors.textPrimaryDark : const Color(0xFF8E837D),
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
-                _buildVerifiedBadge(),
+                const SizedBox(width: 6),
+                if (!hasEmail)
+                  _buildMissingBadge('Belum Ada')
+                else if (isEmailVerif)
+                  _buildVerifiedBadge('Terverifikasi')
+                else
+                  _buildUnverifiedBadge('Belum Terverifikasi'),
+                const SizedBox(width: 6),
+                InkWell(
+                  onTap: () => _showEmailInfoDialog(email),
+                  borderRadius: BorderRadius.circular(6),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF2F0ED),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      'Info',
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF5A524D),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -475,26 +794,53 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   color: Color(0xFF7E756F),
                 ),
                 const SizedBox(width: 8),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Nomor Telepon',
                         style: TextStyle(fontSize: 9, color: Color(0xFF8E837D)),
                       ),
                       Text(
-                        '+62 812-****-7890',
+                        hasPhone ? phone : 'Belum tersedia',
                         style: TextStyle(
                           fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimaryDark,
+                          fontWeight: hasPhone ? FontWeight.w700 : FontWeight.normal,
+                          fontStyle: hasPhone ? FontStyle.normal : FontStyle.italic,
+                          color: hasPhone ? AppColors.textPrimaryDark : const Color(0xFF8E837D),
                         ),
                       ),
                     ],
                   ),
                 ),
-                _buildVerifiedBadge(),
+                const SizedBox(width: 6),
+                if (!hasPhone)
+                  _buildMissingBadge('Belum Ada')
+                else if (isPhoneVerif)
+                  _buildVerifiedBadge('Terverifikasi')
+                else
+                  _buildUnverifiedBadge('Belum Terverifikasi'),
+                const SizedBox(width: 6),
+                InkWell(
+                  onTap: () => _showEditPhoneDialog(phone),
+                  borderRadius: BorderRadius.circular(6),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF2F0ED),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      'Ubah',
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF5A524D),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -696,13 +1042,13 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Text(
+                            const Text(
                               'Verifikasi 2 Langkah',
                               style: TextStyle(
                                 fontSize: 11.5,
@@ -710,20 +1056,26 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                                 color: AppColors.textPrimaryDark,
                               ),
                             ),
-                            SizedBox(width: 6),
+                            const SizedBox(width: 6),
                             Text(
-                              'Aktif',
+                              (profile.phoneNumber as String? ?? '').isNotEmpty
+                                  ? 'Aktif'
+                                  : 'Nonaktif',
                               style: TextStyle(
                                 fontSize: 8.5,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF15803D),
+                                color: (profile.phoneNumber as String? ?? '').isNotEmpty
+                                    ? const Color(0xFF15803D)
+                                    : const Color(0xFFDC2626),
                               ),
                             ),
                           ],
                         ),
                         Text(
-                          'OTP via SMS / WhatsApp aktif',
-                          style: TextStyle(
+                          (profile.phoneNumber as String? ?? '').isNotEmpty
+                              ? 'OTP via SMS / WhatsApp aktif (${profile.phoneNumber})'
+                              : 'Tambahkan nomor HP di Profil untuk mengaktifkan OTP',
+                          style: const TextStyle(
                             fontSize: 9.5,
                             color: Color(0xFF7E756F),
                           ),
@@ -752,13 +1104,17 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   width: 30,
                   height: 30,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEDEBE7),
+                    color: profile.isBiometricEnabled
+                        ? const Color(0xFFFFEDDF)
+                        : const Color(0xFFEDEBE7),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.fingerprint_rounded,
                     size: 16,
-                    color: Color(0xFF5A524D),
+                    color: profile.isBiometricEnabled
+                        ? AppColors.primaryOrange
+                        : const Color(0xFF5A524D),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -767,7 +1123,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Login Biometrik',
+                        'Login dengan Sidik Jari',
                         style: TextStyle(
                           fontSize: 11.5,
                           fontWeight: FontWeight.w800,
@@ -775,7 +1131,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                         ),
                       ),
                       Text(
-                        'Gunakan Sidik Jari atau Face Unlock',
+                        'Gunakan sidik jari untuk masuk akun lebih cepat dan aman',
                         style: TextStyle(
                           fontSize: 9.5,
                           color: Color(0xFF7E756F),
@@ -786,10 +1142,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                 ),
                 Switch(
                   value: profile.isBiometricEnabled,
-                  onChanged: (val) {
-                    _profileService.toggleBiometric(val);
-                    setState(() {});
-                  },
+                  onChanged: (val) => _handleBiometricToggle(val),
                   activeThumbColor: AppColors.primaryOrange,
                   activeTrackColor: AppColors.primaryOrange.withValues(
                     alpha: 0.5,
@@ -1128,27 +1481,70 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     );
   }
 
-  Widget _buildVerifiedBadge() {
+  Widget _buildVerifiedBadge([String label = 'Terverifikasi']) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: const Color(0xFFDCFCE7),
         borderRadius: BorderRadius.circular(6),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.check_circle_rounded, size: 9, color: Color(0xFF15803D)),
-          SizedBox(width: 3),
+          const Icon(Icons.check_circle_rounded, size: 9, color: Color(0xFF15803D)),
+          const SizedBox(width: 3),
           Text(
-            'Terverifikasi',
-            style: TextStyle(
+            label,
+            style: const TextStyle(
               fontSize: 8.5,
               fontWeight: FontWeight.w700,
               color: Color(0xFF15803D),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUnverifiedBadge([String label = 'Belum Terverifikasi']) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFEF3C7),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.info_outline_rounded, size: 9, color: Color(0xFFB45309)),
+          const SizedBox(width: 3),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 8.5,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFFB45309),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMissingBadge([String label = 'Belum Ada']) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEDEBE7),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 8.5,
+          fontWeight: FontWeight.w700,
+          color: Color(0xFF7E756F),
+        ),
       ),
     );
   }

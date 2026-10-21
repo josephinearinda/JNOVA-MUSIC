@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../core/constants/app_colors.dart';
 import '../core/utils/currency_formatter.dart';
@@ -9,8 +10,8 @@ import '../services/order_service.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/qr_code_widget.dart';
 
-/// Halaman DETAIL PESANAN JNOVAMUSIC dengan interaktivitas penuh
-/// antara pilihan Pengiriman Rumah dan Ambil di Toko sesuai desain Figma
+/// Halaman DETAIL PESANAN JNOVAMUSIC dengan alur Ambil di Toko Resmi (Store Pickup)
+/// sesuai standar showroom & luthier desk JNOVA MUSIC
 class OrderDetailScreen extends StatefulWidget {
   final OrderModel? order;
   final VoidCallback? onBack;
@@ -28,20 +29,20 @@ class OrderDetailScreen extends StatefulWidget {
 }
 
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
-  bool? _isDelivery;
+  @override
+  void initState() {
+    super.initState();
+    OrderService.instance.addListener(_handleOrderStateChanged);
+  }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_isDelivery == null) {
-      final activeOrder =
-          widget.order ??
-          (ModalRoute.of(context)?.settings.arguments as OrderModel?) ??
-          OrderService.instance.currentOrder ??
-          OrderService.instance.orders.first;
-      _isDelivery =
-          activeOrder.fulfillmentMethod == FulfillmentMethod.delivery;
-    }
+  void dispose() {
+    OrderService.instance.removeListener(_handleOrderStateChanged);
+    super.dispose();
+  }
+
+  void _handleOrderStateChanged() {
+    if (mounted) setState(() {});
   }
 
   void _handleBack(BuildContext context) {
@@ -51,14 +52,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       Navigator.pop(context);
     } else {
       Navigator.pushReplacementNamed(context, '/home');
-    }
-  }
-
-  void _handleOpenTracking(BuildContext context, OrderModel activeOrder) {
-    if (widget.onOpenTracking != null) {
-      widget.onOpenTracking!();
-    } else {
-      Navigator.pushNamed(context, '/tracking', arguments: activeOrder);
     }
   }
 
@@ -203,14 +196,41 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final activeOrder =
-        widget.order ??
+    final orders = OrderService.instance.orders;
+    final activeOrder = widget.order ??
         (ModalRoute.of(context)?.settings.arguments as OrderModel?) ??
         OrderService.instance.currentOrder ??
-        OrderService.instance.orders.first;
+        (orders.isNotEmpty ? orders.first : null);
+
+    if (activeOrder == null) {
+      return Scaffold(
+        backgroundColor: AppColors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildTopAppBar(context),
+              Expanded(child: _buildEmptyOrderState(context)),
+            ],
+          ),
+        ),
+        bottomNavigationBar: AppBottomNav(
+          currentIndex: 3,
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.pushReplacementNamed(context, '/home');
+            } else if (index == 1) {
+              Navigator.pushReplacementNamed(context, '/all-products');
+            } else if (index == 2) {
+              Navigator.pushNamed(context, '/membership');
+            } else if (index == 4) {
+              Navigator.pushNamed(context, '/profile');
+            }
+          },
+        ),
+      );
+    }
 
     final item = activeOrder.items.isNotEmpty ? activeOrder.items.first : null;
-    final isDelivery = _isDelivery ?? true;
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -227,21 +247,18 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Sub-Header Order Code, Status & Capsule Switcher
-                    _buildSubHeader(activeOrder, isDelivery),
+                    // Sub-Header Order Code, Status & Badge Pickup Toko
+                    _buildSubHeader(activeOrder),
 
                     const SizedBox(height: 12),
 
-                    // Status Pesanan Timeline (Dinamis sesuai pengiriman vs ambil di toko)
-                    _buildOrderStatusTimeline(activeOrder, isDelivery),
+                    // Card Status Pesanan Ringkas & Jelas
+                    _buildOrderStatusCard(activeOrder),
 
                     const SizedBox(height: 14),
 
-                    // Informasi Pengiriman / Pengambilan Toko
-                    if (isDelivery)
-                      _buildShippingInfoCard(context, activeOrder)
-                    else
-                      _buildPickupStoreInfoCard(context, activeOrder),
+                    // Informasi Toko Pengambilan
+                    _buildPickupStoreInfoCard(context, activeOrder),
 
                     const SizedBox(height: 14),
 
@@ -251,12 +268,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     const SizedBox(height: 14),
 
                     // Rincian Pembayaran
-                    _buildPaymentDetailsCard(activeOrder, isDelivery),
+                    _buildPaymentDetailsCard(activeOrder),
 
                     const SizedBox(height: 16),
 
-                    // Tombol Aksi (Unduh Invoice, CS, Beli Lagi)
-                    _buildActionButtons(context),
+                    // Tombol Aksi (Pesanan Selesai, Unduh Invoice, CS, Beli Lagi)
+                    _buildActionButtons(context, activeOrder),
 
                     const SizedBox(height: 24),
                   ],
@@ -374,7 +391,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  Widget _buildSubHeader(OrderModel activeOrder, bool isDelivery) {
+  Widget _buildSubHeader(OrderModel activeOrder) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Column(
@@ -399,24 +416,34 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEFE5),
+                  color: activeOrder.isCompleted
+                      ? const Color(0xFFDCFCE7)
+                      : const Color(0xFFFFEFE5),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.check_circle_rounded,
+                      activeOrder.isCompleted
+                          ? Icons.check_circle_rounded
+                          : Icons.storefront_rounded,
                       size: 12,
-                      color: Color(0xFFC2410C),
+                      color: activeOrder.isCompleted
+                          ? const Color(0xFF15803D)
+                          : const Color(0xFFC2410C),
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Text(
-                      'PEMBAYARAN TERVERIFIKASI',
+                      activeOrder.isCompleted
+                          ? 'PESANAN SELESAI'
+                          : 'PICKUP DI TOKO RESMI',
                       style: TextStyle(
                         fontSize: 8.5,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFFC2410C),
+                        color: activeOrder.isCompleted
+                            ? const Color(0xFF15803D)
+                            : const Color(0xFFC2410C),
                         letterSpacing: 0.2,
                       ),
                     ),
@@ -474,316 +501,66 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           ),
           const SizedBox(height: 12),
 
-          // Baris 4: Capsule Switcher Interaktif: Pengiriman Rumah vs Ambil di Toko
-          _buildFulfillmentCapsule(isDelivery),
+          // Baris 4: Informasi Metode Pemenuhan (Ambil di Toko Resmi)
+          _buildFulfillmentBadge(),
         ],
       ),
     );
   }
 
-  /// Capsule Toggle Switcher interaktif yang dapat diklik untuk beralih
-  /// antara "Pengiriman Rumah" dan "Ambil di Toko"
-  Widget _buildFulfillmentCapsule(bool isDelivery) {
+  /// Badge Metode Pemenuhan Toko Resmi JNOVA MUSIC
+  Widget _buildFulfillmentBadge() {
     return Container(
-      height: 38,
-      padding: const EdgeInsets.all(3.0),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFEDEAE6),
-        borderRadius: BorderRadius.circular(22),
+        color: const Color(0xFFFFF8F3),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFFFD8BF), width: 1.0),
       ),
       child: Row(
         children: [
-          // Tab Pengiriman Rumah
-          Expanded(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                if (!isDelivery) {
-                  setState(() {
-                    _isDelivery = true;
-                  });
-                }
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                decoration: BoxDecoration(
-                  color: isDelivery ? Colors.white : Colors.transparent,
-                  borderRadius: BorderRadius.circular(19),
-                  boxShadow: isDelivery
-                      ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
-                            blurRadius: 4,
-                            offset: const Offset(0, 1.5),
-                          ),
-                        ]
-                      : [],
-                ),
-                child: Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.local_shipping_outlined,
-                        size: 14,
-                        color: isDelivery
-                            ? const Color(0xFF2E2825)
-                            : const Color(0xFF6E6560),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        'Pengiriman Rumah',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: isDelivery
-                              ? FontWeight.w700
-                              : FontWeight.w500,
-                          color: isDelivery
-                              ? const Color(0xFF2E2825)
-                              : const Color(0xFF6E6560),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Tab Ambil di Toko
-          Expanded(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                if (isDelivery) {
-                  setState(() {
-                    _isDelivery = false;
-                  });
-                }
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeInOut,
-                decoration: BoxDecoration(
-                  color: !isDelivery ? Colors.white : Colors.transparent,
-                  borderRadius: BorderRadius.circular(19),
-                  boxShadow: !isDelivery
-                      ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
-                            blurRadius: 4,
-                            offset: const Offset(0, 1.5),
-                          ),
-                        ]
-                      : [],
-                ),
-                child: Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.storefront_outlined,
-                        size: 14,
-                        color: !isDelivery
-                            ? const Color(0xFF2E2825)
-                            : const Color(0xFF6E6560),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        'Ambil di Toko',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: !isDelivery
-                              ? FontWeight.w700
-                              : FontWeight.w500,
-                          color: !isDelivery
-                              ? const Color(0xFF2E2825)
-                              : const Color(0xFF6E6560),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOrderStatusTimeline(OrderModel activeOrder, bool isDelivery) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Row(
-                children: [
-                  Icon(
-                    Icons.trending_up_rounded,
-                    size: 16,
-                    color: AppColors.primaryOrange,
-                  ),
-                  SizedBox(width: 6),
-                  Text(
-                    'Status Pesanan',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFEFE5),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  isDelivery ? 'DALAM PENGIRIMAN' : 'SIAP DIAMBIL',
-                  style: const TextStyle(
-                    fontSize: 8.5,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFFC2410C),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-
-          // Timeline vertikal dinamis
-          _buildVerticalTimelineStep(
-            'Pesanan Dibuat',
-            '18 Mei 2025, 14:32 WIB',
-            isCompleted: true,
-          ),
-          _buildVerticalTimelineStep(
-            'Pembayaran Dikonfirmasi',
-            'Otomatis via QRIS Instant',
-            isCompleted: true,
-          ),
-          _buildVerticalTimelineStep(
-            isDelivery ? 'QC Luthier & Packing Kayu' : 'QC Luthier & Setup Khusus',
-            isDelivery
-                ? 'Intonasi, action neck & segel lulus inspeksi'
-                : 'Intonasi & action neck siap di luthier corner',
-            isCompleted: true,
-          ),
-          _buildVerticalTimelineStep(
-            isDelivery ? 'Dalam Pengiriman •' : 'Siap Diambil di Toko •',
-            isDelivery
-                ? 'Kurir Cargo sedang menuju alamat tujuan\n📅 Estimasi tiba: 20 Mei 2025'
-                : 'Pesanan telah siap di luthier corner cabang Flagship.\n📅 Batas pengambilan: 25 Mei 2025',
-            isActive: true,
-          ),
-          _buildVerticalTimelineStep(
-            'Pesanan Selesai',
-            isDelivery
-                ? 'Konfirmasi penerimaan instrumen'
-                : 'Serah terima instrumen di store',
-            isLast: true,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildVerticalTimelineStep(
-    String title,
-    String desc, {
-    bool isCompleted = false,
-    bool isActive = false,
-    bool isLast = false,
-  }) {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            children: [
-              Container(
-                width: 14,
-                height: 14,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isCompleted
-                      ? const Color(0xFFC2410C)
-                      : (isActive
-                            ? const Color(0xFFFFEDDF)
-                            : const Color(0xFFE5E2DC)),
-                  border: isActive
-                      ? Border.all(color: const Color(0xFFC2410C), width: 2)
-                      : null,
-                ),
-                child: isCompleted
-                    ? const Icon(Icons.check, size: 9, color: Colors.white)
-                    : (isActive
-                          ? Center(
-                              child: Container(
-                                width: 5,
-                                height: 5,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0xFFC2410C),
-                                ),
-                              ),
-                            )
-                          : null),
-              ),
-              if (!isLast)
-                Expanded(
-                  child: Container(
-                    width: 1.5,
-                    color: isCompleted
-                        ? const Color(0xFFC2410C)
-                        : const Color(0xFFE5E2DC),
-                  ),
-                ),
-            ],
+          const Icon(
+            Icons.storefront_rounded,
+            size: 20,
+            color: AppColors.primaryOrange,
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: isActive || isCompleted
-                          ? FontWeight.w800
-                          : FontWeight.w600,
-                      color: isActive
-                          ? const Color(0xFFC2410C)
-                          : AppColors.textPrimaryDark,
-                    ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Metode: Ambil di Toko Resmi (Store Pickup)',
+                  style: TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimaryDark,
                   ),
-                  const SizedBox(height: 1),
-                  Text(
-                    desc,
-                    style: const TextStyle(
-                      fontSize: 9.5,
-                      color: Color(0xFF7E756F),
-                      height: 1.25,
-                    ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'Ambil langsung di gerai resmi pilihan & cek fisik bersama Luthier',
+                  style: TextStyle(
+                    fontSize: 9.5,
+                    color: Color(0xFF7E756F),
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: Color(0xFFFFEFE5),
+              borderRadius: BorderRadius.all(Radius.circular(6)),
+            ),
+            child: Text(
+              'GRATIS',
+              style: TextStyle(
+                fontSize: 9.5,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFFC2410C),
               ),
             ),
           ),
@@ -792,189 +569,72 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  Widget _buildShippingInfoCard(BuildContext context, OrderModel activeOrder) {
+  Widget _buildOrderStatusCard(OrderModel activeOrder) {
+    final isCompleted = activeOrder.isCompleted;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: isCompleted ? const Color(0xFFF0FDF4) : const Color(0xFFFFF7ED),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: isCompleted ? const Color(0xFF86EFAC) : const Color(0xFFFFD8BF),
+          width: 1.2,
+        ),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Row(
-                children: [
-                  Icon(
-                    Icons.local_shipping_outlined,
-                    size: 15,
-                    color: AppColors.primaryOrange,
-                  ),
-                  SizedBox(width: 6),
-                  Text(
-                    'Informasi Pengiriman',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFECEAE6),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: const Text(
-                  'Special Cargo',
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isCompleted
+                  ? const Color(0xFFDCFCE7)
+                  : const Color(0xFFFFEDDF),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              isCompleted
+                  ? Icons.check_circle_rounded
+                  : Icons.pending_actions_rounded,
+              size: 22,
+              color: isCompleted
+                  ? const Color(0xFF15803D)
+                  : AppColors.primaryOrange,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  isCompleted
+                      ? 'Pesanan Selesai'
+                      : 'Menunggu Pengambilan & Pembayaran',
                   style: TextStyle(
-                    fontSize: 8.5,
+                    fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF5A524D),
+                    color: isCompleted
+                        ? const Color(0xFF15803D)
+                        : const Color(0xFF9A3412),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'PENERIMA',
-            style: TextStyle(
-              fontSize: 8.5,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF8E837D),
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            '${activeOrder.recipientName} (${activeOrder.recipientPhone})',
-            style: const TextStyle(
-              fontSize: 10.5,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
-            ),
-          ),
-          const SizedBox(height: 1),
-          Text(
-            activeOrder.recipientAddress,
-            style: const TextStyle(
-              fontSize: 10,
-              color: Color(0xFF6E6560),
-              height: 1.3,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Kurir & Layanan',
-            style: TextStyle(
-              fontSize: 8.5,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF8E837D),
-            ),
-          ),
-          const SizedBox(height: 2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                activeOrder.courierName,
-                style: const TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimaryDark,
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Clipboard.setData(
-                    ClipboardData(text: activeOrder.trackingNumber),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Nomor resi disalin ke clipboard!'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: const Color(0xFFD4D0C8)),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.copy_rounded,
-                        size: 10,
-                        color: Color(0xFF7E756F),
-                      ),
-                      SizedBox(width: 2),
-                      Text(
-                        'Salin',
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF7E756F),
-                        ),
-                      ),
-                    ],
+                const SizedBox(height: 3),
+                Text(
+                  isCompleted
+                      ? 'Barang telah diambil & pembayaran telah diselesaikan di kasir toko. Poin reward telah masuk ke akun Anda.'
+                      : 'Silakan kunjungi cabang toko terpilih. Cek fisik & tes suara instrumen bersama luthier kami, lalu lakukan pembayaran langsung di kasir toko.',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: isCompleted
+                        ? const Color(0xFF166534)
+                        : const Color(0xFF7C2D12),
+                    height: 1.35,
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 2),
-          Text(
-            'No. Resi : ${activeOrder.trackingNumber}',
-            style: const TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFFC2410C),
-            ),
-          ),
-          const SizedBox(height: 10),
-
-          // Tombol Lacak Pengiriman Real-time sesuai desain
-          GestureDetector(
-            onTap: () => _handleOpenTracking(context, activeOrder),
-            child: Container(
-              width: double.infinity,
-              height: 34,
-              decoration: BoxDecoration(
-                color: const Color(0xFFECEAE6),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.radar_rounded,
-                    size: 14,
-                    color: Color(0xFF2E2825),
-                  ),
-                  SizedBox(width: 6),
-                  Text(
-                    'Lacak Pengiriman Real-time',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF2E2825),
-                    ),
-                  ),
-                ],
-              ),
+              ],
             ),
           ),
         ],
@@ -1185,13 +845,21 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               const SizedBox(width: 8),
               Expanded(
                 child: GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Membuka rute maps ke ${store.name}...'),
-                        duration: const Duration(seconds: 1),
-                      ),
-                    );
+                  onTap: () async {
+                    final uri = Uri.parse(store.getDirectionsUrl());
+                    try {
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      } else {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Membuka rute ke ${store.name}...'),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                      }
+                    } catch (_) {}
                   },
                   child: Container(
                     height: 34,
@@ -1441,9 +1109,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  Widget _buildPaymentDetailsCard(OrderModel activeOrder, bool isDelivery) {
-    // Ongkos kirim hanya berlaku saat delivery
-    final shippingFee = isDelivery ? activeOrder.shippingFee : 0;
+  Widget _buildPaymentDetailsCard(OrderModel activeOrder) {
+    const shippingFee = 0;
     final totalPayment =
         activeOrder.subtotal -
         activeOrder.discount +
@@ -1495,30 +1162,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             showInfoIcon: true,
           ),
           const SizedBox(height: 5),
-          if (isDelivery) ...[
-            _buildDetailRow(
-              'Ongkos Kirim (JNE Cargo)',
-              formatRupiah(activeOrder.shippingFee),
-            ),
-            const SizedBox(height: 5),
-            _buildDetailRow(
-              'Asuransi & Packing Kayu Khusus',
-              'Rp 0 (Promo Gratis)',
-              valueColor: const Color(0xFFC2410C),
-            ),
-          ] else ...[
-            _buildDetailRow(
-              'Biaya Ambil di Toko',
-              'Gratis (Rp 0)',
-              valueColor: const Color(0xFF16A34A),
-            ),
-            const SizedBox(height: 5),
-            _buildDetailRow(
-              'Asuransi & Packing Khusus Toko',
-              'Rp 0 (Promo Gratis)',
-              valueColor: const Color(0xFFC2410C),
-            ),
-          ],
+          _buildDetailRow(
+            'Biaya Ambil di Toko',
+            'Gratis (Rp 0)',
+            valueColor: const Color(0xFF16A34A),
+          ),
+          const SizedBox(height: 5),
+          _buildDetailRow(
+            'Asuransi & Setup Khusus Toko',
+            'Rp 0 (Promo Gratis)',
+            valueColor: const Color(0xFFC2410C),
+          ),
           const SizedBox(height: 5),
           _buildDetailRow(
             'Biaya Layanan Transaksi',
@@ -1568,24 +1222,26 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: const Color(0xFFEBE8E3)),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Metode',
                   style: TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
                 ),
                 Row(
                   children: [
-                    Icon(
-                      Icons.qr_code_2_rounded,
+                    const Icon(
+                      Icons.point_of_sale_rounded,
                       size: 13,
                       color: Color(0xFF8E837D),
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Text(
-                      'QRIS • Lunas (Otomatis)',
-                      style: TextStyle(
+                      activeOrder.isCompleted
+                          ? '${activeOrder.paymentMethod} • Lunas di Kasir'
+                          : '${activeOrder.paymentMethod} • Bayar saat Pengambilan',
+                      style: const TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimaryDark,
@@ -1638,11 +1294,70 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget _buildActionButtons(BuildContext context, OrderModel activeOrder) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         children: [
+          // Tombol Pesanan Selesai (Idempotent)
+          if (activeOrder.isCompleted)
+            Container(
+              width: double.infinity,
+              height: 44,
+              decoration: BoxDecoration(
+                color: const Color(0xFFDCFCE7),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFF86EFAC)),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.check_circle_rounded, size: 18, color: Color(0xFF15803D)),
+                  SizedBox(width: 8),
+                  Text(
+                    'Pesanan Telah Selesai',
+                    style: TextStyle(
+                      color: Color(0xFF15803D),
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            SizedBox(
+              width: double.infinity,
+              height: 44,
+              child: ElevatedButton(
+                onPressed: () => _confirmOrderCompletion(context, activeOrder),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF16A34A),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.check_circle_outline_rounded, size: 18, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text(
+                      'Pesanan Selesai',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          const SizedBox(height: 10),
+
           // Tombol Unduh E-Invoice (PDF) Solid Orange
           SizedBox(
             width: double.infinity,
@@ -1764,6 +1479,148 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _confirmOrderCompletion(
+    BuildContext context,
+    OrderModel order,
+  ) async {
+    final branchName = order.pickupStore?.name ?? 'Toko JNOVAMUSIC';
+    final pointsEarned = (order.totalPayment / 10000).floor();
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.help_outline_rounded, color: AppColors.primaryOrange, size: 24),
+            SizedBox(width: 8),
+            Text(
+              'Konfirmasi Selesai',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+            ),
+          ],
+        ),
+        content: Text(
+          'Pastikan Anda telah mengambil barang dan menyelesaikan pembayaran di kasir $branchName.\n\nAnda akan mendapatkan +$pointsEarned Poin Membership JNOVAMUSIC.',
+          style: const TextStyle(fontSize: 12, color: Color(0xFF5A524D), height: 1.4),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Belum', style: TextStyle(color: Color(0xFF7E756F))),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF16A34A),
+              elevation: 0,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: const Text(
+              'Ya, Sudah Selesai',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      final success = await OrderService.instance.completeOrder(order);
+      if (!context.mounted) return;
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Pesanan berhasil diselesaikan! +$pointsEarned Poin ditambahkan ke Membership Anda.',
+            ),
+            backgroundColor: const Color(0xFF15803D),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      }
+    }
+  }
+
+  Widget _buildEmptyOrderState(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 90,
+              height: 90,
+              decoration: const BoxDecoration(
+                color: Color(0xFFFFF7ED),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.receipt_long_outlined,
+                size: 44,
+                color: AppColors.primaryOrange,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Belum Ada Pesanan',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimaryDark,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Kamu belum memiliki riwayat pesanan aktif. Kunjungi showroom katalog kami dan temukan alat musik impianmu.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 11,
+                color: Color(0xFF7E756F),
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 40,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/all-products');
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryOrange,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.storefront_rounded, size: 16, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text(
+                      'Mulai Belanja',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -28,10 +28,32 @@ class TrackingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orders = OrderService.instance.orders;
     final activeOrder = order ??
         (ModalRoute.of(context)?.settings.arguments as OrderModel?) ??
         OrderService.instance.currentOrder ??
-        OrderService.instance.orders.first;
+        (orders.isNotEmpty ? orders.first : null);
+
+    if (activeOrder == null) {
+      return Scaffold(
+        backgroundColor: AppColors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildHeader(context),
+              const Expanded(
+                child: Center(
+                  child: Text(
+                    'Tidak ada pesanan aktif untuk dilacak.',
+                    style: TextStyle(fontSize: 12, color: Color(0xFF7E756F)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     final item = activeOrder.items.isNotEmpty ? activeOrder.items.first : null;
 
@@ -219,7 +241,7 @@ class TrackingScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(19),
                   ),
                   child: const Icon(
-                    Icons.local_shipping_outlined,
+                    Icons.storefront_rounded,
                     size: 20,
                     color: AppColors.primaryOrange,
                   ),
@@ -229,7 +251,7 @@ class TrackingScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'ESTIMASI TIBA',
+                      'STATUS PENGAMBILAN',
                       style: TextStyle(
                         fontSize: 8.5,
                         fontWeight: FontWeight.w800,
@@ -239,18 +261,22 @@ class TrackingScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      activeOrder.estimatedArrival,
+                      activeOrder.isCompleted ? 'Pesanan Selesai' : 'Siap Diambil di Toko',
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
                         color: AppColors.textPrimaryDark,
                       ),
                     ),
-                    const Text(
-                      'Tiba dalam 1 - 2 hari lagi',
+                    Text(
+                      activeOrder.isCompleted
+                          ? 'Barang telah diambil & lunas di kasir'
+                          : 'Kunjungi gerai toko resmi pilihan',
                       style: TextStyle(
                         fontSize: 10,
-                        color: Color(0xFF16A34A),
+                        color: activeOrder.isCompleted
+                            ? const Color(0xFF15803D)
+                            : const Color(0xFF16A34A),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -262,7 +288,7 @@ class TrackingScreen extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // Detail Ekspedisi & Resi
+          // Detail Cabang & Kode Pengambilan
           Row(
             children: [
               const Icon(Icons.check_circle_rounded,
@@ -270,7 +296,7 @@ class TrackingScreen extends StatelessWidget {
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
-                  activeOrder.courierName,
+                  activeOrder.pickupStore?.name ?? 'Gerai Resmi JNOVAMUSIC',
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
@@ -285,7 +311,7 @@ class TrackingScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
-                  'Peti Kayu',
+                  'Store Pickup',
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w800,
@@ -299,14 +325,14 @@ class TrackingScreen extends StatelessWidget {
           Row(
             children: [
               const Text(
-                'Nomor Resi: ',
+                'Kode Pengambilan: ',
                 style: TextStyle(
                   fontSize: 10,
                   color: Color(0xFF7E756F),
                 ),
               ),
               Text(
-                activeOrder.trackingNumber,
+                activeOrder.pickupCode,
                 style: const TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w800,
@@ -316,10 +342,10 @@ class TrackingScreen extends StatelessWidget {
               const SizedBox(width: 8),
               InkWell(
                 onTap: () {
-                  Clipboard.setData(ClipboardData(text: activeOrder.trackingNumber));
+                  Clipboard.setData(ClipboardData(text: activeOrder.pickupCode));
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Nomor resi berhasil disalin!'),
+                      content: Text('Kode pengambilan berhasil disalin!'),
                       duration: Duration(seconds: 1),
                     ),
                   );
@@ -608,11 +634,11 @@ class TrackingScreen extends StatelessWidget {
         children: [
           const Row(
             children: [
-              Icon(Icons.location_on_outlined,
+              Icon(Icons.storefront_rounded,
                   size: 15, color: AppColors.primaryOrange),
               SizedBox(width: 6),
               Text(
-                'Alamat Tujuan',
+                'Lokasi Toko Pengambilan',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
@@ -623,7 +649,7 @@ class TrackingScreen extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            '${activeOrder.recipientName} (${activeOrder.recipientPhone})',
+            activeOrder.pickupStore?.name ?? 'Cabang Toko Resmi JNOVAMUSIC',
             style: const TextStyle(
               fontSize: 10.5,
               fontWeight: FontWeight.w800,
@@ -632,7 +658,7 @@ class TrackingScreen extends StatelessWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            activeOrder.recipientAddress,
+            activeOrder.pickupStore?.address ?? activeOrder.recipientAddress,
             style: const TextStyle(
               fontSize: 10,
               color: Color(0xFF6E6560),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../core/constants/app_colors.dart';
 import '../core/utils/currency_formatter.dart';
@@ -6,10 +7,12 @@ import '../models/order_model.dart';
 import '../models/product.dart';
 import '../models/store_branch.dart';
 import '../services/cart_service.dart';
+import '../services/location_service.dart';
 import '../services/order_service.dart';
 import '../widgets/app_bottom_nav.dart';
+import 'select_pickup_store_page.dart';
 
-/// Halaman CHECKOUT JNOVAMUSIC (Mendukung Ambil di Toko & Kirim ke Rumah sesuai Figma 7 & 8)
+/// Halaman CHECKOUT JNOVAMUSIC dengan alur Ambil di Toko Resmi (Store Pickup)
 class CheckoutScreen extends StatefulWidget {
   final FulfillmentMethod initialMethod;
   final VoidCallback? onBack;
@@ -27,23 +30,76 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   final CartService _cartService = CartService.instance;
   final OrderService _orderService = OrderService.instance;
+  final LocationService _locationService = LocationService.instance;
 
-  late FulfillmentMethod _fulfillmentMethod;
   late StoreBranch _selectedStore;
-  String _selectedPaymentMethod = 'Transfer Bank BCA (Rek: 8841-0922-1100)';
+  final String _selectedPaymentMethod = 'Bayar di Toko (Pickup & Pay)';
   bool _showAllBranches = false;
-  bool _includeWoodPackingInsurance = true;
   bool _isProcessingPayment = false;
 
-  final int _shippingFee = 150000;
+  // State deteksi lokasi GPS & pemilihan toko otomatis
+  bool _isDetectingLocation = false;
+  double? _userLat;
+  double? _userLng;
+  String? _locationStatusMessage;
+  bool _locationDetected = false;
+  List<StoreBranchWithDistance> _sortedBranchesWithDistance = [];
+
   final int _serviceFee = 1000;
 
   @override
   void initState() {
     super.initState();
-    _fulfillmentMethod = widget.initialMethod;
     _selectedStore = StoreBranch.branches.first;
     _cartService.addListener(_handleCartUpdated);
+    _detectLocationAndAutoSelectStore();
+  }
+
+  Future<void> _detectLocationAndAutoSelectStore() async {
+    if (!mounted) return;
+    setState(() {
+      _isDetectingLocation = true;
+      _locationStatusMessage = null;
+    });
+
+    final result = await _locationService.getCurrentLocation();
+    if (!mounted) return;
+
+    if (result.isSuccess && result.latitude != null && result.longitude != null) {
+      final lat = result.latitude!;
+      final lng = result.longitude!;
+      final sorted = _locationService.sortStoresByDistance(lat, lng, StoreBranch.branches);
+
+      setState(() {
+        _isDetectingLocation = false;
+        _userLat = lat;
+        _userLng = lng;
+        _locationDetected = true;
+        _sortedBranchesWithDistance = sorted;
+        if (sorted.isNotEmpty) {
+          _selectedStore = sorted.first.branch;
+        }
+      });
+    } else {
+      setState(() {
+        _isDetectingLocation = false;
+        _locationDetected = false;
+        _locationStatusMessage = result.message;
+        if (!StoreBranch.branches.any((b) => b.id == _selectedStore.id)) {
+          _selectedStore = StoreBranch.branches.first;
+        }
+      });
+    }
+  }
+
+  Future<void> _openGoogleMaps(StoreBranch branch) async {
+    final url = branch.getDirectionsUrl(_userLat, _userLng);
+    final uri = Uri.parse(url);
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } catch (_) {}
   }
 
   @override
@@ -78,10 +134,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   int _calculateTotal(int subtotal, int discount) {
-    final shipping = _fulfillmentMethod == FulfillmentMethod.delivery
-        ? _shippingFee
-        : 0;
-    final total = subtotal - discount + shipping + _serviceFee;
+    final total = subtotal - discount + _serviceFee;
     return total > 0 ? total : 0;
   }
 
@@ -94,13 +147,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     final order = await _orderService.checkout(
       items: items,
-      fulfillment: _fulfillmentMethod,
+      fulfillment: FulfillmentMethod.pickup,
       paymentMethod: _selectedPaymentMethod,
       store: _selectedStore,
-      shippingCost: _fulfillmentMethod == FulfillmentMethod.delivery
-          ? _shippingFee
-          : 0,
-      packingCost: 0,
     );
 
     if (!mounted) return;
@@ -109,20 +158,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       _isProcessingPayment = false;
     });
 
-    // Navigasi ke halaman detail yang sesuai dengan metode pemenuhan
-    if (_fulfillmentMethod == FulfillmentMethod.pickup) {
-      Navigator.pushReplacementNamed(
-        context,
-        '/pickup-detail',
-        arguments: order,
-      );
-    } else {
-      Navigator.pushReplacementNamed(
-        context,
-        '/order-detail',
-        arguments: order,
-      );
-    }
+    // Navigasi ke halaman detail pengambilan toko
+    Navigator.pushReplacementNamed(
+      context,
+      '/pickup-detail',
+      arguments: order,
+    );
   }
 
   void _handleBack() {
@@ -167,39 +208,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
                     const SizedBox(height: 16),
 
-                    // Metode Pemenuhan (Ambil di Toko vs Kirim ke Rumah)
+                    // Metode Pemenuhan (Ambil Langsung di Toko Resmi JNOVAMUSIC)
                     _buildFulfillmentMethodSelector(),
 
                     const SizedBox(height: 16),
 
-                    // Konten Spesifik Metode Pemenuhan
-                    if (_fulfillmentMethod == FulfillmentMethod.pickup) ...[
-                      // Informasi Layanan Gratis Luthier
-                      _buildLuthierServiceCard(),
+                    // Konten Spesifik Metode Pemenuhan Ambil di Toko Resmi
+                    _buildLuthierServiceCard(),
 
-                      const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                      // Daftar Cabang Toko Pengambilan
-                      _buildPickupStoresSection(),
+                    // Daftar Cabang Toko Pengambilan
+                    _buildPickupStoresSection(),
 
-                      const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                      // Informasi Pengambilan Pesanan (Petunjuk Kasir)
-                      _buildPickupInstructionsCard(),
-                    ] else ...[
-                      // Alamat Pengiriman
-                      _buildShippingAddressCard(),
-
-                      const SizedBox(height: 16),
-
-                      // Opsi Pengiriman
-                      _buildShippingOptionsSection(),
-
-                      const SizedBox(height: 12),
-
-                      // Opsi Packing Kayu & Asuransi
-                      _buildWoodPackingOption(),
-                    ],
+                    // Informasi Pengambilan Pesanan (Petunjuk Kasir)
+                    _buildPickupInstructionsCard(),
 
                     const SizedBox(height: 16),
 
@@ -289,8 +314,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildTopSecurityBar() {
-    final isPickup = _fulfillmentMethod == FulfillmentMethod.pickup;
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
       color: const Color(0xFFFAF9F7),
@@ -308,11 +331,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
               ),
               const SizedBox(width: 6),
-              Text(
-                isPickup
-                    ? 'Ambil di Toko (Store Pickup)'
-                    : 'Pengiriman Kurir Ekspedisi',
-                style: const TextStyle(
+              const Text(
+                'Ambil di Toko (Store Pickup)',
+                style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
                   color: AppColors.primaryOrange,
@@ -515,8 +536,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildFulfillmentMethodSelector() {
-    final isPickup = _fulfillmentMethod == FulfillmentMethod.pickup;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -531,161 +550,74 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          Row(
-            children: [
-              // Pilihan 1: Kirim ke Rumah
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      _fulfillmentMethod = FulfillmentMethod.delivery;
-                    });
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: !isPickup
-                          ? const Color(0xFFFFF7ED)
-                          : const Color(0xFFFAF9F7),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: !isPickup
-                            ? AppColors.primaryOrange
-                            : const Color(0xFFEBE8E3),
-                        width: !isPickup ? 1.5 : 1.0,
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.local_shipping_outlined,
-                              size: 20,
-                              color: !isPickup
-                                  ? AppColors.primaryOrange
-                                  : const Color(0xFF7E756F),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Pengiriman ke Rumah',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w800,
-                                color: !isPickup
-                                    ? AppColors.textPrimaryDark
-                                    : const Color(0xFF6E6560),
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            const Text(
-                              'Estimasi 2-3 Hari',
-                              style: TextStyle(
-                                fontSize: 9.5,
-                                color: Color(0xFF8E837D),
-                              ),
-                            ),
-                          ],
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 12,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF7ED),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.primaryOrange,
+                width: 1.5,
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFEFE5),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.storefront_rounded,
+                    size: 22,
+                    color: AppColors.primaryOrange,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Ambil di Toko Resmi (Store Pickup)',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimaryDark,
                         ),
-                        if (!isPickup)
-                          const Positioned(
-                            top: 0,
-                            right: 0,
-                            child: Icon(
-                              Icons.check_circle_rounded,
-                              size: 16,
-                              color: AppColors.primaryOrange,
-                            ),
-                          ),
-                      ],
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Gratis Bebas Biaya • Sound Check & Unboxing di Toko',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Color(0xFF7E756F),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF16A34A).withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Text(
+                    'GRATIS',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF16A34A),
                     ),
                   ),
                 ),
-              ),
-
-              const SizedBox(width: 10),
-
-              // Pilihan 2: Ambil di Toko
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      _fulfillmentMethod = FulfillmentMethod.pickup;
-                    });
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isPickup
-                          ? const Color(0xFFFFF7ED)
-                          : const Color(0xFFFAF9F7),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isPickup
-                            ? AppColors.primaryOrange
-                            : const Color(0xFFEBE8E3),
-                        width: isPickup ? 1.5 : 1.0,
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.storefront_rounded,
-                              size: 20,
-                              color: isPickup
-                                  ? AppColors.primaryOrange
-                                  : const Color(0xFF7E756F),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Ambil di Toko',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w800,
-                                color: isPickup
-                                    ? AppColors.textPrimaryDark
-                                    : const Color(0xFF6E6560),
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            const Text(
-                              'Bebas Ongkir',
-                              style: TextStyle(
-                                fontSize: 9.5,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.primaryOrange,
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (isPickup)
-                          const Positioned(
-                            top: 0,
-                            right: 0,
-                            child: Icon(
-                              Icons.check_circle_rounded,
-                              size: 16,
-                              color: AppColors.primaryOrange,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -748,9 +680,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildPickupStoresSection() {
-    final branches = _showAllBranches
-        ? StoreBranch.branches
-        : StoreBranch.branches.take(3).toList();
+    final List<StoreBranchWithDistance> sourceList =
+        _sortedBranchesWithDistance.isNotEmpty
+            ? _sortedBranchesWithDistance
+            : StoreBranch.branches
+                .map((b) => StoreBranchWithDistance(branch: b, distanceMeters: null))
+                .toList();
+
+    final displayedList =
+        _showAllBranches ? sourceList : sourceList.take(3).toList();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -760,46 +698,73 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Pilih Toko Pengambilan',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Pilih Toko Pengambilan',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimaryDark,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 1),
-                  Text(
-                    'Tersedia di 5 cabang resmi JNOVAMUSIC',
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      color: AppColors.textMuted,
+                    SizedBox(height: 1),
+                    Text(
+                      'Cabang resmi JNOVAMUSIC (Pickup & Pay)',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: AppColors.textMuted,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               InkWell(
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Peta sebaran toko resmi dibuka.'),
-                      duration: Duration(seconds: 1),
+                onTap: () async {
+                  final branch = await Navigator.push<StoreBranch>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) => SelectPickupStorePage(
+                        selectedBranch: _selectedStore,
+                      ),
                     ),
                   );
+                  if (branch != null && mounted) {
+                    setState(() {
+                      _selectedStore = branch;
+                    });
+                  }
                 },
                 child: const Row(
                   children: [
+                    Icon(
+                      Icons.swap_horiz_rounded,
+                      size: 14,
+                      color: AppColors.primaryOrange,
+                    ),
+                    SizedBox(width: 2),
+                    Text(
+                      'Ganti Toko',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primaryOrange,
+                      ),
+                    ),
+                    SizedBox(width: 6),
                     Icon(
                       Icons.map_outlined,
                       size: 14,
                       color: AppColors.primaryOrange,
                     ),
-                    SizedBox(width: 3),
+                    SizedBox(width: 2),
                     Text(
-                      'Lihat Peta',
+                      'Peta & Rute',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
@@ -812,9 +777,126 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ],
           ),
           const SizedBox(height: 10),
+
+          // Indikator Status Lokasi
+          if (_isDetectingLocation)
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFEF6F0),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFFFDEC9)),
+              ),
+              child: const Row(
+                children: [
+                  SizedBox(
+                    width: 13,
+                    height: 13,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.primaryOrange,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Mencari toko JNOVA MUSIC terdekat dari koordinatmu...',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: Color(0xFF8D4315),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else if (_locationDetected)
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0FDF4),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFBBF7D0)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.my_location_rounded,
+                      size: 15, color: Color(0xFF16A34A)),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      'Lokasi terdeteksi. Cabang terdekat otomatis terpilih.',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: Color(0xFF166534),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: _detectLocationAndAutoSelectStore,
+                    child: const Text(
+                      'Perbarui',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: AppColors.primaryOrange,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else if (_locationStatusMessage != null)
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFFBEB),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFFDE68A)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.location_off_outlined,
+                      size: 15, color: Color(0xFFD97706)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _locationStatusMessage!,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFF92400E),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  InkWell(
+                    onTap: _detectLocationAndAutoSelectStore,
+                    child: const Text(
+                      'Coba Lagi',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primaryOrange,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
           Column(
-            children: branches.map((branch) {
+            children: displayedList.map((item) {
+              final branch = item.branch;
               final isSelected = _selectedStore.id == branch.id;
+              final isNearest = item.isNearest ||
+                  (_locationDetected &&
+                      _sortedBranchesWithDistance.isNotEmpty &&
+                      _sortedBranchesWithDistance.first.branch.id == branch.id);
 
               return Container(
                 margin: const EdgeInsets.only(bottom: 8.0),
@@ -876,14 +958,41 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            Text(
-                              '${branch.tag} • ${branch.distance}',
-                              style: const TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primaryOrange,
+                            Expanded(
+                              child: Text(
+                                item.distanceMeters != null
+                                    ? '${branch.tag} • ${item.formattedDistance} dari lokasimu (garis lurus)'
+                                    : '${branch.tag} • ${branch.distance}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primaryOrange,
+                                ),
                               ),
                             ),
+                            if (isNearest) ...[
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                  vertical: 1.5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFEDDF),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: const Text(
+                                  'Toko Terdekat',
+                                  style: TextStyle(
+                                    fontSize: 8.5,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFFC2410C),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                         const SizedBox(height: 3),
@@ -940,6 +1049,58 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 8),
+                        // Tombol Aksi Rute Google Maps & Penanda Pilihan
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () => _openGoogleMaps(branch),
+                              borderRadius: BorderRadius.circular(6),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: const Color(0xFFE0DDD7),
+                                  ),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.directions_outlined,
+                                      size: 12,
+                                      color: AppColors.primaryOrange,
+                                    ),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      'Buka Rute Google Maps',
+                                      style: TextStyle(
+                                        fontSize: 9.5,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.primaryOrange,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            if (isSelected)
+                              const Text(
+                                '✓ Toko Terpilih',
+                                style: TextStyle(
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.primaryOrange,
+                                ),
+                              ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -958,8 +1119,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               },
               child: Text(
                 _showAllBranches
-                    ? 'Sembunyikan Cabang Solo & Bali ⌃'
-                    : 'Tampilkan Cabang Solo & Bali ⌵',
+                    ? 'Sembunyikan Cabang Lain ⌃'
+                    : 'Tampilkan Semua Cabang (${sourceList.length}) ⌵',
                 style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
@@ -1060,240 +1221,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildShippingAddressCard() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Alamat Pengiriman',
-                style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Ubah alamat penerima.'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                },
-                child: const Text(
-                  'Ubah Alamat',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.primaryOrange,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFEFE5),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: const Text(
-                  'Alamat Utama',
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.primaryOrange,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                'Budi Pratama',
-                style: TextStyle(
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
-                ),
-              ),
-              const SizedBox(width: 6),
-              const Text(
-                '(+62) 812-3456-7890',
-                style: TextStyle(fontSize: 10.5, color: Color(0xFF7E756F)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          const Text(
-            'Jl. Senopati No. 42, RT 04 / RW 02, Kebayoran Baru, Jakarta Selatan, DKI Jakarta 12110',
-            style: TextStyle(
-              fontSize: 10.5,
-              color: Color(0xFF5A524D),
-              height: 1.35,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildShippingOptionsSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Opsi Pengiriman',
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFFBF7),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.primaryOrange, width: 1.2),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFEDDF),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.local_shipping_outlined,
-                    size: 18,
-                    color: AppColors.primaryOrange,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'JNE Cargo - Music Care',
-                        style: TextStyle(
-                          fontSize: 11.5,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimaryDark,
-                        ),
-                      ),
-                      SizedBox(height: 1),
-                      Text(
-                        'Estimasi 3 - 5 hari kerja',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Color(0xFF7E756F),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Text(
-                  formatRupiah(_shippingFee),
-                  style: const TextStyle(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWoodPackingOption() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Checkbox(
-            value: _includeWoodPackingInsurance,
-            activeColor: AppColors.primaryOrange,
-            onChanged: (val) {
-              setState(() {
-                _includeWoodPackingInsurance = val ?? true;
-              });
-            },
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            visualDensity: VisualDensity.compact,
-          ),
-          const SizedBox(width: 4),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Packing Kayu & Asuransi Alat Musik',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
-                      ),
-                    ),
-                    Text(
-                      'Gratis (Promo)',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primaryOrange,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 2),
-                Text(
-                  'Jaminan proteksi 100% ganti unit baru jika terjadi kerusakan transit.',
-                  style: TextStyle(
-                    fontSize: 9.5,
-                    color: Color(0xFF6E6560),
-                    height: 1.3,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildMembershipCard(int discount) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -1325,9 +1252,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               children: [
                 Row(
                   children: [
-                    const Text(
-                      'Member Silver',
-                      style: TextStyle(
+                    Text(
+                      _cartService.tierName,
+                      style: const TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w800,
                         color: AppColors.textPrimaryDark,
@@ -1343,9 +1270,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         color: AppColors.primaryOrange,
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: const Text(
-                        'TIER 2',
-                        style: TextStyle(
+                      child: Text(
+                        _cartService.userTier,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 7.5,
                           fontWeight: FontWeight.w800,
@@ -1355,9 +1282,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ],
                 ),
                 const SizedBox(height: 2),
-                const Text(
-                  'Diskon 10% otomatis dipotong',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
+                Text(
+                  'Diskon ${_cartService.discountPercentage}% otomatis dipotong',
+                  style: const TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
                 ),
               ],
             ),
@@ -1393,7 +1320,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
               ),
               Text(
-                'Terverifikasi Otomatis',
+                'Bayar Langsung di Kasir',
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
@@ -1404,136 +1331,68 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
           const SizedBox(height: 8),
 
-          // Pilihan 1: Transfer Bank BCA
-          _buildPaymentRadioTile(
-            title: 'Transfer Bank BCA (8841-0922-1100)',
-            subtitle: 'a.n. PT JNOVA MUSIK INDONESIA • Verifikasi Resmi',
-            icon: Icons.account_balance_rounded,
-            isSelected: _selectedPaymentMethod.contains('BCA'),
-            onTap: () {
-              setState(() {
-                _selectedPaymentMethod = 'Transfer Bank BCA (Rek: 8841-0922-1100)';
-              });
-            },
-          ),
-
-          const SizedBox(height: 8),
-
-          // Pilihan 2: Transfer Bank Mandiri
-          _buildPaymentRadioTile(
-            title: 'Transfer Bank Mandiri (137-00-8841922-1)',
-            subtitle: 'a.n. PT JNOVA MUSIK INDONESIA • Verifikasi Resmi',
-            icon: Icons.account_balance_rounded,
-            isSelected: _selectedPaymentMethod.contains('Mandiri'),
-            onTap: () {
-              setState(() {
-                _selectedPaymentMethod = 'Transfer Bank Mandiri (Rek: 137-00-8841922-1)';
-              });
-            },
-          ),
-
-          const SizedBox(height: 8),
-
-          // Pilihan 3: QRIS
-          _buildPaymentRadioTile(
-            title: "QRIS Instant (GoPay, OVO, ShopeePay)",
-            subtitle: 'Bebas biaya admin & konfirmasi instan',
-            icon: Icons.qr_code_2_rounded,
-            isSelected: _selectedPaymentMethod.startsWith('QRIS'),
-            onTap: () {
-              setState(() {
-                _selectedPaymentMethod = "QRIS Instant (GoPay, OVO, ShopeePay)";
-              });
-            },
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF7ED),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.primaryOrange,
+                width: 1.5,
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFEFE5),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.point_of_sale_rounded,
+                    size: 22,
+                    color: AppColors.primaryOrange,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Bayar di Toko (Pickup & Pay)',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimaryDark,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Bayar langsung di kasir toko saat pengambilan (Tunai, Kartu Debit/Kredit EDC, QRIS Toko)',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Color(0xFF7E756F),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: AppColors.primaryOrange,
+                  size: 20,
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPaymentRadioTile({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFFFFBF7) : const Color(0xFFFAF9F7),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected
-                ? AppColors.primaryOrange
-                : const Color(0xFFEBE8E3),
-            width: isSelected ? 1.5 : 1.0,
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? const Color(0xFFFFEDDF)
-                    : const Color(0xFFECEAE6),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                icon,
-                size: 18,
-                color: isSelected
-                    ? AppColors.primaryOrange
-                    : const Color(0xFF7E756F),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
-                    ),
-                  ),
-                  const SizedBox(height: 1),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 9.5,
-                      color: Color(0xFF7E756F),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              isSelected
-                  ? Icons.check_circle_rounded
-                  : Icons.radio_button_unchecked_rounded,
-              size: 18,
-              color: isSelected
-                  ? AppColors.primaryOrange
-                  : const Color(0xFFB0AAA4),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildCostSummary(int subtotal, int discount, int totalPayment) {
-    final isPickup = _fulfillmentMethod == FulfillmentMethod.pickup;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -1565,31 +1424,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   valueColor: AppColors.primaryOrange,
                 ),
                 const SizedBox(height: 6),
-                if (isPickup) ...[
-                  _buildSummaryRow(
-                    'Biaya Ambil di Toko',
-                    'Gratis (Rp 0)',
-                    valueColor: const Color(0xFF16A34A),
-                  ),
-                  const SizedBox(height: 6),
-                  _buildSummaryRow(
-                    'Biaya Layanan JNOVAMUSIC',
-                    formatRupiah(_serviceFee),
-                  ),
-                ] else ...[
-                  _buildSummaryRow(
-                    'Biaya Pengiriman (JNE Cargo)',
-                    formatRupiah(_shippingFee),
-                  ),
-                  const SizedBox(height: 6),
-                  _buildSummaryRow(
-                    'Biaya Penanganan Kayu & Asuransi',
-                    'Rp 0 (Gratis)',
-                    valueColor: const Color(0xFF16A34A),
-                  ),
-                  const SizedBox(height: 6),
-                  _buildSummaryRow('Biaya Layanan', formatRupiah(_serviceFee)),
-                ],
+                _buildSummaryRow(
+                  'Biaya Ambil di Toko',
+                  'Gratis (Rp 0)',
+                  valueColor: const Color(0xFF16A34A),
+                ),
+                const SizedBox(height: 6),
+                _buildSummaryRow(
+                  'Asuransi & Setup Khusus Toko',
+                  'Rp 0 (Gratis)',
+                  valueColor: const Color(0xFF16A34A),
+                ),
+                const SizedBox(height: 6),
+                _buildSummaryRow(
+                  'Biaya Layanan JNOVAMUSIC',
+                  formatRupiah(_serviceFee),
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
                   child: Divider(color: Color(0xFFEBE8E3), height: 1),
@@ -1725,7 +1575,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               child: const Row(
                 children: [
                   Text(
-                    'Bayar Sekarang',
+                    'Konfirmasi Pesanan Pickup',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12.5,

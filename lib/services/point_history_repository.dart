@@ -1,18 +1,24 @@
 import 'dart:async';
 import '../core/config/app_config.dart';
 import '../core/network/network_info.dart';
+import '../core/storage/secure_storage_service.dart';
 import '../data/datasources/remote/supabase_client_service.dart';
 import '../models/point_history_model.dart';
 
 /// Repository untuk data riwayat poin JNOVAMUSIC
+/// Memisahkan data riwayat per akun, pengguna baru mulai dengan riwayat kosong
 class PointHistoryRepository {
   PointHistoryRepository._();
 
   static final PointHistoryRepository instance = PointHistoryRepository._();
   final SupabaseClientService _supabaseService = SupabaseClientService.instance;
+  final SecureStorageService _storage = SecureStorageService.instance;
 
-  // Dataset resmi riwayat transaksi poin sesuai screenshot Figma
-  final List<PointHistoryModel> _defaultData = const [
+  // In-memory cache transaksi poin per email pengguna
+  final Map<String, List<PointHistoryModel>> _userTransactions = {};
+
+  // Dataset referensi Figma (hanya untuk preview atau fallback dokumentasi)
+  static const List<PointHistoryModel> _figmaReferenceData = [
     PointHistoryModel(
       id: 'tx_1',
       title: 'Pembelian Fender Player II Stratocaster HSS',
@@ -38,96 +44,22 @@ class PointHistoryRepository {
       points: 100,
       type: PointTransactionType.jackpot,
     ),
-    PointHistoryModel(
-      id: 'tx_4',
-      title: "Pembelian Senar D'Addario EXL110 Nickel",
-      date: '09 Mei 2025 • 16:05 WIB',
-      category: 'Pembelian Produk',
-      points: 65,
-      type: PointTransactionType.purchase,
-      orderId: 'INV/2025/05/JNV-8712',
-    ),
-    PointHistoryModel(
-      id: 'tx_5',
-      title: 'Misi Harian JNova Beat Tilt - Mainkan 3 Lagu',
-      date: '08 Apr 2025 • 20:15 WIB',
-      category: 'Aktivitas Game',
-      points: 50,
-      type: PointTransactionType.game,
-    ),
-    PointHistoryModel(
-      id: 'tx_6',
-      title: 'Roland Cube-10GX Guitar Amplifier',
-      date: '18 Apr 2025 • 11:20 WIB',
-      category: 'Pembelian Produk',
-      points: 195,
-      type: PointTransactionType.purchase,
-      orderId: 'INV/2025/04/JNV-8430',
-    ),
-    PointHistoryModel(
-      id: 'tx_7',
-      title: 'Audio-Technica ATH-M50x Professional Monitor',
-      date: '14 Apr 2025 • 17:10 WIB',
-      category: 'Pembelian Produk',
-      points: 220,
-      type: PointTransactionType.purchase,
-      orderId: 'INV/2025/04/JNV-8319',
-    ),
-    PointHistoryModel(
-      id: 'tx_8',
-      title: 'Beat Master Challenge - Selesaikan Lagu Rock Tempo Tinggi',
-      date: '03 Mei 2025 • 10:25 WIB',
-      category: 'Aktivitas Game',
-      points: 150,
-      type: PointTransactionType.game,
-    ),
-    PointHistoryModel(
-      id: 'tx_9',
-      title: 'Kabel Jack Mogami 2524 Gold Custom 3m',
-      date: '08 Apr 2025 • 10:15 WIB',
-      category: 'Pembelian Produk',
-      points: 45,
-      type: PointTransactionType.purchase,
-      orderId: 'INV/2025/04/JNV-8201',
-    ),
-    PointHistoryModel(
-      id: 'tx_10',
-      title: 'Misi Harian JNova Beat Tilt - Sempurna 100 Combo',
-      date: '28 Apr 2025 • 20:10 WIB',
-      category: 'Aktivitas Game',
-      points: 50,
-      type: PointTransactionType.game,
-    ),
-    PointHistoryModel(
-      id: 'tx_11',
-      title: 'Boss DS-1 Distortion Pedal Classic',
-      date: '19 Feb 2025 • 13:18 WIB',
-      category: 'Pembelian Produk',
-      points: 390,
-      type: PointTransactionType.purchase,
-      orderId: 'INV/2025/02/JNV-7945',
-    ),
-    PointHistoryModel(
-      id: 'tx_12',
-      title: 'Jackpot Hujan Poin Promo Gajian',
-      date: '25 Apr 2025 • 14:05 WIB',
-      category: 'Aktivitas Game',
-      points: 100,
-      type: PointTransactionType.jackpot,
-    ),
-    PointHistoryModel(
-      id: 'tx_13',
-      title: 'Bonus Level Up JNova Beat Tilt Level 10',
-      date: '19 Apr 2025 • 16:45 WIB',
-      category: 'Aktivitas Game',
-      points: 75,
-      type: PointTransactionType.bonus,
-    ),
   ];
 
-  List<PointHistoryModel> get defaultData => List.unmodifiable(_defaultData);
+  List<PointHistoryModel> get defaultData => const [];
+  List<PointHistoryModel> get referenceData => List.unmodifiable(_figmaReferenceData);
 
-  /// Mengambil riwayat poin secara asynchronous dari Supabase dengan fallback data resmi
+  /// Menambahkan transaksi poin baru ke akun pengguna aktif
+  void addTransaction(PointHistoryModel item, {String? userEmail}) {
+    final email = (userEmail ?? '').toLowerCase().trim();
+    final key = email.isNotEmpty ? email : 'guest';
+    _userTransactions.putIfAbsent(key, () => []);
+    // Cegah duplikasi transaksi dengan ID yang sama
+    _userTransactions[key]!.removeWhere((tx) => tx.id == item.id);
+    _userTransactions[key]!.insert(0, item);
+  }
+
+  /// Mengambil riwayat poin secara asynchronous khusus untuk pengguna aktif
   Future<List<PointHistoryModel>> getPointHistory({
     bool forceError = false,
     bool forceEmpty = false,
@@ -139,6 +71,8 @@ class PointHistoryRepository {
     if (forceEmpty) {
       return [];
     }
+
+    final email = (await _storage.getUserEmail())?.toLowerCase().trim();
 
     final isOnline = await NetworkInfo.instance.isConnected;
     if (isOnline && AppConfig.isSupabaseConfigured && _supabaseService.isInitialized) {
@@ -153,7 +87,7 @@ class PointHistoryRepository {
               .order('created_at', ascending: false);
 
           if (response.isNotEmpty) {
-            return response.map((item) {
+            final remoteList = response.map((item) {
               final map = Map<String, dynamic>.from(item);
               final typeStr = map['transaction_type']?.toString().toLowerCase() ?? '';
               PointTransactionType type = PointTransactionType.purchase;
@@ -171,13 +105,34 @@ class PointHistoryRepository {
                 orderId: map['order_id']?.toString(),
               );
             }).toList();
+
+            // Gabungkan dengan transaksi lokal terbaru
+            final localKey = email ?? 'guest';
+            final local = _userTransactions[localKey] ?? [];
+            for (final tx in local) {
+              if (!remoteList.any((r) => r.id == tx.id)) {
+                remoteList.insert(0, tx);
+              }
+            }
+            return remoteList;
           }
         }
-      } catch (_) {
-        // Fallback ke data visual resmi jika terjadi error koneksi
-      }
+      } catch (_) {}
     }
 
-    return List.from(_defaultData);
+    // Jika offline atau belum ada di Supabase, kembalikan transaksi lokal untuk akun ini
+    final key = email ?? 'guest';
+    final userList = _userTransactions[key];
+    if (userList != null && userList.isNotEmpty) {
+      return List.from(userList);
+    }
+
+    // Pengguna baru selalu memiliki riwayat kosong (0 transaksi)
+    return [];
+  }
+
+  /// Menghapus cache transaksi saat logout
+  void clearCache() {
+    _userTransactions.clear();
   }
 }

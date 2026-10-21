@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../../../models/product.dart';
 
 /// Database Helper SQLite untuk JNOVAMUSIC
@@ -20,6 +22,11 @@ class AppDatabase {
   }
 
   Future<Database> _initDatabase() async {
+    if (!kIsWeb && (Platform.isWindows || Platform.isLinux)) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
+
     final dbPath = await getDatabasesPath();
     final path = p.join(dbPath, _dbName);
 

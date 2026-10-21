@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../core/constants/app_colors.dart';
 import '../services/membership_service.dart';
+import '../services/user_profile_service.dart';
 import '../widgets/app_bottom_nav.dart';
 
 /// Halaman UBAH MEMBERSHIP JNOVAMUSIC sesuai desain Figma 4 / 7
@@ -15,16 +17,19 @@ class MembershipSettingsPage extends StatefulWidget {
 
 class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
   final MembershipService _membershipService = MembershipService.instance;
+  final UserProfileService _profileService = UserProfileService.instance;
 
   @override
   void initState() {
     super.initState();
     _membershipService.addListener(_handleStateChanged);
+    _profileService.addListener(_handleStateChanged);
   }
 
   @override
   void dispose() {
     _membershipService.removeListener(_handleStateChanged);
+    _profileService.removeListener(_handleStateChanged);
     super.dispose();
   }
 
@@ -86,7 +91,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                       // Footer note
                       const Center(
                         child: Text(
-                          'Poin didapatkan otomatis setelah status pesanan selesai dikonfirmasi oleh kurir JNOVAMUSIC.',
+                          'Poin didapatkan setelah pesanan diambil, dibayar di toko, dan dikonfirmasi "Pesanan Selesai" oleh pelanggan.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 9,
@@ -266,31 +271,16 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
 
           Row(
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xFFEDEBE7),
-                ),
-                child: const Center(
-                  child: Text(
-                    'BP',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF4A403A),
-                    ),
-                  ),
-                ),
-              ),
+              _buildUserAvatar(_profileService.profile.photoUrl, _profileService.profile.fullName),
               const SizedBox(width: 10),
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Budi Pratama',
-                    style: TextStyle(
+                    _profileService.profile.fullName.isNotEmpty
+                        ? _profileService.profile.fullName
+                        : 'Pengguna JNOVAMUSIC',
+                    style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
                       color: AppColors.textPrimaryDark,
@@ -298,12 +288,12 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.verified_rounded,
+                      const Icon(Icons.verified_rounded,
                           size: 13, color: Color(0xFFB45309)),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
-                        'Silver Member',
-                        style: TextStyle(
+                        _membershipService.tierName,
+                        style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF8D4315),
@@ -770,53 +760,81 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Divider(color: Color(0xFFEBE8E3), height: 1),
-              ),
-              InkWell(
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Katalog penukaran voucher & merchandise dibuka.'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                },
-                child: const Row(
-                  children: [
-                    Icon(Icons.card_giftcard_rounded,
-                        size: 18, color: Color(0xFFB45309)),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Tukar Hadiah',
-                            style: TextStyle(
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimaryDark,
-                            ),
-                          ),
-                          Text(
-                            'Jelajahi hadiah yang tersedia untuk ditukar',
-                            style: TextStyle(
-                                fontSize: 9.5, color: Color(0xFF7E756F)),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Icon(Icons.chevron_right_rounded,
-                        size: 18, color: Color(0xFF8E837D)),
-                  ],
-                ),
-              ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildUserAvatar(String photoUrl, String fullName) {
+    if (photoUrl.isNotEmpty) {
+      if (photoUrl.startsWith('http')) {
+        return ClipOval(
+          child: Image.network(
+            photoUrl,
+            width: 40,
+            height: 40,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) =>
+                _buildInitialsAvatar(fullName),
+          ),
+        );
+      } else if (photoUrl.startsWith('assets/')) {
+        return ClipOval(
+          child: Image.asset(
+            photoUrl,
+            width: 40,
+            height: 40,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) =>
+                _buildInitialsAvatar(fullName),
+          ),
+        );
+      } else if (File(photoUrl).existsSync()) {
+        return ClipOval(
+          child: Image.file(
+            File(photoUrl),
+            width: 40,
+            height: 40,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) =>
+                _buildInitialsAvatar(fullName),
+          ),
+        );
+      }
+    }
+    return _buildInitialsAvatar(fullName);
+  }
+
+  Widget _buildInitialsAvatar(String name) {
+    final initials = name.trim().isNotEmpty
+        ? name
+            .trim()
+            .split(' ')
+            .where((e) => e.isNotEmpty)
+            .map((e) => e[0])
+            .take(2)
+            .join()
+            .toUpperCase()
+        : 'JN';
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Color(0xFFEDEBE7),
+      ),
+      child: Center(
+        child: Text(
+          initials,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF4A403A),
+          ),
+        ),
+      ),
     );
   }
 }

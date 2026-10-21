@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 
 /// Service untuk memantau status koneksi online / offline
 class NetworkInfo {
@@ -16,11 +18,28 @@ class NetworkInfo {
     if (_overrideIsConnected != null) return _overrideIsConnected!;
     try {
       final results = await _connectivity.checkConnectivity().timeout(
-        const Duration(milliseconds: 300),
+        const Duration(seconds: 3),
         onTimeout: () => [ConnectivityResult.none],
       );
-      return _hasActiveConnection(results);
+      if (_hasActiveConnection(results)) return true;
+
+      // Fallback socket lookup jika connectivity_plus menghasilkan false-negative (umum di Windows desktop)
+      if (!kIsWeb) {
+        try {
+          final lookup = await InternetAddress.lookup('google.com')
+              .timeout(const Duration(seconds: 2));
+          return lookup.isNotEmpty && lookup[0].rawAddress.isNotEmpty;
+        } catch (_) {}
+      }
+      return false;
     } catch (_) {
+      if (!kIsWeb) {
+        try {
+          final lookup = await InternetAddress.lookup('google.com')
+              .timeout(const Duration(seconds: 2));
+          return lookup.isNotEmpty && lookup[0].rawAddress.isNotEmpty;
+        } catch (_) {}
+      }
       return false;
     }
   }
@@ -36,10 +55,12 @@ class NetworkInfo {
       if (result == ConnectivityResult.wifi ||
           result == ConnectivityResult.mobile ||
           result == ConnectivityResult.ethernet ||
-          result == ConnectivityResult.vpn) {
+          result == ConnectivityResult.vpn ||
+          result == ConnectivityResult.other) {
         return true;
       }
     }
     return false;
   }
 }
+

@@ -1,4 +1,7 @@
 import '../data/repositories/auth_repository.dart';
+import 'membership_service.dart';
+import 'order_service.dart';
+import 'user_profile_service.dart';
 
 export '../data/repositories/auth_repository.dart' show AuthResult;
 
@@ -39,8 +42,33 @@ class AuthService {
     );
   }
 
+  /// Login menggunakan biometrik sidik jari dengan pemulihan sesi aman
+  Future<AuthResult> loginWithBiometrics() async {
+    return await _repository.loginWithBiometrics();
+  }
+
+  /// Mengaktifkan login biometrik untuk pengguna yang sedang aktif dengan verifikasi aman
+  Future<AuthResult> enableBiometricsForUser({
+    required String email,
+    String? fullName,
+  }) async {
+    return await _repository.enableBiometricsForUser(
+      email: email,
+      fullName: fullName,
+    );
+  }
+
+  /// Menonaktifkan login biometrik untuk pengguna
+  Future<AuthResult> disableBiometricsForUser(String email) async {
+    return await _repository.disableBiometricsForUser(email);
+  }
+
   /// Melakukan proses keluar dari akun dan menghapus sesi autentikasi pengguna
   Future<void> logout() async {
     await _repository.logout();
+    UserProfileService.instance.resetProfile();
+    MembershipService.instance.resetPoints();
+    OrderService.instance.resetOrders();
   }
 }
+

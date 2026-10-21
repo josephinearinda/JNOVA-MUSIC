@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_colors.dart';
 import '../models/user_profile.dart';
+import '../services/auth_service.dart';
 import '../services/currency_service.dart';
 import '../services/membership_service.dart';
+import '../services/order_service.dart';
 import '../services/user_profile_service.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/logout_confirmation_dialog.dart';
@@ -22,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final UserProfileService _profileService = UserProfileService.instance;
   final MembershipService _membershipService = MembershipService.instance;
   final CurrencyService _currencyService = CurrencyService.instance;
+  final OrderService _orderService = OrderService.instance;
 
   @override
   void initState() {
@@ -29,6 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _profileService.addListener(_handleStateChanged);
     _membershipService.addListener(_handleStateChanged);
     _currencyService.addListener(_handleStateChanged);
+    _orderService.addListener(_handleStateChanged);
   }
 
   @override
@@ -36,6 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _profileService.removeListener(_handleStateChanged);
     _membershipService.removeListener(_handleStateChanged);
     _currencyService.removeListener(_handleStateChanged);
+    _orderService.removeListener(_handleStateChanged);
     super.dispose();
   }
 
@@ -240,47 +246,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Row(
             children: [
               // Avatar dengan Badge Kamera
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  Container(
-                    width: 58,
-                    height: 58,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color(0xFFFFD8BF),
-                        width: 2.0,
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, '/profile-edit'),
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    Container(
+                      width: 58,
+                      height: 58,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0xFFFFD8BF),
+                          width: 2.0,
+                        ),
+                      ),
+                      child: ClipOval(
+                        child: _buildAvatarImage(profile.photoUrl),
                       ),
                     ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        'assets/images/hero_splash_center.png',
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(
-                              Icons.person_rounded,
-                              size: 34,
-                              color: Color(0xFF8E837D),
-                            ),
+                    Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.primaryOrange,
+                        border: Border.all(color: Colors.white, width: 1.5),
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt_rounded,
+                        size: 9,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-                  Container(
-                    width: 18,
-                    height: 18,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.primaryOrange,
-                      border: Border.all(color: Colors.white, width: 1.5),
-                    ),
-                    child: const Icon(
-                      Icons.camera_alt_rounded,
-                      size: 9,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(width: 12),
 
@@ -436,9 +436,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 6),
           _buildInfoRow('Tanggal Lahir', profile.birthDate),
           const SizedBox(height: 6),
-          _buildInfoRow('Email', profile.email),
+          _buildInfoRow(
+            'Email',
+            profile.email.isNotEmpty ? profile.email : 'Belum diisi',
+            tag: profile.email.isNotEmpty
+                ? (profile.isEmailVerified ? 'Terverifikasi' : 'Belum Verifikasi')
+                : null,
+            tagColor: profile.isEmailVerified
+                ? const Color(0xFF15803D)
+                : const Color(0xFFB45309),
+            tagBgColor: profile.isEmailVerified
+                ? const Color(0xFFDCFCE7)
+                : const Color(0xFFFEF3C7),
+          ),
           const SizedBox(height: 6),
-          _buildInfoRow('Nomor HP', profile.phoneNumber, tag: 'Terverifikasi'),
+          _buildInfoRow(
+            'Nomor HP',
+            profile.phoneNumber.isNotEmpty ? profile.phoneNumber : 'Belum diisi',
+            tag: profile.phoneNumber.isNotEmpty
+                ? (profile.isPhoneVerified ? 'Terverifikasi' : 'Belum Verifikasi')
+                : null,
+            tagColor: profile.isPhoneVerified
+                ? const Color(0xFF15803D)
+                : const Color(0xFFB45309),
+            tagBgColor: profile.isPhoneVerified
+                ? const Color(0xFFDCFCE7)
+                : const Color(0xFFFEF3C7),
+          ),
           const SizedBox(height: 6),
           _buildInfoRow('Username', '@${profile.username}'),
         ],
@@ -617,19 +641,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildActivityItem(
             icon: Icons.military_tech_outlined,
             title: 'Membership Saya',
-            subtitle: 'Tier Silver • $points Poin • Benefit Diskon 10%',
+            subtitle:
+                'Tier ${_membershipService.tierName} • $points Poin • Benefit Diskon ${_membershipService.discountPercentage}%',
             onTap: () => Navigator.pushNamed(context, '/membership-settings'),
           ),
           _buildActivityItem(
             icon: Icons.favorite_border_rounded,
             title: 'Favorit Saya',
-            subtitle: '4 Instrumen Musik Tersimpan',
+            subtitle: 'Instrumen Musik Tersimpan',
             onTap: () => Navigator.pushNamed(context, '/favorite'),
           ),
           _buildActivityItem(
             icon: Icons.receipt_long_outlined,
             title: 'Riwayat Pesanan',
-            subtitle: '5 Transaksi Selesai & Berjalan',
+            subtitle: _orderService.orders.isEmpty
+                ? 'Belum Ada Transaksi'
+                : '${_orderService.orders.length} Transaksi Selesai & Berjalan',
             onTap: () => Navigator.pushNamed(context, '/order-detail'),
           ),
           _buildActivityItem(
@@ -742,18 +769,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 Switch(
                   value: profile.isBiometricEnabled,
-                  onChanged: (val) {
-                    _profileService.toggleBiometric(val);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          val
-                              ? 'Login biometrik diaktifkan.'
-                              : 'Login biometrik dinonaktifkan.',
+                  onChanged: (val) async {
+                    if (val) {
+                      final res =
+                          await AuthService.instance.enableBiometricsForUser(
+                        email: profile.email,
+                        fullName: profile.fullName,
+                      );
+                      if (!mounted) return;
+                      if (res.isSuccess) {
+                        await _profileService.toggleBiometric(true);
+                      } else {
+                        await _profileService.toggleBiometric(false);
+                      }
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(res.message),
+                          backgroundColor: res.isSuccess
+                              ? const Color(0xFF15803D)
+                              : const Color(0xFFDC2626),
+                          duration: const Duration(seconds: 2),
                         ),
-                        duration: const Duration(seconds: 1),
-                      ),
-                    );
+                      );
+                    } else {
+                      final res = await AuthService.instance
+                          .disableBiometricsForUser(profile.email);
+                      await _profileService.toggleBiometric(false);
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(res.message),
+                          duration: const Duration(seconds: 1),
+                        ),
+                      );
+                    }
                   },
                   activeThumbColor: AppColors.primaryOrange,
                   activeTrackColor: AppColors.primaryOrange.withValues(
@@ -873,7 +923,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, {String? tag}) {
+  Widget _buildInfoRow(
+    String label,
+    String value, {
+    String? tag,
+    Color tagColor = const Color(0xFF15803D),
+    Color tagBgColor = const Color(0xFFDCFCE7),
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -899,15 +955,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   vertical: 1.5,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFDCFCE7),
+                  color: tagBgColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
                   tag,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 8,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF15803D),
+                    color: tagColor,
                   ),
                 ),
               ),
@@ -953,4 +1009,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
+  Widget _buildAvatarImage(String photoUrl) {
+    if (photoUrl.isEmpty) {
+      return Container(
+        color: const Color(0xFFFFECE5),
+        child: const Icon(
+          Icons.person_rounded,
+          size: 34,
+          color: AppColors.primaryOrange,
+        ),
+      );
+    }
+    if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
+      return Image.network(
+        photoUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.person_rounded,
+          size: 34,
+          color: AppColors.primaryOrange,
+        ),
+      );
+    }
+    if (photoUrl.startsWith('assets/')) {
+      return Image.asset(
+        photoUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.person_rounded,
+          size: 34,
+          color: AppColors.primaryOrange,
+        ),
+      );
+    }
+    final file = File(photoUrl);
+    if (file.existsSync()) {
+      return Image.file(
+        file,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.person_rounded,
+          size: 34,
+          color: AppColors.primaryOrange,
+        ),
+      );
+    }
+    return const Icon(
+      Icons.person_rounded,
+      size: 34,
+      color: AppColors.primaryOrange,
+    );
+  }
 }
+

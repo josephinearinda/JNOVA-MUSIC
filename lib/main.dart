@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'models/order_model.dart';
 import 'models/product.dart';
@@ -33,12 +36,20 @@ import 'screens/membership_settings_page.dart';
 import 'screens/point_history_page.dart';
 import 'screens/suggestion_review_page.dart';
 import 'screens/ai_chat_page.dart';
+import 'screens/select_pickup_store_page.dart';
+import 'models/store_branch.dart';
 import 'core/config/app_config.dart';
 import 'data/datasources/local/app_database.dart';
 import 'data/datasources/remote/supabase_client_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inisialisasi Database Factory SQLite untuk desktop (Windows / Linux)
+  if (!kIsWeb && (Platform.isWindows || Platform.isLinux)) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
 
   // 1. Inisialisasi Environment Variables (.env)
   await AppConfig.initialize();
@@ -74,17 +85,26 @@ class MyApp extends StatelessWidget {
             Navigator.of(context).pushReplacementNamed('/login');
           },
         ),
-        '/login': (context) => LoginScreen(
-          onLoginSuccess: () {
-            Navigator.of(context).pushReplacementNamed('/home');
-          },
-          onRegisterPressed: () {
-            Navigator.of(context).pushNamed('/register');
-          },
-        ),
+        '/login': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments;
+          final initialEmail = args is String ? args : null;
+          return LoginScreen(
+            initialEmail: initialEmail,
+            onLoginSuccess: () {
+              Navigator.of(context).pushReplacementNamed('/home');
+            },
+            onRegisterPressed: () {
+              Navigator.of(context).pushNamed('/register');
+            },
+          );
+        },
         '/register': (context) => RegisterScreen(
-          onRegisterSuccess: () {
-            Navigator.of(context).pushReplacementNamed('/home');
+          onRegisterSuccess: (registeredEmail) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              '/login',
+              (route) => false,
+              arguments: registeredEmail,
+            );
           },
           onLoginPressed: () {
             Navigator.of(context).pop();
@@ -135,6 +155,12 @@ class MyApp extends StatelessWidget {
           return CheckoutScreen(initialMethod: method);
         },
         '/pickup-detail': (context) => const PickupDetailScreen(),
+        '/select-pickup-store': (context) {
+          final branch =
+              ModalRoute.of(context)?.settings.arguments as StoreBranch? ??
+              StoreBranch.branches.first;
+          return SelectPickupStorePage(selectedBranch: branch);
+        },
         '/order-detail': (context) => const OrderDetailScreen(),
         '/tracking': (context) => const TrackingScreen(),
         '/games': (context) => const GameSelectionPage(),

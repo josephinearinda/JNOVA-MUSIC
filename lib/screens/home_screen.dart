@@ -5,6 +5,7 @@ import '../services/cart_service.dart';
 import '../services/currency_service.dart';
 import '../services/favorite_service.dart';
 import '../widgets/app_bottom_nav.dart';
+import '../widgets/product_favorite_card.dart';
 
 /// Halaman Beranda (Dashboard) JNOVAMUSIC
 /// Sesuai referensi visual resmi JNOVAMUSIC dengan Banner JNOVA GAMES,
@@ -74,10 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  String _formatRupiah(int price) {
-    return _currencyService.format(price);
-  }
-
   @override
   Widget build(BuildContext context) {
     final cartCount = _cartService.items.length;
@@ -125,12 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Produk Pilihan
                     _buildProductsSection(products),
 
-                    const SizedBox(height: 16),
-
-                    // Footer Pengiriman Cepat & Aman
-                    _buildShippingFooter(),
-
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -393,27 +385,34 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/membership'),
-                child: const Row(
-                  children: [
-                    Text(
-                      'Lihat Keuntungan Member',
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w700,
+              Flexible(
+                child: GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, '/membership'),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          'Lihat Keuntungan Member',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFFFF5500),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 13,
                         color: Color(0xFFFF5500),
                       ),
-                    ),
-                    SizedBox(width: 4),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 13,
-                      color: Color(0xFFFF5500),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+              const SizedBox(width: 8),
               GestureDetector(
                 onTap: () => Navigator.pushNamed(context, '/membership'),
                 child: Container(
@@ -458,11 +457,14 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.search_rounded, size: 19, color: Color(0xFF9E9E9E)),
             SizedBox(width: 8),
-            Text(
-              'Cari alat musik favoritmu...',
-              style: TextStyle(fontSize: 12, color: Color(0xFFA8A8A8)),
+            Expanded(
+              child: Text(
+                'Cari alat musik favoritmu...',
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 12, color: Color(0xFFA8A8A8)),
+              ),
             ),
-            Spacer(),
+            SizedBox(width: 8),
             Icon(Icons.tune_rounded, size: 17, color: Color(0xFF757575)),
           ],
         ),
@@ -478,24 +480,28 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Jelajahi Kategori',
-                  style: TextStyle(
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF1E1E1E),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Jelajahi Kategori',
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF1E1E1E),
+                    ),
                   ),
-                ),
-                SizedBox(height: 1),
-                Text(
-                  'Pilihan lengkap instrumen & perlengkapan audio',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
-                ),
-              ],
+                  SizedBox(height: 1),
+                  Text(
+                    'Pilihan lengkap instrumen & perlengkapan audio',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(width: 8),
             GestureDetector(
               onTap: () => Navigator.pushNamed(context, '/all-products'),
               child: const Text(
@@ -644,29 +650,32 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'JNOVA GAMES',
-                    style: TextStyle(
-                      fontSize: 15.5,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      letterSpacing: 0.3,
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'JNOVA GAMES',
+                      style: TextStyle(
+                        fontSize: 15.5,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: 0.3,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 2),
-                  Text(
-                    'Ikuti irama. Pecahkan skor\ntertinggi!',
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      color: Color(0xFFD6CBC4),
-                      height: 1.3,
+                    SizedBox(height: 2),
+                    Text(
+                      'Ikuti irama. Pecahkan skor\ntertinggi!',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: Color(0xFFD6CBC4),
+                        height: 1.3,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               // Tombol Main Sekarang
               GestureDetector(
                 onTap: () => Navigator.pushNamed(context, '/games'),
@@ -723,24 +732,28 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Produk Pilihan',
-                  style: TextStyle(
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF1E1E1E),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Produk Pilihan',
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF1E1E1E),
+                    ),
                   ),
-                ),
-                SizedBox(height: 1),
-                Text(
-                  'Instrumen original bergaransi resmi distributor',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
-                ),
-              ],
+                  SizedBox(height: 1),
+                  Text(
+                    'Instrumen original bergaransi resmi distributor',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(width: 8),
             GestureDetector(
               onTap: () => Navigator.pushNamed(context, '/all-products'),
               child: const Text(
@@ -764,258 +777,28 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisCount: 2,
             mainAxisSpacing: 12,
             crossAxisSpacing: 10,
-            childAspectRatio: 0.62,
+            mainAxisExtent: 295,
           ),
           itemBuilder: (context, index) {
             final product = products[index];
             final isFav = _favService.isFavorite(product.id);
 
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFF2F0ED), width: 1.0),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Gambar Produk & Badge & Tombol Favorit
-                  Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(12),
-                        ),
-                        child: Container(
-                          height: 125,
-                          width: double.infinity,
-                          color: const Color(0xFFF7F7F7),
-                          child: Image.asset(
-                            product.image,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Icon(
-                                  Icons.music_note_rounded,
-                                  size: 40,
-                                  color: Color(0xFF9E9E9E),
-                                ),
-                          ),
-                        ),
-                      ),
-                      if (product.isOriginal)
-                        Positioned(
-                          top: 8,
-                          left: 8,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFF5500),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: const Text(
-                              'ORIGINAL',
-                              style: TextStyle(
-                                fontSize: 7.5,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                letterSpacing: 0.3,
-                              ),
-                            ),
-                          ),
-                        )
-                      else if (product.isBestSeller)
-                        Positioned(
-                          top: 8,
-                          left: 8,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF222222),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: const Text(
-                              'BEST SELLER',
-                              style: TextStyle(
-                                fontSize: 7.5,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                letterSpacing: 0.3,
-                              ),
-                            ),
-                          ),
-                        ),
-                      Positioned(
-                        top: 4,
-                        right: 4,
-                        child: GestureDetector(
-                          onTap: () => _favService.toggleFavorite(product),
-                          child: Container(
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.85),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              isFav
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_border_rounded,
-                              color: isFav
-                                  ? const Color(0xFFFF5500)
-                                  : const Color(0xFF7E7E7E),
-                              size: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  // Detail Info Produk
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          product.brand.toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 8.5,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF8E837D),
-                            letterSpacing: 0.4,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          product.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF1E1E1E),
-                            height: 1.25,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.star_rounded,
-                              size: 13,
-                              color: Color(0xFFF59E0B),
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              '${product.rating} (${product.reviewCount} ulasan)',
-                              style: const TextStyle(
-                                fontSize: 9,
-                                color: Color(0xFF7E7E7E),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          _formatRupiah(product.price),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFFFF5500),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 28,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFF5500),
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.zero,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              elevation: 0,
-                            ),
-                            onPressed: () => _addToCart(product),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.shopping_bag_outlined,
-                                  size: 13,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  '+ Keranjang',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            return ProductFavoriteCard(
+              product: product,
+              isFavorite: isFav,
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/product-detail',
+                  arguments: product,
+                );
+              },
+              onToggleFavorite: () => _favService.toggleFavorite(product),
+              onAddToCart: () => _addToCart(product),
             );
           },
         ),
       ],
-    );
-  }
-
-  /// Footer Garansi & Pengiriman Cepat
-  Widget _buildShippingFooter() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8F8F9),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEEEEEE), width: 0.8),
-      ),
-      child: const Row(
-        children: [
-          Icon(
-            Icons.local_shipping_outlined,
-            color: Color(0xFFFF5500),
-            size: 20,
-          ),
-          SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Pengiriman Cepat & Aman',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF1E1E1E),
-                  ),
-                ),
-                Text(
-                  'Packing kayu & asuransi resmi ke seluruh Indonesia',
-                  style: TextStyle(fontSize: 9.5, color: Color(0xFF7E7E7E)),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 
