@@ -350,7 +350,9 @@ class _CartScreenState extends State<CartScreen> {
     final int target = _cartService.targetPoints;
     final double progress = target > 0 ? (points / target).clamp(0.0, 1.0) : 1.0;
     final int pointsNeeded = (target - points).clamp(0, target);
-    final String tierTitle = '${_cartService.tierName} Terdeteksi';
+    final String tierTitle = _cartService.isMember
+        ? '${_cartService.tierName} Terdeteksi'
+        : 'Belum Menjadi Member';
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -379,27 +381,35 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
               const SizedBox(width: 10),
-              Text(
-                tierTitle,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+              Flexible(
+                child: Text(
+                  tierTitle,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimaryDark,
+                  ),
                 ),
               ),
               const SizedBox(width: 6),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFCE3D2),
+                  color: _cartService.isMember
+                      ? const Color(0xFFFCE3D2)
+                      : const Color(0xFFEDEBE7),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
                   _cartService.userTier,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFFA64A13),
+                    color: _cartService.isMember
+                        ? const Color(0xFFA64A13)
+                        : const Color(0xFF6E6560),
                   ),
                 ),
               ),
@@ -409,9 +419,11 @@ class _CartScreenState extends State<CartScreen> {
 
           // Teks Benefit Diskon
           Text(
-            pointsNeeded > 0
-                ? 'Diskon ${_cartService.discountPercentage}% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Kumpulkan $pointsNeeded poin lagi menuju ${_cartService.nextTierName} untuk benefit VIP & hadiah eksklusif!'
-                : 'Diskon ${_cartService.discountPercentage}% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Tingkat membership maksimal tercapai!',
+            _cartService.discountPercentage > 0
+                ? (pointsNeeded > 0
+                    ? 'Diskon ${_cartService.discountPercentage}% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Kumpulkan $pointsNeeded poin lagi menuju ${_cartService.nextTierName} untuk benefit VIP & hadiah eksklusif!'
+                    : 'Diskon ${_cartService.discountPercentage}% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Tingkat membership maksimal tercapai!')
+                : 'Belanja & kumpulkan minimal 1.000 poin untuk menjadi Silver Member dan nikmati diskon spesial 10%!',
             style: const TextStyle(
               fontSize: 10,
               color: Color(0xFF6E6560),
@@ -424,20 +436,30 @@ class _CartScreenState extends State<CartScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '${_cartService.tierName} (${points.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')} Poin)',
-                style: const TextStyle(
-                  fontSize: 9.5,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimaryDark,
+              Flexible(
+                child: Text(
+                  '${_cartService.tierName} (${points.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')} Poin)',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimaryDark,
+                  ),
                 ),
               ),
-              Text(
-                'Target ${_cartService.nextTierName}: ${target.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')}',
-                style: const TextStyle(
-                  fontSize: 9.5,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF888888),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  'Target ${_cartService.nextTierName}: ${target.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]}.')}',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  textAlign: TextAlign.end,
+                  style: const TextStyle(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF888888),
+                  ),
                 ),
               ),
             ],
@@ -496,23 +518,31 @@ class _CartScreenState extends State<CartScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Text(
-                    'Diskon ${_cartService.tierName} (${_cartService.discountPercentage}%)',
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: Color(0xFF6E6560),
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'Diskon ${_cartService.tierName} (${_cartService.discountPercentage}%)',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Color(0xFF6E6560),
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 4),
-                  const Icon(
-                    Icons.info_outline,
-                    size: 13,
-                    color: Color(0xFFA64A13),
-                  ),
-                ],
+                    const SizedBox(width: 4),
+                    const Icon(
+                      Icons.info_outline,
+                      size: 13,
+                      color: Color(0xFFA64A13),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Text(
                 '-${formatRupiah(discountAmount)}',
                 style: const TextStyle(

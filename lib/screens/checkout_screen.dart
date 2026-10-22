@@ -7,8 +7,10 @@ import '../models/order_model.dart';
 import '../models/product.dart';
 import '../models/store_branch.dart';
 import '../services/cart_service.dart';
+import '../services/blockchain_certificate_service.dart';
 import '../services/location_service.dart';
 import '../services/order_service.dart';
+import '../services/user_profile_service.dart';
 import '../widgets/app_bottom_nav.dart';
 import 'select_pickup_store_page.dart';
 
@@ -145,11 +147,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       _isProcessingPayment = true;
     });
 
+    final buyerName = BlockchainCertificateService.instance.getCurrentBuyerName();
+    final activeEmail = UserProfileService.instance.profile.email;
+
     final order = await _orderService.checkout(
       items: items,
       fulfillment: FulfillmentMethod.pickup,
       paymentMethod: _selectedPaymentMethod,
       store: _selectedStore,
+      recipientName: buyerName,
+      userEmail: activeEmail,
     );
 
     if (!mounted) return;
@@ -1054,42 +1061,49 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            InkWell(
-                              onTap: () => _openGoogleMaps(branch),
-                              borderRadius: BorderRadius.circular(6),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(
-                                    color: const Color(0xFFE0DDD7),
+                            Flexible(
+                              child: InkWell(
+                                onTap: () => _openGoogleMaps(branch),
+                                borderRadius: BorderRadius.circular(6),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
                                   ),
-                                ),
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.directions_outlined,
-                                      size: 12,
-                                      color: AppColors.primaryOrange,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                      color: const Color(0xFFE0DDD7),
                                     ),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      'Buka Rute Google Maps',
-                                      style: TextStyle(
-                                        fontSize: 9.5,
-                                        fontWeight: FontWeight.w700,
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.directions_outlined,
+                                        size: 12,
                                         color: AppColors.primaryOrange,
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(width: 4),
+                                      Flexible(
+                                        child: Text(
+                                          'Buka Rute Google Maps',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            fontSize: 9.5,
+                                            fontWeight: FontWeight.w700,
+                                            color: AppColors.primaryOrange,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
+                            const SizedBox(width: 6),
                             if (isSelected)
                               const Text(
                                 '✓ Toko Terpilih',
@@ -1267,7 +1281,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         vertical: 1.5,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primaryOrange,
+                        color: _cartService.isMember
+                            ? AppColors.primaryOrange
+                            : const Color(0xFF8E837D),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
@@ -1283,7 +1299,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Diskon ${_cartService.discountPercentage}% otomatis dipotong',
+                  _cartService.discountPercentage > 0
+                      ? 'Diskon ${_cartService.discountPercentage}% otomatis dipotong'
+                      : 'Kumpulkan min. 1.000 poin untuk diskon Silver',
                   style: const TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
                 ),
               ],

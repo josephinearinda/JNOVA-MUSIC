@@ -6,7 +6,11 @@ import '../models/product.dart';
 import '../services/cart_service.dart';
 import '../services/currency_service.dart';
 import '../services/favorite_service.dart';
+import '../services/membership_service.dart';
+import '../services/blockchain_certificate_service.dart';
+import '../services/product_stock_service.dart';
 import '../widgets/app_bottom_nav.dart';
+import 'blockchain_certificate_page.dart';
 
 /// Halaman DETAIL PRODUK JNOVAMUSIC sesuai desain Figma 6
 class ProductDetailScreen extends StatefulWidget {
@@ -31,11 +35,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final CartService _cartService = CartService.instance;
   final FavoriteService _favoriteService = FavoriteService.instance;
   final CurrencyService _currencyService = CurrencyService.instance;
+  final ProductStockService _stockService = ProductStockService.instance;
 
   int _selectedThumbIndex = 0;
   int _quantity = 1;
   late String _selectedColor;
   bool _isDescriptionExpanded = false;
+
+  int get currentStock =>
+      _stockService.getStock(widget.product.id, defaultStock: widget.product.stock);
+
+  bool get isOutOfStock => currentStock <= 0;
 
   List<Map<String, String>> get _thumbnails {
     if (widget.product.id.startsWith('catalog_')) {
@@ -60,6 +70,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _cartService.addListener(_handleStateChanged);
     _favoriteService.addListener(_handleStateChanged);
     _currencyService.addListener(_handleStateChanged);
+    _stockService.addListener(_handleStateChanged);
   }
 
   @override
@@ -67,15 +78,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     _cartService.removeListener(_handleStateChanged);
     _favoriteService.removeListener(_handleStateChanged);
     _currencyService.removeListener(_handleStateChanged);
+    _stockService.removeListener(_handleStateChanged);
     super.dispose();
   }
 
   void _handleStateChanged() {
-    if (mounted) setState(() {});
+    if (mounted) {
+      if (currentStock > 0 && _quantity > currentStock) {
+        _quantity = currentStock;
+      }
+      setState(() {});
+    }
   }
 
   void _incrementQuantity() {
-    if (_quantity < widget.product.stock) {
+    if (isOutOfStock) return;
+    if (_quantity < currentStock) {
       setState(() {
         _quantity++;
       });
@@ -83,7 +101,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Batas maksimum pembelian adalah ${widget.product.stock} unit.',
+            'Batas maksimum pembelian adalah $currentStock unit.',
           ),
           duration: const Duration(seconds: 1),
         ),
@@ -100,7 +118,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   void _handleAddToCart() {
-    _cartService.addToCart(widget.product, quantity: _quantity);
+    if (isOutOfStock) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Maaf, stok produk ini sedang habis.'),
+          backgroundColor: AppColors.textPrimaryDark,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    _cartService.addToCart(
+      widget.product.copyWith(stock: currentStock),
+      quantity: _quantity,
+    );
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -120,11 +151,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   void _handleBuyNow() {
-    _cartService.addToCart(widget.product, quantity: _quantity);
+    if (isOutOfStock) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Maaf, produk ini sedang habis terjual.'),
+          backgroundColor: AppColors.textPrimaryDark,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    _cartService.addToCart(
+      widget.product.copyWith(stock: currentStock),
+      quantity: _quantity,
+    );
     _handleOpenCart();
   }
 
   void _handleOpenCart() {
+    if (!mounted) return;
     if (widget.onOpenCart != null) {
       widget.onOpenCart!();
     } else {
@@ -133,6 +178,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   void _handleOpenSearch() {
+    if (!mounted) return;
     if (widget.onOpenSearch != null) {
       widget.onOpenSearch!();
     } else {
@@ -141,6 +187,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   void _handleBack() {
+    if (!mounted) return;
     if (widget.onBack != null) {
       widget.onBack!();
     } else if (Navigator.canPop(context)) {
@@ -233,12 +280,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     const SizedBox(height: 10),
 
                     // Status Stok
-                    _buildStockAlert(product.stock),
+                    _buildStockAlert(currentStock),
 
                     const SizedBox(height: 14),
 
                     // Keuntungan Membership (Silver Member 10%)
                     _buildMembershipCard(discountAmount, rewardPoints),
+
+                    // Jaminan Keaslian Blockchain (Khusus Kategori Instrumen > 6 Jt)
+                    if (product.hasBlockchainCertificate) ...[
+                      const SizedBox(height: 14),
+                      _buildBlockchainGuaranteeCard(product),
+                    ],
 
                     const SizedBox(height: 16),
 
@@ -249,7 +302,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     const SizedBox(height: 16),
 
                     // Jumlah Pembelian Stepper
-                    _buildQuantityStepper(product.stock),
+                    _buildQuantityStepper(currentStock),
 
                     const SizedBox(height: 18),
 
@@ -621,61 +674,68 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           final isSelected = _selectedThumbIndex == index;
           final thumb = _thumbnails[index];
 
-          return InkWell(
-            onTap: () {
-              setState(() {
-                _selectedThumbIndex = index;
-              });
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: 76,
-              height: 54,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF7F6F4),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: isSelected
-                      ? AppColors.primaryOrange
-                      : const Color(0xFFEBE8E3),
-                  width: isSelected ? 2.0 : 1.0,
-                ),
+          return Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: index == 0 ? 0 : 3.0,
+                right: index == _thumbnails.length - 1 ? 0 : 3.0,
               ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Image.asset(
-                        thumb['image']!,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(
-                              Icons.photo_size_select_actual_outlined,
-                              size: 20,
-                              color: AppColors.placeholder,
-                            ),
-                      ),
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _selectedThumbIndex = index;
+                  });
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  height: 54,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF7F6F4),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isSelected
+                          ? AppColors.primaryOrange
+                          : const Color(0xFFEBE8E3),
+                      width: isSelected ? 2.0 : 1.0,
                     ),
                   ),
-                  Positioned(
-                    bottom: 2,
-                    left: 0,
-                    right: 0,
-                    child: Text(
-                      thumb['title']!,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 7.5,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.3,
-                        color: isSelected
-                            ? AppColors.primaryOrange
-                            : const Color(0xFF6E6560),
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Image.asset(
+                            thumb['image']!,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(
+                                  Icons.photo_size_select_actual_outlined,
+                                  size: 20,
+                                  color: AppColors.placeholder,
+                                ),
+                          ),
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        bottom: 2,
+                        left: 0,
+                        right: 0,
+                        child: Text(
+                          thumb['title']!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 7.5,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.3,
+                            color: isSelected
+                                ? AppColors.primaryOrange
+                                : const Color(0xFF6E6560),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           );
@@ -688,30 +748,64 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            '${product.brand.toUpperCase()} GUITARS • USA HERITAGE',
-            style: const TextStyle(
-              fontSize: 9.5,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.5,
-              color: Color(0xFF8E837D),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF7F6F4),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
-            ),
+          Expanded(
             child: Text(
-              'Kode : ${product.code}',
+              '${product.brand.toUpperCase()} • ${product.category.toUpperCase()}',
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: 9.5,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF6E6560),
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.5,
+                color: Color(0xFF8E837D),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          if (product.hasBlockchainCertificate) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
+              margin: const EdgeInsets.only(right: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E162E),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: const Color(0xFF9E86FF), width: 0.8),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.verified_rounded, size: 10, color: Color(0xFFD6C7FF)),
+                  SizedBox(width: 3),
+                  Text(
+                    'ON-CHAIN',
+                    style: TextStyle(
+                      fontSize: 8,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFFD6C7FF),
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF7F6F4),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+              ),
+              child: Text(
+                'Kode : ${product.code}',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF6E6560),
+                ),
               ),
             ),
           ),
@@ -741,11 +835,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
             const SizedBox(width: 4),
-            Text(
-              '(${product.reviewCount} Pembeli Terverifikasi)',
-              style: const TextStyle(
-                fontSize: 10.5,
-                color: AppColors.textMuted,
+            Flexible(
+              child: Text(
+                '(${product.reviewCount} Pembeli Terverifikasi)',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 10.5,
+                  color: AppColors.textMuted,
+                ),
               ),
             ),
           ] else
@@ -758,6 +856,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             const Text('•', style: TextStyle(color: Color(0xFFCCC8C4))),
             const SizedBox(width: 8),
             const Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   Icons.local_fire_department_rounded,
@@ -791,11 +890,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: SizedBox(
               height: 42,
               child: OutlinedButton(
-                onPressed: _handleAddToCart,
+                onPressed: isOutOfStock ? null : _handleAddToCart,
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFF7ED),
-                  side: const BorderSide(
-                    color: AppColors.primaryOrange,
+                  backgroundColor: isOutOfStock
+                      ? const Color(0xFFF3F4F6)
+                      : const Color(0xFFFFF7ED),
+                  side: BorderSide(
+                    color: isOutOfStock
+                        ? const Color(0xFFE5E7EB)
+                        : AppColors.primaryOrange,
                     width: 1.2,
                   ),
                   shape: RoundedRectangleBorder(
@@ -803,19 +906,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                   padding: EdgeInsets.zero,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.shopping_bag_outlined,
+                      isOutOfStock
+                          ? Icons.remove_shopping_cart_rounded
+                          : Icons.shopping_bag_outlined,
                       size: 16,
-                      color: AppColors.primaryOrange,
+                      color: isOutOfStock
+                          ? const Color(0xFF9CA3AF)
+                          : AppColors.primaryOrange,
                     ),
-                    SizedBox(width: 6),
+                    const SizedBox(width: 6),
                     Text(
-                      '+ Keranjang',
+                      isOutOfStock ? 'Stok Habis' : '+ Keranjang',
                       style: TextStyle(
-                        color: AppColors.primaryOrange,
+                        color: isOutOfStock
+                            ? const Color(0xFF9CA3AF)
+                            : AppColors.primaryOrange,
                         fontSize: 12.5,
                         fontWeight: FontWeight.w800,
                       ),
@@ -833,24 +942,30 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: SizedBox(
               height: 42,
               child: ElevatedButton(
-                onPressed: _handleBuyNow,
+                onPressed: isOutOfStock ? null : _handleBuyNow,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryOrange,
+                  backgroundColor: isOutOfStock
+                      ? const Color(0xFFE5E7EB)
+                      : AppColors.primaryOrange,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                   padding: EdgeInsets.zero,
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.flash_on_rounded, size: 16, color: Colors.white),
-                    SizedBox(width: 4),
+                    Icon(
+                      Icons.flash_on_rounded,
+                      size: 16,
+                      color: isOutOfStock ? const Color(0xFF9CA3AF) : Colors.white,
+                    ),
+                    const SizedBox(width: 4),
                     Text(
-                      'Beli Sekarang',
+                      isOutOfStock ? 'Habis Terjual' : 'Beli Sekarang',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: isOutOfStock ? const Color(0xFF9CA3AF) : Colors.white,
                         fontSize: 12.5,
                         fontWeight: FontWeight.w800,
                       ),
@@ -866,14 +981,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _buildStockAlert(int stock) {
+    final isOut = stock <= 0;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFF7ED),
+          color: isOut ? const Color(0xFFFEF2F2) : const Color(0xFFFFF7ED),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0xFFFFEDD5), width: 1.0),
+          border: Border.all(
+            color: isOut ? const Color(0xFFFECACA) : const Color(0xFFFFEDD5),
+            width: 1.0,
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -881,18 +1000,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             Container(
               width: 7,
               height: 7,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primaryOrange,
+                color: isOut ? const Color(0xFFDC2626) : AppColors.primaryOrange,
               ),
             ),
             const SizedBox(width: 6),
             Text(
-              'Stok : $stock Unit Terakhir',
-              style: const TextStyle(
+              isOut ? 'Stok Habis (0 Unit Tersedia)' : 'Stok : $stock Unit Terakhir',
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFFB45309),
+                color: isOut ? const Color(0xFFB91C1C) : const Color(0xFFB45309),
               ),
             ),
           ],
@@ -929,11 +1048,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
               ),
               const SizedBox(width: 10),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Keuntungan Membership',
                       style: TextStyle(
                         fontSize: 12.5,
@@ -942,8 +1061,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ),
                     ),
                     Text(
-                      'Silver Member Terdeteksi',
-                      style: TextStyle(
+                      '${MembershipService.instance.tierName} Terdeteksi',
+                      style: const TextStyle(
                         fontSize: 10.5,
                         color: AppColors.textMuted,
                       ),
@@ -966,56 +1085,77 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 color: Color(0xFF5A524D),
                 height: 1.4,
               ),
-              children: [
-                const TextSpan(text: 'Dapatkan Potongan Tambahan '),
-                const TextSpan(
-                  text: '10% (Hemat ',
-                  style: TextStyle(fontWeight: FontWeight.w700),
-                ),
-                TextSpan(
-                  text: '${formatRupiah(discountAmount)})',
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-                const TextSpan(text: ' serta poin '),
-                TextSpan(
-                  text: '$rewardPoints Poin Reward',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.primaryOrange,
-                  ),
-                ),
-                const TextSpan(
-                  text: ' untuk pembelian ini. Kumpulkan poin menuju Gold untuk gratis ongkir se-Indonesia!',
-                ),
-              ],
+              children: MembershipService.instance.discountPercentage > 0
+                  ? [
+                      const TextSpan(text: 'Dapatkan Potongan Tambahan '),
+                      TextSpan(
+                        text: '${MembershipService.instance.discountPercentage}% (Hemat ',
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      TextSpan(
+                        text: '${formatRupiah(discountAmount)})',
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      const TextSpan(text: ' serta poin '),
+                      TextSpan(
+                        text: '$rewardPoints Poin Reward',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primaryOrange,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: ' untuk pembelian ini. Kumpulkan poin menuju Gold untuk gratis ongkir se-Indonesia!',
+                      ),
+                    ]
+                  : [
+                      const TextSpan(text: 'Dapatkan '),
+                      TextSpan(
+                        text: '$rewardPoints Poin Reward',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primaryOrange,
+                        ),
+                      ),
+                      TextSpan(
+                        text: ' dari pembelian ini. Kumpulkan ${(1000 - MembershipService.instance.currentPoints).clamp(0, 1000)} poin lagi untuk naik ke Silver Member dan nikmati diskon 10%!',
+                      ),
+                    ],
             ),
           ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/games');
-                },
-                child: const Row(
-                  children: [
-                    Text(
-                      'Pelajari Semua Tier Membership',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/games');
+                  },
+                  child: const Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          'Pelajari Semua Tier Membership',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimaryDark,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 14,
                         color: AppColors.textPrimaryDark,
                       ),
-                    ),
-                    Icon(
-                      Icons.chevron_right_rounded,
-                      size: 14,
-                      color: AppColors.textPrimaryDark,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 8,
@@ -1080,19 +1220,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ],
           ),
           const SizedBox(height: 10),
-          Row(
+          Wrap(
+            spacing: 10,
+            runSpacing: 8,
             children: [
               _buildColorSwatchChip(
                 name: 'Sunburst',
                 dotColor: const Color(0xFF8B4513),
               ),
-              const SizedBox(width: 10),
               _buildColorSwatchChip(
                 name: 'Polar White',
                 dotColor: const Color(0xFFF5F5F5),
                 hasBorder: true,
               ),
-              const SizedBox(width: 10),
               _buildColorSwatchChip(
                 name: 'Aquatone Blue',
                 dotColor: const Color(0xFF0284C7),
@@ -1164,32 +1304,40 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _buildQuantityStepper(int stock) {
+    final isOut = stock <= 0;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Jumlah Pembelian',
-                style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Jumlah Pembelian',
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimaryDark,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 1),
-              Text(
-                'Maksimal $stock unit per akun member',
-                style: const TextStyle(
-                  fontSize: 10.5,
-                  color: AppColors.textMuted,
+                const SizedBox(height: 1),
+                Text(
+                  isOut
+                      ? 'Stok saat ini sedang habis'
+                      : 'Maksimal $stock unit per akun member',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    fontSize: 10.5,
+                    color: AppColors.textMuted,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+          const SizedBox(width: 10),
 
           // Stepper Box
           Container(
@@ -1203,38 +1351,40 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  onPressed: _decrementQuantity,
+                  onPressed: isOut ? null : _decrementQuantity,
                   icon: const Icon(Icons.remove, size: 14),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
                     minWidth: 32,
                     minHeight: 32,
                   ),
-                  color: _quantity > 1
+                  color: !isOut && _quantity > 1
                       ? AppColors.textPrimaryDark
                       : AppColors.placeholder,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
-                    '$_quantity',
-                    style: const TextStyle(
+                    isOut ? '0' : '$_quantity',
+                    style: TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+                      color: isOut
+                          ? AppColors.textMuted
+                          : AppColors.textPrimaryDark,
                     ),
                   ),
                 ),
                 IconButton(
-                  onPressed: _incrementQuantity,
+                  onPressed: isOut ? null : _incrementQuantity,
                   icon: const Icon(Icons.add, size: 14),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
                     minWidth: 32,
                     minHeight: 32,
                   ),
-                  color: _quantity < stock
-                      ? AppColors.textPrimaryDark
+                  color: !isOut && _quantity < stock
+                      ? AppColors.primaryOrange
                       : AppColors.placeholder,
                 ),
               ],
@@ -1483,6 +1633,130 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBlockchainGuaranteeCard(Product product) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.all(14.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF1E172E), Color(0xFF120E1C)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(
+          color: const Color(0xFFE5A93C).withValues(alpha: 0.5),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFE5A93C).withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2E2248),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFF9E86FF), width: 0.8),
+                ),
+                child: const Icon(
+                  Icons.verified_user_rounded,
+                  size: 18,
+                  color: Color(0xFFD6C7FF),
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Sertifikat Keaslian Blockchain (ERC-721)',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'Jaminan originalitas permanen di jaringan Polygon',
+                      style: TextStyle(fontSize: 9.5, color: Color(0xFFBFB5D1)),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F3B2E),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Text(
+                  'RESMI',
+                  style: TextStyle(
+                    fontSize: 8.5,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF34D399),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Pembelian instrumen ini dilengkapi NFT Sertifikat Keaslian resmi di blockchain Polygon dengan nomor seri unik.',
+            style: TextStyle(
+              fontSize: 10.5,
+              color: Color(0xFFD1C8DC),
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 10),
+          InkWell(
+            onTap: () {
+              final cert = BlockchainCertificateService.instance
+                  .getCertificateForProduct(product);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      BlockchainCertificatePage(certificate: cert),
+                ),
+              );
+            },
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.visibility_rounded, size: 14, color: Color(0xFFFF7A33)),
+                SizedBox(width: 6),
+                Text(
+                  'Pratinjau Sertifikat Keaslian Digital',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFFFF7A33),
+                  ),
+                ),
+                SizedBox(width: 2),
+                Icon(Icons.arrow_forward_ios_rounded, size: 10, color: Color(0xFFFF7A33)),
+              ],
+            ),
           ),
         ],
       ),

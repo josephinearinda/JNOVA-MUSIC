@@ -3,10 +3,11 @@ import '../core/constants/app_colors.dart';
 import '../core/storage/secure_storage_service.dart';
 import '../services/auth_service.dart';
 import '../services/biometric_service.dart';
+import '../services/cart_service.dart';
+import '../services/favorite_service.dart';
 import '../services/membership_service.dart';
 import '../services/order_service.dart';
 import '../services/user_profile_service.dart';
-import '../widgets/google_logo.dart';
 import 'register_screen.dart';
 
 /// Halaman Login JNOVAMUSIC sesuai spesifikasi desain Figma asli.
@@ -131,6 +132,8 @@ class _LoginScreenState extends State<LoginScreen> {
       await UserProfileService.instance.loadProfileForUser(email);
       await MembershipService.instance.loadPointsForUser(email);
       await OrderService.instance.loadOrdersForUser(email);
+      await FavoriteService.instance.loadFavoritesForUser(email);
+      await CartService.instance.loadCartForUser(email);
       if (!mounted) return;
       if (widget.onLoginSuccess != null) {
         widget.onLoginSuccess!();
@@ -158,12 +161,30 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    // 2. Periksa apakah fitur sudah diaktifkan untuk akun
-    final lastUser = await SecureStorageService.instance.getLastBiometricUser();
-    final isEnabled = lastUser != null &&
-        await SecureStorageService.instance.isBiometricEnabledForUser(lastUser);
+    // 2. Tentukan akun target untuk login biometrik
+    final typedEmail = _emailController.text.trim().toLowerCase();
+    String? targetUser;
+    if (typedEmail.isNotEmpty &&
+        await SecureStorageService.instance.isBiometricEnabledForUser(typedEmail)) {
+      targetUser = typedEmail;
+    } else {
+      targetUser = await SecureStorageService.instance.getLastBiometricUser();
+    }
 
-    if (lastUser == null || !isEnabled) {
+    if (targetUser == null || targetUser.isEmpty) {
+      final regUsers = await SecureStorageService.instance.getRegisteredUsers();
+      for (final key in regUsers.keys) {
+        if (await SecureStorageService.instance.isBiometricEnabledForUser(key)) {
+          targetUser = key;
+          break;
+        }
+      }
+    }
+
+    final isEnabled = targetUser != null &&
+        await SecureStorageService.instance.isBiometricEnabledForUser(targetUser);
+
+    if (targetUser == null || !isEnabled) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -195,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // 4. Munculkan dialog autentikasi biometrik resmi Android
     final bioResult = await BiometricService.instance.authenticate(
-      localizedReason: 'Pindai sidik jari Anda untuk masuk sebagai $lastUser',
+      localizedReason: 'Pindai sidik jari Anda untuk masuk sebagai $targetUser',
     );
 
     if (!mounted) return;
@@ -216,7 +237,9 @@ class _LoginScreenState extends State<LoginScreen> {
       _isBiometricLoading = true;
     });
 
-    final authResult = await AuthService.instance.loginWithBiometrics();
+    final authResult = await AuthService.instance.loginWithBiometrics(
+      email: targetUser,
+    );
 
     if (!mounted) return;
 
@@ -239,14 +262,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (authResult.isSuccess) {
       final bioRecord =
-          await SecureStorageService.instance.getBiometricAuthRecord(lastUser);
+          await SecureStorageService.instance.getBiometricAuthRecord(targetUser);
       final fullName = bioRecord?['fullName'] as String?;
       await UserProfileService.instance.loadProfileForUser(
-        lastUser,
+        targetUser,
         fullName: fullName != null && fullName.isNotEmpty ? fullName : null,
       );
-      await MembershipService.instance.loadPointsForUser(lastUser);
-      await OrderService.instance.loadOrdersForUser(lastUser);
+      await MembershipService.instance.loadPointsForUser(targetUser);
+      await OrderService.instance.loadOrdersForUser(targetUser);
+      await FavoriteService.instance.loadFavoritesForUser(targetUser);
+      await CartService.instance.loadCartForUser(targetUser);
       if (!mounted) return;
       if (widget.onLoginSuccess != null) {
         widget.onLoginSuccess!();
@@ -254,27 +279,6 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacementNamed(context, '/home');
       }
     }
-  }
-
-  /// Penanganan tombol Google
-  Future<void> _handleGoogleLogin() async {
-    final result = await AuthService.instance.loginWithGoogle();
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          result.message,
-          style: const TextStyle(fontSize: 13),
-        ),
-        backgroundColor: AppColors.darkGrey,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      ),
-    );
   }
 
   /// Penanganan Lupa Kata Sandi
@@ -691,76 +695,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
 
-                const SizedBox(height: 18),
-
-                // F. Pemisah ATAU
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Divider(
-                        color: AppColors.borderLight,
-                        thickness: 1,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Text(
-                        'ATAU',
-                        style: TextStyle(
-                          color: AppColors.textMuted.withValues(alpha: 0.8),
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.6,
-                        ),
-                      ),
-                    ),
-                    const Expanded(
-                      child: Divider(
-                        color: AppColors.borderLight,
-                        thickness: 1,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 14),
-
-                // F. Tombol Lanjutkan dengan Google
-                SizedBox(
-                  width: double.infinity,
-                  height: 46,
-                  child: OutlinedButton(
-                    onPressed: _handleGoogleLogin,
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      side: const BorderSide(
-                        color: AppColors.borderLight,
-                        width: 1,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GoogleLogo(size: 18),
-                        SizedBox(width: 10),
-                        Text(
-                          'Lanjutkan dengan Google',
-                          style: TextStyle(
-                            color: AppColors.textPrimaryDark,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 18),
+                const SizedBox(height: 20),
 
                 // G. Tiga Kategori Toko (Gitar & Bass, Keyboard, Audio & Studio)
                 Row(

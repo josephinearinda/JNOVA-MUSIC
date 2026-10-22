@@ -4,7 +4,8 @@ import '../core/constants/app_colors.dart';
 import '../services/user_profile_service.dart';
 import '../widgets/app_bottom_nav.dart';
 
-/// Halaman UBAH ALAMAT JNOVAMUSIC sesuai desain referensi visual resmi
+/// Halaman UBAH ALAMAT JNOVAMUSIC
+/// Disesuaikan agar struktur dan nama field persis seperti formulir alamat saat registrasi akun.
 class AddressEditPage extends StatefulWidget {
   final VoidCallback? onBack;
   final VoidCallback? onSaved;
@@ -24,51 +25,55 @@ class _AddressEditPageState extends State<AddressEditPage> {
   late TextEditingController _recipientNameController;
   late TextEditingController _phoneController;
   late TextEditingController _streetAddressController;
-  late TextEditingController _rtRwController;
+  late TextEditingController _kelurahanController;
+  late TextEditingController _kecamatanController;
+  late TextEditingController _cityController;
+  late TextEditingController _provinceController;
   late TextEditingController _postalCodeController;
   late TextEditingController _courierNotesController;
-
-  String _selectedProvince = 'DKI Jakarta';
-  String _selectedCity = 'Kota Jakarta Utara';
-  String _selectedKecamatan = 'Kelapa Gading';
-  String _selectedKelurahan = 'Kelapa Gading Brt';
 
   bool _isPrimaryAddress = true;
   bool _isLoading = false;
 
-  final List<String> _provinces = const [
+  static const List<String> _provinces = [
+    'Aceh',
+    'Sumatera Utara',
+    'Sumatera Barat',
+    'Riau',
+    'Kepulauan Riau',
+    'Jambi',
+    'Sumatera Selatan',
+    'Kepulauan Bangka Belitung',
+    'Bengkulu',
+    'Lampung',
     'DKI Jakarta',
+    'Banten',
     'Jawa Barat',
     'Jawa Tengah',
     'DI Yogyakarta',
     'Jawa Timur',
-    'Banten',
     'Bali',
-  ];
-
-  final List<String> _cities = const [
-    'Kota Jakarta Utara',
-    'Kota Jakarta Selatan',
-    'Kota Jakarta Pusat',
-    'Kota Jakarta Barat',
-    'Kota Jakarta Timur',
-    'Kota Bandung',
-    'Kota Surabaya',
-  ];
-
-  final List<String> _kecamatans = const [
-    'Kelapa Gading',
-    'Tanjung Priok',
-    'Koja',
-    'Cilincing',
-    'Pademangan',
-    'Penjaringan',
-  ];
-
-  final List<String> _kelurahans = const [
-    'Kelapa Gading Brt',
-    'Kelapa Gading Timur',
-    'Pegangsaan Dua',
+    'Nusa Tenggara Barat',
+    'Nusa Tenggara Timur',
+    'Kalimantan Barat',
+    'Kalimantan Tengah',
+    'Kalimantan Selatan',
+    'Kalimantan Timur',
+    'Kalimantan Utara',
+    'Sulawesi Utara',
+    'Gorontalo',
+    'Sulawesi Tengah',
+    'Sulawesi Barat',
+    'Sulawesi Selatan',
+    'Sulawesi Tenggara',
+    'Maluku',
+    'Maluku Utara',
+    'Papua',
+    'Papua Barat',
+    'Papua Selatan',
+    'Papua Tengah',
+    'Papua Pegunungan',
+    'Papua Barat Daya',
   ];
 
   @override
@@ -82,7 +87,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
           : 'Rumah Utama',
     );
     _recipientNameController = TextEditingController(
-      text: profile.fullName.isNotEmpty ? profile.fullName : 'Budi Pratama',
+      text: profile.fullName.isNotEmpty ? profile.fullName : '',
     );
 
     // Format phone: strip +62 if already present
@@ -92,37 +97,29 @@ class _AddressEditPageState extends State<AddressEditPage> {
     } else if (phone.startsWith('62')) {
       phone = phone.substring(2).trim();
     }
-    _phoneController = TextEditingController(
-      text: phone.isNotEmpty ? phone : '812-3456-7890',
-    );
+    _phoneController = TextEditingController(text: phone);
 
     _streetAddressController = TextEditingController(
-      text: profile.streetAddress.isNotEmpty
-          ? profile.streetAddress
-          : 'Jl. Musik Harmoni No. 42',
+      text: profile.streetAddress.isNotEmpty ? profile.streetAddress : '',
     );
-    _rtRwController = TextEditingController(
-      text: profile.rtRw.isNotEmpty ? profile.rtRw : 'RT 04 / RW 08',
+    _kelurahanController = TextEditingController(
+      text: profile.kelurahan.isNotEmpty ? profile.kelurahan : '',
+    );
+    _kecamatanController = TextEditingController(
+      text: profile.kecamatan.isNotEmpty ? profile.kecamatan : '',
+    );
+    _cityController = TextEditingController(
+      text: profile.city.isNotEmpty ? profile.city : '',
+    );
+    _provinceController = TextEditingController(
+      text: profile.province.isNotEmpty ? profile.province : '',
     );
     _postalCodeController = TextEditingController(
-      text: profile.postalCode.isNotEmpty ? profile.postalCode : '14240',
+      text: profile.postalCode.isNotEmpty ? profile.postalCode : '',
     );
     _courierNotesController = TextEditingController(
-      text: profile.courierNotes.isNotEmpty
-          ? profile.courierNotes
-          : 'Dekat Studio Musik Melodi, pagar hitam ada bel pintu.',
+      text: profile.courierNotes.isNotEmpty ? profile.courierNotes : '',
     );
-
-    if (profile.province.isNotEmpty && _provinces.contains(profile.province)) {
-      _selectedProvince = profile.province;
-    }
-    if (profile.city.isNotEmpty && _cities.contains(profile.city)) {
-      _selectedCity = profile.city;
-    }
-    if (profile.kecamatan.isNotEmpty &&
-        _kecamatans.contains(profile.kecamatan)) {
-      _selectedKecamatan = profile.kecamatan;
-    }
 
     _isPrimaryAddress = profile.isDefaultAddress;
   }
@@ -133,7 +130,10 @@ class _AddressEditPageState extends State<AddressEditPage> {
     _recipientNameController.dispose();
     _phoneController.dispose();
     _streetAddressController.dispose();
-    _rtRwController.dispose();
+    _kelurahanController.dispose();
+    _kecamatanController.dispose();
+    _cityController.dispose();
+    _provinceController.dispose();
     _postalCodeController.dispose();
     _courierNotesController.dispose();
     super.dispose();
@@ -149,6 +149,82 @@ class _AddressEditPageState extends State<AddressEditPage> {
     }
   }
 
+  void _showProvincePicker() {
+    FocusScope.of(context).unfocus();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text(
+                  'Pilih Provinsi',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1E1E1E),
+                  ),
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _provinces.length,
+                  itemBuilder: (context, index) {
+                    final province = _provinces[index];
+                    final isSelected = _provinceController.text == province;
+                    return ListTile(
+                      title: Text(
+                        province,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w400,
+                          color: isSelected
+                              ? const Color(0xFFFF5500)
+                              : const Color(0xFF1E1E1E),
+                        ),
+                      ),
+                      trailing: isSelected
+                          ? const Icon(
+                              Icons.check,
+                              color: Color(0xFFFF5500),
+                              size: 18,
+                            )
+                          : null,
+                      onTap: () {
+                        setState(() {
+                          _provinceController.text = province;
+                        });
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _handleSave() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -156,17 +232,20 @@ class _AddressEditPageState extends State<AddressEditPage> {
       _isLoading = true;
     });
 
+    final phoneDigits = _phoneController.text.trim();
+    final fullPhone = phoneDigits.isNotEmpty ? '+62 $phoneDigits' : '';
+
     final success = await _profileService.updateProfile(
       fullName: _recipientNameController.text.trim(),
-      phoneNumber: '+62 ${_phoneController.text.trim()}',
+      phoneNumber: fullPhone,
+      addressLabel: _labelController.text.trim(),
       streetAddress: _streetAddressController.text.trim(),
-      rtRw: _rtRwController.text.trim(),
-      courierNotes: _courierNotesController.text.trim(),
-      kelurahan: _selectedKelurahan,
-      kecamatan: _selectedKecamatan,
-      city: _selectedCity,
-      province: _selectedProvince,
+      kelurahan: _kelurahanController.text.trim(),
+      kecamatan: _kecamatanController.text.trim(),
+      city: _cityController.text.trim(),
+      province: _provinceController.text.trim(),
       postalCode: _postalCodeController.text.trim(),
+      courierNotes: _courierNotesController.text.trim(),
       isDefaultAddress: _isPrimaryAddress,
     );
 
@@ -180,6 +259,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
         const SnackBar(
           content: Text('Alamat pengiriman berhasil diperbarui!'),
           backgroundColor: Color(0xFF1E1E1E),
+          behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 2),
         ),
       );
@@ -281,7 +361,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Top App Bar dengan Soundwave Logo, Pencarian, Notifikasi, Avatar
+            // Top App Bar
             _buildTopAppBar(context),
 
             // Form Konten Scrollable
@@ -307,7 +387,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
 
                       const SizedBox(height: 14),
 
-                      // Form Input Alamat
+                      // Form Input Alamat (Sesuai kolom pendaftaran: Alamat Lengkap, Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi, Kode Pos)
                       _buildAddressFormFields(),
 
                       const SizedBox(height: 14),
@@ -359,7 +439,6 @@ class _AddressEditPageState extends State<AddressEditPage> {
       ),
       child: Row(
         children: [
-          // Soundwave Logo + Brand Name
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -401,8 +480,6 @@ class _AddressEditPageState extends State<AddressEditPage> {
             ],
           ),
           const Spacer(),
-
-          // Search Icon
           IconButton(
             icon: const Icon(Icons.search_rounded, size: 21),
             onPressed: () => Navigator.pushNamed(context, '/search'),
@@ -411,8 +488,6 @@ class _AddressEditPageState extends State<AddressEditPage> {
             constraints: const BoxConstraints(),
           ),
           const SizedBox(width: 14),
-
-          // Notification Bell with Badge Dot
           Stack(
             children: [
               IconButton(
@@ -437,8 +512,6 @@ class _AddressEditPageState extends State<AddressEditPage> {
             ],
           ),
           const SizedBox(width: 12),
-
-          // Profile Avatar
           GestureDetector(
             onTap: () => Navigator.pushNamed(context, '/profile'),
             child: Container(
@@ -666,33 +739,35 @@ class _AddressEditPageState extends State<AddressEditPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Label Alamat
+          // 1. Label Alamat
           _buildInputLabel('Label Alamat'),
           const SizedBox(height: 5),
           _buildTextFormField(
             controller: _labelController,
             prefixIcon: Icons.bookmark_outline_rounded,
+            hintText: 'Contoh: Rumah Utama, Kantor, Studio',
           ),
           const SizedBox(height: 12),
 
-          // Nama Penerima
+          // 2. Nama Penerima
           _buildInputLabel('Nama Penerima', rightNote: '* Wajib'),
           const SizedBox(height: 5),
           _buildTextFormField(
             controller: _recipientNameController,
             prefixIcon: Icons.person_outline_rounded,
+            hintText: 'Nama lengkap penerima',
             validator: (v) =>
                 v == null || v.trim().isEmpty ? 'Nama penerima wajib diisi' : null,
           ),
           const SizedBox(height: 12),
 
-          // Nomor HP Penerima dengan Badge +62
+          // 3. Nomor HP Penerima dengan Badge +62
           _buildInputLabel('Nomor HP Penerima', rightNote: '* Wajib'),
           const SizedBox(height: 5),
           Row(
             children: [
               Container(
-                height: 40,
+                height: 42,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF4F2EE),
@@ -729,131 +804,102 @@ class _AddressEditPageState extends State<AddressEditPage> {
           ),
           const SizedBox(height: 12),
 
-          // Alamat Jalan & Nomor Rumah
-          _buildInputLabel('Alamat Jalan & Nomor Rumah', rightNote: '* Wajib'),
+          // 4. Alamat Lengkap (Sesuai Form Pendaftaran)
+          _buildInputLabel('Alamat Lengkap', rightNote: '* Wajib'),
           const SizedBox(height: 5),
           _buildTextFormField(
             controller: _streetAddressController,
-            prefixIcon: Icons.location_on_outlined,
-            hintText: 'Nama jalan, nomor rumah, gedung...',
+            prefixIcon: Icons.home_outlined,
+            hintText: 'Masukkan nama jalan, nomor bangunan, RT/RW',
             validator: (v) => v == null || v.trim().isEmpty
-                ? 'Alamat jalan wajib diisi'
+                ? 'Alamat lengkap wajib diisi'
                 : null,
           ),
           const SizedBox(height: 12),
 
-          // RT / RW & Kode Pos
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildInputLabel('RT / RW (Opsional)'),
-                    const SizedBox(height: 5),
-                    _buildTextFormField(
-                      controller: _rtRwController,
-                      hintText: 'RT 04 / RW 08',
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildInputLabel('Kode Pos', rightNote: '* Wajib'),
-                    const SizedBox(height: 5),
-                    _buildTextFormField(
-                      controller: _postalCodeController,
-                      keyboardType: TextInputType.number,
-                      hintText: '14240',
-                      validator: (v) => v == null || v.trim().isEmpty
-                          ? 'Kode pos wajib diisi'
-                          : null,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          // 5. Kelurahan (Sesuai Form Pendaftaran)
+          _buildInputLabel('Kelurahan', rightNote: '* Wajib'),
+          const SizedBox(height: 5),
+          _buildTextFormField(
+            controller: _kelurahanController,
+            prefixIcon: Icons.location_on_outlined,
+            hintText: 'Masukkan kelurahan / desa',
+            validator: (v) => v == null || v.trim().isEmpty
+                ? 'Kelurahan wajib diisi'
+                : null,
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
 
-          // Kartu Wilayah Administratif
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'WILAYAH ADMINISTRATIF',
-                  style: TextStyle(
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
-                    color: Color(0xFF6E6560),
-                  ),
+          // 6. Kecamatan (Sesuai Form Pendaftaran)
+          _buildInputLabel('Kecamatan', rightNote: '* Wajib'),
+          const SizedBox(height: 5),
+          _buildTextFormField(
+            controller: _kecamatanController,
+            prefixIcon: Icons.location_city_outlined,
+            hintText: 'Masukkan kecamatan',
+            validator: (v) => v == null || v.trim().isEmpty
+                ? 'Kecamatan wajib diisi'
+                : null,
+          ),
+          const SizedBox(height: 12),
+
+          // 7. Kota/Kabupaten (Sesuai Form Pendaftaran)
+          _buildInputLabel('Kota/Kabupaten', rightNote: '* Wajib'),
+          const SizedBox(height: 5),
+          _buildTextFormField(
+            controller: _cityController,
+            prefixIcon: Icons.apartment_outlined,
+            hintText: 'Contoh: Jakarta Pusat',
+            validator: (v) => v == null || v.trim().isEmpty
+                ? 'Kota/Kabupaten wajib diisi'
+                : null,
+          ),
+          const SizedBox(height: 12),
+
+          // 8. Provinsi (Sesuai Form Pendaftaran, dengan Modal Picker)
+          _buildInputLabel('Provinsi', rightNote: '* Wajib'),
+          const SizedBox(height: 5),
+          GestureDetector(
+            onTap: _showProvincePicker,
+            child: AbsorbPointer(
+              child: _buildTextFormField(
+                controller: _provinceController,
+                prefixIcon: Icons.map_outlined,
+                hintText: 'Pilih provinsi',
+                suffixIcon: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Color(0xFF757575),
+                  size: 20,
                 ),
-                const SizedBox(height: 10),
-
-                // Provinsi
-                _buildInputLabel('Provinsi *'),
-                const SizedBox(height: 4),
-                _buildDropdown(_provinces, _selectedProvince, (val) {
-                  setState(() => _selectedProvince = val!);
-                }),
-                const SizedBox(height: 10),
-
-                // Kabupaten / Kota
-                _buildInputLabel('Kabupaten / Kota *'),
-                const SizedBox(height: 4),
-                _buildDropdown(_cities, _selectedCity, (val) {
-                  setState(() => _selectedCity = val!);
-                }),
-                const SizedBox(height: 10),
-
-                // Kecamatan & Kelurahan
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildInputLabel('Kecamatan *'),
-                          const SizedBox(height: 4),
-                          _buildDropdown(_kecamatans, _selectedKecamatan, (val) {
-                            setState(() => _selectedKecamatan = val!);
-                          }),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildInputLabel('Kelurahan *'),
-                          const SizedBox(height: 4),
-                          _buildDropdown(_kelurahans, _selectedKelurahan, (val) {
-                            setState(() => _selectedKelurahan = val!);
-                          }),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                validator: (v) => v == null || v.trim().isEmpty
+                    ? 'Provinsi wajib dipilih'
+                    : null,
+              ),
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
 
-          // Catatan untuk Kurir
+          // 9. Kode Pos (Sesuai Form Pendaftaran)
+          _buildInputLabel('Kode Pos', rightNote: '* Wajib'),
+          const SizedBox(height: 5),
+          _buildTextFormField(
+            controller: _postalCodeController,
+            keyboardType: TextInputType.number,
+            prefixIcon: Icons.markunread_mailbox_outlined,
+            hintText: 'Contoh: 10110',
+            validator: (v) {
+              if (v == null || v.trim().isEmpty) {
+                return 'Kode Pos wajib diisi';
+              }
+              if (!RegExp(r'^\d{5}$').hasMatch(v.trim())) {
+                return 'Kode Pos harus 5 digit angka';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 12),
+
+          // 10. Catatan untuk Kurir (Opsional)
           _buildInputLabel('Catatan untuk Kurir', rightNote: 'Opsional'),
           const SizedBox(height: 5),
           Container(
@@ -876,7 +922,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 border: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
-                hintText: 'Dekat Studio Musik Melodi, pagar hitam ada bel pintu.',
+                hintText: 'Dekat patokan rumah, warna pagar, ada bel pintu...',
                 hintStyle: TextStyle(fontSize: 11.5, color: Color(0xFF9E9E9E)),
               ),
             ),
@@ -1092,12 +1138,13 @@ class _AddressEditPageState extends State<AddressEditPage> {
   Widget _buildTextFormField({
     required TextEditingController controller,
     IconData? prefixIcon,
+    Widget? suffixIcon,
     TextInputType? keyboardType,
     String? hintText,
     String? Function(String?)? validator,
   }) {
     return Container(
-      height: 40,
+      height: 42,
       decoration: BoxDecoration(
         color: const Color(0xFFF4F2EE),
         borderRadius: BorderRadius.circular(10),
@@ -1115,7 +1162,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 12,
-            vertical: 10,
+            vertical: 11,
           ),
           prefixIcon: prefixIcon != null
               ? Icon(prefixIcon, size: 16, color: const Color(0xFF7E756F))
@@ -1124,48 +1171,14 @@ class _AddressEditPageState extends State<AddressEditPage> {
             minWidth: 34,
             minHeight: 34,
           ),
+          suffixIcon: suffixIcon,
+          suffixIconConstraints: const BoxConstraints(
+            minWidth: 34,
+            minHeight: 34,
+          ),
           hintText: hintText,
           hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF9E9E9E)),
           border: InputBorder.none,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDropdown(
-    List<String> items,
-    String selected,
-    ValueChanged<String?> onChanged,
-  ) {
-    final value = items.contains(selected) ? selected : items.first;
-
-    return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF4F2EE),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          isExpanded: true,
-          icon: const Icon(
-            Icons.keyboard_arrow_down_rounded,
-            size: 20,
-            color: Color(0xFF6E6560),
-          ),
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF1E1E1E),
-          ),
-          dropdownColor: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          items: items.map((e) {
-            return DropdownMenuItem<String>(value: e, child: Text(e));
-          }).toList(),
-          onChanged: onChanged,
         ),
       ),
     );

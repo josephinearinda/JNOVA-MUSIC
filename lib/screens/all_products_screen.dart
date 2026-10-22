@@ -6,6 +6,7 @@ import '../models/product.dart';
 import '../services/cart_service.dart';
 import '../services/currency_service.dart';
 import '../services/favorite_service.dart';
+import '../services/product_stock_service.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/product_favorite_card.dart';
 
@@ -34,6 +35,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   final CartService _cartService = CartService.instance;
   final FavoriteService _favoriteService = FavoriteService.instance;
   final CurrencyService _currencyService = CurrencyService.instance;
+  final ProductStockService _stockService = ProductStockService.instance;
 
   String _selectedCategory = 'Semua';
   String _selectedSort = 'Terpopuler';
@@ -53,6 +55,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     _cartService.addListener(_handleStateChanged);
     _favoriteService.addListener(_handleStateChanged);
     _currencyService.addListener(_handleStateChanged);
+    _stockService.addListener(_handleStateChanged);
     _loadProductsFromRepository();
   }
 
@@ -72,6 +75,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     _cartService.removeListener(_handleStateChanged);
     _favoriteService.removeListener(_handleStateChanged);
     _currencyService.removeListener(_handleStateChanged);
+    _stockService.removeListener(_handleStateChanged);
     super.dispose();
   }
 
@@ -107,10 +111,11 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
         break;
     }
 
-    return list;
+    return list.map((p) => _stockService.applyStock(p)).toList();
   }
 
   void _handleSelectProduct(Product product) {
+    if (!mounted) return;
     if (widget.onSelectProduct != null) {
       widget.onSelectProduct!(product);
     } else {
@@ -119,6 +124,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   }
 
   void _handleOpenCart() {
+    if (!mounted) return;
     if (widget.onOpenCart != null) {
       widget.onOpenCart!();
     } else {
@@ -127,6 +133,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   }
 
   void _handleOpenSearch() {
+    if (!mounted) return;
     if (widget.onOpenSearch != null) {
       widget.onOpenSearch!();
     } else {
@@ -135,6 +142,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   }
 
   void _handleBack() {
+    if (!mounted) return;
     if (widget.onBack != null) {
       widget.onBack!();
     } else if (Navigator.canPop(context)) {
@@ -204,6 +212,17 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                               _favoriteService.toggleFavorite(product);
                             },
                             onAddToCart: () {
+                              if (_stockService.isOutOfStock(product.id)) {
+                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Maaf, stok produk ini sedang habis.'),
+                                    backgroundColor: AppColors.textPrimaryDark,
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                                return;
+                              }
                               _cartService.addToCart(product);
                               ScaffoldMessenger.of(context)
                                   .hideCurrentSnackBar();

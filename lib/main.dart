@@ -39,13 +39,22 @@ import 'screens/point_history_page.dart';
 import 'screens/suggestion_review_page.dart';
 import 'screens/ai_chat_page.dart';
 import 'screens/select_pickup_store_page.dart';
+import 'screens/my_certificates_screen.dart';
+import 'screens/blockchain_certificate_page.dart';
+import 'models/blockchain_certificate.dart';
 import 'models/store_branch.dart';
 import 'core/config/app_config.dart';
 import 'data/datasources/local/app_database.dart';
 import 'data/datasources/remote/supabase_client_service.dart';
 import 'services/notification_background_sync_service.dart';
 import 'services/notification_service.dart';
+import 'core/storage/secure_storage_service.dart';
 import 'services/auth_service.dart';
+import 'services/cart_service.dart';
+import 'services/favorite_service.dart';
+import 'services/membership_service.dart';
+import 'services/order_service.dart';
+import 'services/user_profile_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -96,6 +105,22 @@ class MyApp extends StatelessWidget {
         '/': (context) => SplashScreen(
           onAnimationFinished: () async {
             final hasSession = await AuthService.instance.hasActiveSession();
+            if (hasSession) {
+              final email = await SecureStorageService.instance.getUserEmail();
+              if (email != null && email.isNotEmpty) {
+                await UserProfileService.instance.loadProfileForUser(email);
+                await MembershipService.instance.loadPointsForUser(email);
+                await OrderService.instance.loadOrdersForUser(email);
+                await FavoriteService.instance.loadFavoritesForUser(email);
+                await CartService.instance.loadCartForUser(email);
+              }
+            } else {
+              UserProfileService.instance.resetProfile();
+              MembershipService.instance.resetPoints();
+              OrderService.instance.resetOrders();
+              FavoriteService.instance.resetFavorites();
+              CartService.instance.resetCart();
+            }
             if (!context.mounted) return;
             Navigator.of(context)
                 .pushReplacementNamed(hasSession ? '/home' : '/login');
@@ -184,7 +209,14 @@ class MyApp extends StatelessWidget {
               StoreBranch.branches.first;
           return SelectPickupStorePage(selectedBranch: branch);
         },
-        '/order-detail': (context) => const OrderDetailScreen(),
+        '/order-detail': (context) {
+          final order =
+              ModalRoute.of(context)?.settings.arguments as OrderModel?;
+          if (order != null) {
+            return OrderDetailScreen(order: order);
+          }
+          return const OrderHistoryScreen();
+        },
         '/order-history': (context) => const OrderHistoryScreen(),
         '/tracking': (context) => const TrackingScreen(),
         '/games': (context) => const GameSelectionPage(),
@@ -209,6 +241,13 @@ class MyApp extends StatelessWidget {
         '/point-history': (context) => const PointHistoryPage(),
         '/suggestion-review': (context) => const SuggestionReviewPage(),
         '/ai-chat': (context) => const AIChatPage(),
+        '/blockchain-certificates': (context) => const MyCertificatesScreen(),
+        '/blockchain-certificate-detail': (context) {
+          final cert = ModalRoute.of(context)?.settings.arguments
+              as BlockchainCertificate?;
+          if (cert == null) return const MyCertificatesScreen();
+          return BlockchainCertificatePage(certificate: cert);
+        },
       },
     );
   }

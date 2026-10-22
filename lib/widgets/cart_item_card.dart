@@ -101,16 +101,19 @@ class CartItemCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      item.product.brand.toUpperCase(),
-                      style: const TextStyle(
-                        color: Color(0xFF9E4D1D),
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.3,
+                    Expanded(
+                      child: Text(
+                        item.product.brand.toUpperCase(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Color(0xFF9E4D1D),
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.3,
+                        ),
                       ),
                     ),
-                    const Spacer(),
                     GestureDetector(
                       onTap: onRemove,
                       child: const Padding(
@@ -157,14 +160,19 @@ class CartItemCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      formatRupiah(item.product.price),
-                      style: const TextStyle(
-                        color: AppColors.primaryOrange,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
+                    Flexible(
+                      child: Text(
+                        formatRupiah(item.product.price),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppColors.primaryOrange,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
+                    const SizedBox(width: 8),
 
                     // Stepper (- 1 +)
                     Container(

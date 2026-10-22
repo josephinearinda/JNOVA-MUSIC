@@ -1,30 +1,36 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
+import '../core/storage/secure_storage_service.dart';
 import '../data/repositories/cart_repository.dart';
 import '../models/product.dart';
 import 'membership_service.dart';
 
-/// Layanan state management Keranjang Belanja JNOVAMUSIC dengan penyimpanan SQLite
+/// Layanan state management Keranjang Belanja JNOVAMUSIC dengan isolasi per akun pengguna
 class CartService extends ChangeNotifier {
   CartService._() {
     _membershipService.addListener(_handleMembershipChanged);
-    _loadFromDatabase();
+    _initCartForActiveUser();
   }
 
   static final CartService instance = CartService._();
   final CartRepository _repository = CartRepository.instance;
   final MembershipService _membershipService = MembershipService.instance;
+  final SecureStorageService _storage = SecureStorageService.instance;
 
   final List<CartItem> _items = [];
+  String _activeEmail = '';
   bool _isLoaded = false;
 
   List<CartItem> get items => List.unmodifiable(_items);
   bool get isLoaded => _isLoaded;
+  String get activeEmail => _activeEmail;
 
   void _handleMembershipChanged() {
     notifyListeners();
   }
 
   // Data membership pengguna terhubung langsung dari sumber utama (MembershipService)
+  bool get isMember => _membershipService.isMember;
   String get userTier => _membershipService.userTier;
   String get tierName => _membershipService.tierName;
   int get currentPoints => _membershipService.currentPoints;
@@ -33,9 +39,37 @@ class CartService extends ChangeNotifier {
   double get discountRate => _membershipService.discountRate;
   String get nextTierName => _membershipService.nextTierName;
 
-  Future<void> _loadFromDatabase() async {
+  Future<void> _initCartForActiveUser() async {
     try {
-      final dbItems = await _repository.getCartItems();
+      final email = await _storage.getUserEmail();
+      if (email != null && email.isNotEmpty) {
+        await loadCartForUser(email);
+      } else {
+        _isLoaded = true;
+        notifyListeners();
+      }
+    } catch (_) {
+      _isLoaded = true;
+      notifyListeners();
+    }
+  }
+
+  /// Memuat keranjang khusus untuk pengguna aktif dari SQLite
+  Future<void> loadCartForUser(String email) async {
+    final cleanEmail = email.toLowerCase().trim();
+    _activeEmail = cleanEmail;
+
+    // Bersihkan memori seketika agar data akun lama tidak bocor
+    _items.clear();
+
+    if (cleanEmail.isEmpty) {
+      _isLoaded = true;
+      notifyListeners();
+      return;
+    }
+
+    try {
+      final dbItems = await _repository.getCartItemsForUser(cleanEmail);
       _items
         ..clear()
         ..addAll(dbItems);
@@ -45,7 +79,7 @@ class CartService extends ChangeNotifier {
           exception: error,
           stack: stackTrace,
           library: 'cart service',
-          context: ErrorDescription('while loading the persisted cart'),
+          context: ErrorDescription('while loading persisted cart for user $cleanEmail'),
         ),
       );
     } finally {
@@ -54,22 +88,36 @@ class CartService extends ChangeNotifier {
     }
   }
 
-  /// Mengosongkan keranjang atas permintaan eksplisit pengguna.
-  Future<void> reset() async {
+  /// Mengosongkan memori keranjang saat logout / pergantian akun
+  void resetCart() {
+    _activeEmail = '';
     _items.clear();
+    _isLoaded = true;
     notifyListeners();
-    await _repository.clearCart();
   }
 
-  /// Menambah produk ke keranjang
-  void addToCart(Product product, {int quantity = 1}) {
+  Future<String> _ensureActiveEmail() async {
+    if (_activeEmail.isNotEmpty) return _activeEmail;
+    final email = await _storage.getUserEmail();
+    _activeEmail = email?.toLowerCase().trim() ?? '';
+    return _activeEmail;
+  }
+
+  /// Menambah produk ke keranjang untuk akun aktif
+  Future<void> addToCart(Product product, {int quantity = 1}) async {
+    final email = await _ensureActiveEmail();
     final index = _items.indexWhere((item) => item.product.id == product.id);
+
     if (index != -1) {
       _items[index].quantity += quantity;
-      _repository.updateQuantity(product.id, _items[index].quantity);
+      if (email.isNotEmpty) {
+        unawaited(_repository.updateQuantityForUser(email, product.id, _items[index].quantity));
+      }
     } else {
       _items.insert(0, CartItem(product: product, quantity: quantity, isSelected: true));
-      _repository.addToCart(product.id, quantity);
+      if (email.isNotEmpty) {
+        unawaited(_repository.addToCartForUser(email, product.id, quantity));
+      }
     }
     notifyListeners();
   }
@@ -79,7 +127,9 @@ class CartService extends ChangeNotifier {
     for (final item in _items) {
       item.isSelected = selectAll;
     }
-    _repository.toggleSelectAll(selectAll);
+    if (_activeEmail.isNotEmpty) {
+      _repository.toggleSelectAllForUser(_activeEmail, selectAll);
+    }
     notifyListeners();
   }
 
@@ -88,7 +138,9 @@ class CartService extends ChangeNotifier {
     final index = _items.indexWhere((item) => item.product.id == productId);
     if (index != -1) {
       _items[index].isSelected = !_items[index].isSelected;
-      _repository.toggleSelection(productId);
+      if (_activeEmail.isNotEmpty) {
+        _repository.toggleSelectionForUser(_activeEmail, productId);
+      }
       notifyListeners();
     }
   }
@@ -100,7 +152,9 @@ class CartService extends ChangeNotifier {
       final newQty = _items[index].quantity + delta;
       if (newQty > 0) {
         _items[index].quantity = newQty;
-        _repository.updateQuantity(productId, newQty);
+        if (_activeEmail.isNotEmpty) {
+          _repository.updateQuantityForUser(_activeEmail, productId, newQty);
+        }
         notifyListeners();
       } else {
         removeItem(productId);
@@ -111,22 +165,33 @@ class CartService extends ChangeNotifier {
   /// Menghapus 1 item dari keranjang
   void removeItem(String productId) {
     _items.removeWhere((item) => item.product.id == productId);
-    _repository.removeItem(productId);
+    if (_activeEmail.isNotEmpty) {
+      _repository.removeItemForUser(_activeEmail, productId);
+    }
     notifyListeners();
   }
 
   /// Menghapus semua produk yang sedang dicentang
   void removeSelected() {
     _items.removeWhere((item) => item.isSelected);
-    _repository.removeSelected();
+    if (_activeEmail.isNotEmpty) {
+      _repository.removeSelectedForUser(_activeEmail);
+    }
     notifyListeners();
   }
 
-  /// Mengosongkan seluruh keranjang
+  /// Mengosongkan seluruh keranjang untuk akun aktif
   void clearCart() {
     _items.clear();
-    _repository.clearCart();
+    if (_activeEmail.isNotEmpty) {
+      _repository.clearCartForUser(_activeEmail);
+    }
     notifyListeners();
+  }
+
+  /// Reset atas permintaan eksplisit pengguna
+  Future<void> reset() async {
+    clearCart();
   }
 
   /// Memeriksa apakah semua item yang ada telah dicentang
@@ -142,7 +207,7 @@ class CartService extends ChangeNotifier {
       .where((item) => item.isSelected)
       .fold(0, (sum, item) => sum + item.itemTotal);
 
-  /// Potongan diskon membership (10% untuk Silver Member)
+  /// Potongan diskon membership
   int get discountAmount {
     if (subtotal <= 0) return 0;
     return (subtotal * discountRate).round();

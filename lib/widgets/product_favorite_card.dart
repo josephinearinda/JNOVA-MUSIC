@@ -64,8 +64,71 @@ class ProductFavoriteCard extends StatelessWidget {
                         ),
                       ),
 
-                      // Badge ORIGINAL / BEST SELLER
-                      if (product.isOriginal)
+                      // Badge BLOCKCHAIN CERTIFIED / ORIGINAL / BEST SELLER / HABIS
+                      if (product.stock <= 0)
+                        Positioned(
+                          top: 8,
+                          left: 8,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2.5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFDC2626),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              'HABIS',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 8.0,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                          ),
+                        )
+                      else if (product.hasBlockchainCertificate)
+                        Positioned(
+                          top: 8,
+                          left: 8,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 5,
+                              vertical: 2.0,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1B1428),
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color: const Color(0xFF9E86FF),
+                                width: 0.8,
+                              ),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.verified_rounded,
+                                  size: 8.5,
+                                  color: Color(0xFFD6C7FF),
+                                ),
+                                SizedBox(width: 2.5),
+                                Text(
+                                  'ON-CHAIN',
+                                  style: TextStyle(
+                                    color: Color(0xFFD6C7FF),
+                                    fontSize: 7.5,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      else if (product.isOriginal)
                         Positioned(
                           top: 8,
                           left: 8,
@@ -249,30 +312,38 @@ class ProductFavoriteCard extends StatelessWidget {
                         width: double.infinity,
                         height: 30,
                         child: ElevatedButton(
-                          onPressed: onAddToCart,
+                          onPressed: product.stock <= 0 ? null : onAddToCart,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryOrange,
+                            backgroundColor: product.stock <= 0
+                                ? const Color(0xFFE5E7EB)
+                                : AppColors.primaryOrange,
                             elevation: 0,
                             padding: EdgeInsets.zero,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7),
                             ),
                           ),
-                          child: const FittedBox(
+                          child: FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.shopping_bag_outlined,
-                                  color: Colors.white,
+                                  product.stock <= 0
+                                      ? Icons.remove_shopping_cart_rounded
+                                      : Icons.shopping_bag_outlined,
+                                  color: product.stock <= 0
+                                      ? const Color(0xFF9CA3AF)
+                                      : Colors.white,
                                   size: 13.0,
                                 ),
-                                SizedBox(width: 4),
+                                const SizedBox(width: 4),
                                 Text(
-                                  '+ Keranjang',
+                                  product.stock <= 0 ? 'Stok Habis' : '+ Keranjang',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: product.stock <= 0
+                                        ? const Color(0xFF9CA3AF)
+                                        : Colors.white,
                                     fontSize: 10.5,
                                     fontWeight: FontWeight.w700,
                                   ),

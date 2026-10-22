@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -16,28 +17,89 @@ class AppDatabase {
   static const int _dbVersion = 5;
 
   Database? _database;
+  Completer<Database>? _openCompleter;
 
   Future<Database> get database async {
-    if (_database != null) return _database!;
-    _database = await _initDatabase();
-    return _database!;
+    if (_database != null && _database!.isOpen) return _database!;
+    if (_openCompleter != null) {
+      return _openCompleter!.future;
+    }
+    _openCompleter = Completer<Database>();
+    try {
+      _database = await _initDatabase();
+      _openCompleter!.complete(_database);
+      return _database!;
+    } catch (e, st) {
+      _openCompleter!.completeError(e, st);
+      rethrow;
+    } finally {
+      _openCompleter = null;
+    }
   }
 
   Future<Database> _initDatabase() async {
     if (!kIsWeb && (Platform.isWindows || Platform.isLinux)) {
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
+      if (databaseFactory != databaseFactoryFfi) {
+        sqfliteFfiInit();
+        databaseFactory = databaseFactoryFfi;
+      }
     }
 
-    final dbPath = await getDatabasesPath();
-    final path = p.join(dbPath, _dbName);
+    final String path;
+    if (Platform.environment.containsKey('FLUTTER_TEST')) {
+      path = inMemoryDatabasePath;
+    } else {
+      final dbPath = await databaseFactory.getDatabasesPath();
+      path = p.join(dbPath, _dbName);
+    }
 
-    return await openDatabase(
+    final db = await openDatabase(
       path,
       version: _dbVersion,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
+
+    // Pastikan tabel user_favorites tersedia untuk isolasi per akun pengguna
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS user_favorites (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_email TEXT NOT NULL,
+        product_id TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        UNIQUE(user_email, product_id)
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_user_fav_email ON user_favorites(user_email)
+    ''');
+
+    // Pastikan tabel user_cart tersedia untuk isolasi keranjang per akun pengguna
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS user_cart (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_email TEXT NOT NULL,
+        product_id TEXT NOT NULL,
+        quantity INTEGER NOT NULL CHECK (quantity > 0),
+        is_selected INTEGER NOT NULL DEFAULT 1,
+        updated_at INTEGER NOT NULL,
+        UNIQUE(user_email, product_id)
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_user_cart_email ON user_cart(user_email)
+    ''');
+
+    // Bersihkan cached_orders lama yang rusak / items kosong / tanpa user_email
+    try {
+      await db.execute('''
+        DELETE FROM cached_orders
+        WHERE raw_json LIKE '%"items":[]%'
+           OR raw_json LIKE '%"userEmail":""%';
+      ''');
+    } catch (_) {}
+
+    return db;
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -79,7 +141,7 @@ class AppDatabase {
       )
     ''');
 
-    // 2. Keranjang Belanja Lokal
+    // 2. Keranjang Belanja Lokal (Legacy)
     await db.execute('''
       CREATE TABLE local_cart (
         product_id TEXT PRIMARY KEY,
@@ -89,13 +151,39 @@ class AppDatabase {
       )
     ''');
 
-    // 3. Favorit Lokal
+    // 2b. Keranjang Belanja per Akun Pengguna
+    await db.execute('''
+      CREATE TABLE user_cart (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_email TEXT NOT NULL,
+        product_id TEXT NOT NULL,
+        quantity INTEGER NOT NULL CHECK (quantity > 0),
+        is_selected INTEGER NOT NULL DEFAULT 1,
+        updated_at INTEGER NOT NULL,
+        UNIQUE(user_email, product_id)
+      )
+    ''');
+    await db.execute('CREATE INDEX idx_user_cart_email ON user_cart(user_email)');
+
+    // 3. Favorit Lokal (Legacy)
     await db.execute('''
       CREATE TABLE local_favorites (
         product_id TEXT PRIMARY KEY,
         created_at INTEGER NOT NULL
       )
     ''');
+
+    // 3b. Favorit per Akun Pengguna
+    await db.execute('''
+      CREATE TABLE user_favorites (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_email TEXT NOT NULL,
+        product_id TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        UNIQUE(user_email, product_id)
+      )
+    ''');
+    await db.execute('CREATE INDEX idx_user_fav_email ON user_favorites(user_email)');
 
     // 4. Antrean Pesanan Offline (Pending Sync)
     await db.execute('''

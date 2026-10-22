@@ -7,7 +7,10 @@ import 'package:jnova/screens/all_products_screen.dart';
 import 'package:jnova/screens/cart_screen.dart';
 import 'package:jnova/screens/membership_settings_page.dart';
 import 'package:jnova/screens/profile_screen.dart';
+import 'package:jnova/models/product.dart';
 import 'package:jnova/services/auth_service.dart';
+import 'package:jnova/services/cart_service.dart';
+import 'package:jnova/services/membership_service.dart';
 import 'package:jnova/services/user_profile_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -29,6 +32,9 @@ void main() {
     testWidgets('1. CartScreen: Kartu Garansi Instrumen & Kayu Aman telah dihapus', (
       WidgetTester tester,
     ) async {
+      MembershipService.instance.setPoints(1500);
+      CartService.instance.addToCart(Product.allCatalog.first, quantity: 1);
+
       await tester.pumpWidget(const MaterialApp(home: CartScreen()));
       await tester.pump();
 

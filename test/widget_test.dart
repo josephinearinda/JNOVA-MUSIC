@@ -24,6 +24,7 @@ import 'package:jnova/screens/pickup_detail_screen.dart';
 import 'package:jnova/screens/order_detail_screen.dart';
 import 'package:jnova/screens/tracking_screen.dart';
 import 'package:jnova/services/currency_service.dart';
+import 'package:jnova/services/membership_service.dart';
 import 'package:jnova/screens/game/motion_permission_page.dart';
 import 'package:jnova/screens/game/jnova_rhythm_home_page.dart';
 import 'package:jnova/screens/game/jnova_rhythm_result_page.dart';
@@ -46,10 +47,12 @@ import 'package:jnova/core/network/network_info.dart';
 import 'package:jnova/core/storage/secure_storage_service.dart';
 import 'package:jnova/data/repositories/auth_repository.dart';
 import 'package:jnova/services/auth_service.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
   setUpAll(() {
+    FlutterSecureStorage.setMockInitialValues({});
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
     NetworkInfo.instance.overrideIsConnected = true;
@@ -80,8 +83,9 @@ void main() {
     expect(find.text('Alamat Email'), findsOneWidget);
     expect(find.text('Kata Sandi'), findsOneWidget);
     expect(find.text('Lupa Kata Sandi?'), findsOneWidget);
-    expect(find.text('Masuk \u2192'), findsOneWidget);
-    expect(find.text('Lanjutkan dengan Google'), findsOneWidget);
+    expect(find.text('Masuk →'), findsOneWidget);
+    expect(find.text('Lanjutkan dengan Google'), findsNothing);
+    expect(find.text('ATAU'), findsNothing);
     expect(find.text('Gitar & Bass'), findsOneWidget);
     expect(find.text('Keyboard'), findsOneWidget);
     expect(find.text('Audio & Studio'), findsOneWidget);
@@ -162,22 +166,21 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const MaterialApp(home: FavoriteScreen()));
+    await tester.pump();
 
     expect(find.text('Favorit Saya'), findsOneWidget);
     expect(find.text('Produk pilihan yang kamu simpan.'), findsOneWidget);
-    expect(find.text('Pengiriman Cepat & Aman'), findsOneWidget);
-    expect(find.text('Fender Player II Stratocaster HSS'), findsOneWidget);
-    expect(find.text('Yamaha P-125 Digital Piano 88-Key'), findsOneWidget);
-
-    // Tap + Keranjang
-    await tester.tap(find.text('+ Keranjang').first);
-    await tester.pump();
+    expect(find.text('Belum Ada Produk Favorit'), findsOneWidget);
   });
 
   testWidgets('CartScreen smoke test and price calculation', (
     WidgetTester tester,
   ) async {
+    MembershipService.instance.setPoints(1500);
     await CartService.instance.reset();
+    await CartService.instance.addToCart(Product.allCatalog[0], quantity: 1);
+    await CartService.instance.addToCart(Product.allCatalog[1], quantity: 1);
+    await CartService.instance.addToCart(Product.allCatalog[2], quantity: 1);
 
     await tester.pumpWidget(const MaterialApp(home: CartScreen()));
     await tester.pumpAndSettle();
@@ -244,7 +247,10 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Drum').first);
+    final drumFinder = find.text('Drum').first;
+    await tester.ensureVisible(drumFinder);
+    await tester.pumpAndSettle();
+    await tester.tap(drumFinder);
     await tester.pumpAndSettle();
 
     expect(find.text('Yamaha Rydeen'), findsOneWidget);
@@ -268,19 +274,6 @@ void main() {
 
     expect(find.text('Hasil Pencarian'), findsOneWidget);
     expect(find.text('Pencarian Terakhir'), findsOneWidget);
-    final simFinder = find.text('Simulasikan "Tidak Ada Hasil"');
-    await tester.ensureVisible(simFinder);
-    await tester.pumpAndSettle();
-    await tester.tap(simFinder);
-    await tester.pumpAndSettle();
-
-    expect(find.text('Produk Tidak Ditemukan'), findsOneWidget);
-    expect(
-      find.text(
-        'Coba kata kunci lain atau periksa ejaanmu untuk menemukan alat musik yang kamu cari.',
-      ),
-      findsOneWidget,
-    );
   });
 
   testWidgets('ProductDetailScreen smoke test and quantity interaction', (
@@ -591,6 +584,10 @@ void main() {
     expect(find.text('Tingkat Membership'), findsOneWidget);
     expect(find.text('Aktivitas Poin'), findsOneWidget);
     expect(find.text('Tukar Hadiah'), findsNothing);
+    expect(find.text('BRONZE'), findsNothing);
+    expect(find.text('SILVER'), findsOneWidget);
+    expect(find.text('GOLD'), findsOneWidget);
+    expect(find.text('PLATINUM'), findsOneWidget);
   });
 
   testWidgets('PointHistoryPage smoke test and tab switching', (

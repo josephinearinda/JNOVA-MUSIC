@@ -71,7 +71,6 @@ class PickupDetailScreen extends StatelessWidget {
     }
 
     final store = activeOrder.pickupStore;
-    final item = activeOrder.items.isNotEmpty ? activeOrder.items.first : null;
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -105,8 +104,8 @@ class PickupDetailScreen extends StatelessWidget {
 
                     const SizedBox(height: 14),
 
-                    // Ringkasan Produk
-                    if (item != null) _buildProductSummaryCard(item),
+                    // Ringkasan Produk (Seluruh Produk)
+                    _buildProductsSummarySection(activeOrder),
 
                     const SizedBox(height: 14),
 
@@ -587,7 +586,10 @@ class PickupDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProductSummaryCard(dynamic item) {
+  Widget _buildProductsSummarySection(OrderModel activeOrder) {
+    final items = activeOrder.items;
+    final totalUnits = items.fold<int>(0, (sum, i) => sum + i.quantity);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
@@ -620,65 +622,111 @@ class PickupDetailScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              Text(
-                '${item.quantity} Unit',
-                style: const TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF7E756F),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 6,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFECEAE6),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  '$totalUnits Unit (${items.length} Barang)',
+                  style: const TextStyle(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF5A524D),
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  color: Colors.white,
-                  child: Image.asset(item.product.image, fit: BoxFit.contain),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: 10),
+          ...items.asMap().entries.map((entry) {
+            final index = entry.key;
+            final item = entry.value;
+            return Column(
+              children: [
+                if (index > 0)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Divider(color: Color(0xFFEBE8E3), height: 1),
+                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      item.product.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Container(
+                        width: 44,
+                        height: 44,
+                        color: Colors.white,
+                        child: Image.asset(
+                          item.product.image,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) => const Icon(
+                            Icons.image_not_supported_rounded,
+                            size: 18,
+                            color: AppColors.placeholder,
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 1),
-                    Text(
-                      'Jumlah: ${item.quantity} Unit',
-                      style: const TextStyle(
-                        fontSize: 10,
-                        color: Color(0xFF7E756F),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      formatRupiah(item.product.price),
-                      style: const TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.primaryOrange,
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.product.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textPrimaryDark,
+                            ),
+                          ),
+                          const SizedBox(height: 1),
+                          Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  'Jumlah: ${item.quantity} Unit',
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Color(0xFF7E756F),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  formatRupiah(item.itemTotal),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.primaryOrange,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
+              ],
+            );
+          }),
         ],
       ),
     );

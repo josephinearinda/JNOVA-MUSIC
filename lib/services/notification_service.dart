@@ -202,6 +202,7 @@ class NotificationService {
     required String message,
     String? eventKey,
   }) async {
+    if (Platform.environment.containsKey('FLUTTER_TEST')) return;
     if (!_initialized || kIsWeb) return;
 
     final preferences = await loadPreferences();

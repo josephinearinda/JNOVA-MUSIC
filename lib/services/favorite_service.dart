@@ -1,29 +1,62 @@
 import 'package:flutter/foundation.dart';
+import '../core/storage/secure_storage_service.dart';
 import '../data/repositories/product_repository.dart';
 import '../models/product.dart';
 
-/// Layanan state management Favorit Produk JNOVAMUSIC dengan penyimpanan SQLite
+/// Layanan state management Favorit Produk JNOVAMUSIC
+/// Terisolasi penuh per akun pengguna (tidak tercampur antar akun yang berbeda)
 class FavoriteService extends ChangeNotifier {
   FavoriteService._() {
-    _loadFuture = _loadFavorites();
+    _initUserFavorites();
   }
 
   static final FavoriteService instance = FavoriteService._();
   final ProductRepository _repository = ProductRepository.instance;
+  final SecureStorageService _storage = SecureStorageService.instance;
 
   final List<Product> _items = [];
   final List<Product> _newestFirstItems = [];
-  late final Future<void> _loadFuture;
+  String _activeEmail = '';
   String _currentSort = 'Terbaru';
   bool _isLoaded = false;
 
   List<Product> get items => List.unmodifiable(_items);
   String get currentSort => _currentSort;
   bool get isLoaded => _isLoaded;
+  String get activeEmail => _activeEmail;
 
-  Future<void> _loadFavorites() async {
+  Future<void> _initUserFavorites() async {
     try {
-      final products = await _repository.getFavoriteProducts();
+      final email = await _storage.getUserEmail();
+      if (email != null && email.isNotEmpty) {
+        await loadFavoritesForUser(email);
+      } else {
+        _isLoaded = true;
+        notifyListeners();
+      }
+    } catch (_) {
+      _isLoaded = true;
+      notifyListeners();
+    }
+  }
+
+  /// Memuat daftar favorit khusus untuk pengguna aktif
+  Future<void> loadFavoritesForUser(String email) async {
+    final cleanEmail = email.toLowerCase().trim();
+    _activeEmail = cleanEmail;
+
+    // Bersihkan memori seketika agar akun berikutnya tidak menampilkan favorit akun sebelumnya
+    _items.clear();
+    _newestFirstItems.clear();
+
+    if (cleanEmail.isEmpty) {
+      _isLoaded = true;
+      notifyListeners();
+      return;
+    }
+
+    try {
+      final products = await _repository.getFavoriteProductsForUser(cleanEmail);
       _newestFirstItems
         ..clear()
         ..addAll(products);
@@ -34,7 +67,7 @@ class FavoriteService extends ChangeNotifier {
           exception: error,
           stack: stackTrace,
           library: 'favorite service',
-          context: ErrorDescription('while loading persisted favorites'),
+          context: ErrorDescription('while loading persisted favorites for user $cleanEmail'),
         ),
       );
     } finally {
@@ -43,14 +76,34 @@ class FavoriteService extends ChangeNotifier {
     }
   }
 
+  /// Mengosongkan daftar favorit saat logout agar tidak tertaut ke akun berikutnya
+  void resetFavorites() {
+    _activeEmail = '';
+    _items.clear();
+    _newestFirstItems.clear();
+    _isLoaded = true;
+    notifyListeners();
+  }
+
   bool isFavorite(String productId) {
     return _items.any((item) => item.id == productId);
   }
 
+  Future<String> _ensureActiveEmail() async {
+    if (_activeEmail.isNotEmpty) return _activeEmail;
+    final email = await _storage.getUserEmail();
+    _activeEmail = email?.toLowerCase().trim() ?? '';
+    return _activeEmail;
+  }
+
   Future<void> toggleFavorite(Product product) async {
-    await _loadFuture;
+    final email = await _ensureActiveEmail();
     final shouldFavorite = !isFavorite(product.id);
-    await _repository.setFavorite(product.id, isFavorite: shouldFavorite);
+
+    if (email.isNotEmpty) {
+      await _repository.setFavoriteForUser(email, product.id, isFavorite: shouldFavorite);
+    }
+
     if (shouldFavorite) {
       _items.insert(0, product);
       _newestFirstItems.insert(0, product);
@@ -63,18 +116,24 @@ class FavoriteService extends ChangeNotifier {
   }
 
   Future<void> removeFavorite(String productId) async {
-    await _loadFuture;
+    final email = await _ensureActiveEmail();
     _items.removeWhere((item) => item.id == productId);
     _newestFirstItems.removeWhere((item) => item.id == productId);
-    await _repository.setFavorite(productId, isFavorite: false);
+
+    if (email.isNotEmpty) {
+      await _repository.setFavoriteForUser(email, productId, isFavorite: false);
+    }
     notifyListeners();
   }
 
   Future<void> clearAll() async {
-    await _loadFuture;
+    final email = await _ensureActiveEmail();
     _items.clear();
     _newestFirstItems.clear();
-    await _repository.clearFavorites();
+
+    if (email.isNotEmpty) {
+      await _repository.clearFavoritesForUser(email);
+    }
     notifyListeners();
   }
 

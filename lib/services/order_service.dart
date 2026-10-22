@@ -9,6 +9,7 @@ import 'cart_service.dart';
 import 'membership_service.dart';
 import 'notification_background_sync_service.dart';
 import 'notification_service.dart';
+import 'product_stock_service.dart';
 
 /// Layanan manajemen pesanan dan transaksi JNOVAMUSIC dengan alur Pickup & Bayar di Toko
 class OrderService extends ChangeNotifier {
@@ -38,6 +39,12 @@ class OrderService extends ChangeNotifier {
   /// Memuat riwayat pesanan khusus untuk pengguna aktif
   Future<void> loadOrdersForUser(String email) async {
     final cleanEmail = email.toLowerCase().trim();
+    if (cleanEmail.isEmpty) {
+      _orders.clear();
+      _currentOrder = null;
+      notifyListeners();
+      return;
+    }
     final list = await _repository.getOrdersForUser(cleanEmail);
     _orders.clear();
     _orders.addAll(list);
@@ -83,6 +90,9 @@ class OrderService extends ChangeNotifier {
 
     _currentOrder = order;
     _orders.insert(0, order);
+
+    // Potong sisa stok produk secara permanen dan reaktif
+    await ProductStockService.instance.deductStock(order.items);
 
     // Hapus item yang dibeli dari keranjang lokal
     CartService.instance.removeSelected();

@@ -43,6 +43,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
 
   Future<void> _handleConfirmLogout(BuildContext context) async {
     Navigator.of(context, rootNavigator: true).pop();
+    await AuthService.instance.logout();
     if (onConfirmLogout != null) {
       onConfirmLogout!();
     } else {
@@ -50,7 +51,6 @@ class LogoutConfirmationDialog extends StatelessWidget {
         Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
       }
     }
-    await AuthService.instance.logout();
   }
 
   @override

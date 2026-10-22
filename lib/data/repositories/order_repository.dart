@@ -90,7 +90,11 @@ class OrderRepository {
       paymentMethod: paymentMethod,
       pickupStore: store ?? StoreBranch.branches.first,
       pickupCode: pickupCode,
-      recipientName: recipientName ?? '',
+      recipientName: (recipientName != null && recipientName.trim().isNotEmpty)
+          ? recipientName.trim()
+          : (userEmail != null && userEmail.contains('@')
+              ? userEmail.split('@').first
+              : 'Pelanggan JNOVAMUSIC'),
       recipientPhone: recipientPhone ?? '',
       recipientAddress: recipientAddress ?? '',
       isCompleted: false,
@@ -127,6 +131,9 @@ class OrderRepository {
 
   /// Mengambil pesanan yang tersimpan untuk email tertentu
   Future<List<OrderModel>> getOrdersForUser(String email) async {
+    final cleanEmail = email.toLowerCase().trim();
+    if (cleanEmail.isEmpty) return [];
+
     try {
       final db = await _dbHelper.database;
       final rows = await db.query(
@@ -134,18 +141,26 @@ class OrderRepository {
         orderBy: 'cached_at DESC',
       );
 
-      final cleanEmail = email.toLowerCase().trim();
       final list = <OrderModel>[];
 
       for (final r in rows) {
         final raw = r['raw_json'] as String?;
+        final orderId = r['id'] as String?;
         if (raw != null && raw.isNotEmpty) {
           try {
             final map = jsonDecode(raw) as Map<String, dynamic>;
             final order = OrderModel.fromMap(map);
-            if (cleanEmail.isEmpty ||
-                order.userEmail.isEmpty ||
-                order.userEmail.toLowerCase().trim() == cleanEmail) {
+
+            // Bersihkan pesanan rusak yang kosong atau tanpa email pengguna
+            if (order.items.isEmpty || order.userEmail.trim().isEmpty) {
+              if (orderId != null) {
+                await db.delete('cached_orders', where: 'id = ?', whereArgs: [orderId]);
+              }
+              continue;
+            }
+
+            // Hanya sertakan pesanan yang cocok persis dengan akun aktif
+            if (order.userEmail.toLowerCase().trim() == cleanEmail) {
               list.add(order);
             }
           } catch (_) {}

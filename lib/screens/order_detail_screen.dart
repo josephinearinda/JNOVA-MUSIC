@@ -9,6 +9,8 @@ import '../models/store_branch.dart';
 import '../services/order_service.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/qr_code_widget.dart';
+import '../services/blockchain_certificate_service.dart';
+import 'blockchain_certificate_page.dart';
 
 /// Halaman DETAIL PESANAN JNOVAMUSIC dengan alur Ambil di Toko Resmi (Store Pickup)
 /// sesuai standar showroom & luthier desk JNOVA MUSIC
@@ -281,8 +283,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       );
     }
 
-    final item = activeOrder.items.isNotEmpty ? activeOrder.items.first : null;
-
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -313,8 +313,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
                     const SizedBox(height: 14),
 
-                    // Produk yang Dipesan
-                    if (item != null) _buildOrderedProductCard(item),
+                    // Produk yang Dipesan (Menampilkan seluruh item)
+                    _buildOrderedProductsSection(activeOrder),
+
+                    // Kartu Sertifikat Keaslian Blockchain Resmi
+                    if (activeOrder.hasBlockchainCertificate) ...[
+                      const SizedBox(height: 14),
+                      _buildBlockchainCertificateOrderCard(context, activeOrder),
+                    ],
 
                     const SizedBox(height: 14),
 
@@ -519,12 +525,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   color: AppColors.textPrimaryDark,
                 ),
               ),
-              Text(
-                activeOrder.orderNumber,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFFC2410C),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  activeOrder.orderNumber,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFFC2410C),
+                  ),
                 ),
               ),
             ],
@@ -717,24 +728,31 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Row(
-                children: [
-                  Icon(
-                    Icons.storefront_rounded,
-                    size: 15,
-                    color: AppColors.primaryOrange,
-                  ),
-                  SizedBox(width: 6),
-                  Text(
-                    'Informasi Toko Pengambilan',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+              const Expanded(
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.storefront_rounded,
+                      size: 15,
+                      color: AppColors.primaryOrange,
                     ),
-                  ),
-                ],
+                    SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        'Informasi Toko Pengambilan',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimaryDark,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
@@ -975,7 +993,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  Widget _buildOrderedProductCard(dynamic item) {
+  Widget _buildOrderedProductsSection(OrderModel activeOrder) {
+    final items = activeOrder.items;
+    final totalUnits = items.fold<int>(0, (sum, i) => sum + i.quantity);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
@@ -987,10 +1008,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'Produk yang Dipesan',
                 style: TextStyle(
                   fontSize: 12,
@@ -998,144 +1019,183 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   color: AppColors.textPrimaryDark,
                 ),
               ),
-              Text(
-                '1 Barang',
-                style: TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF7E756F),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 7,
+                  vertical: 2,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: Container(
-                  width: 58,
-                  height: 58,
-                  color: Colors.white,
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Image.asset(
-                          item.product.image,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      Positioned(
-                        top: 2,
-                        left: 2,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 3,
-                            vertical: 1,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF333333)
-                                .withValues(alpha: 0.85),
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                          child: const Text(
-                            'ORIGINAL',
-                            style: TextStyle(
-                              fontSize: 6.5,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEDEAE6),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  '$totalUnits Unit (${items.length} Barang)',
+                  style: const TextStyle(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF5A524D),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
+            ],
+          ),
+          const SizedBox(height: 10),
+          ...items.asMap().entries.map((entry) {
+            final index = entry.key;
+            final item = entry.value;
+            return Column(
+              children: [
+                if (index > 0)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Divider(color: Color(0xFFEBE8E3), height: 1),
+                  ),
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      item.product.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Container(
+                        width: 58,
+                        height: 58,
+                        color: Colors.white,
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Image.asset(
+                                item.product.image,
+                                fit: BoxFit.contain,
+                                errorBuilder:
+                                    (context, error, stackTrace) => const Icon(
+                                  Icons.image_not_supported_rounded,
+                                  size: 20,
+                                  color: AppColors.placeholder,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 2,
+                              left: 2,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 3,
+                                  vertical: 1,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF333333)
+                                      .withValues(alpha: 0.85),
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                                child: const Text(
+                                  'ORIGINAL',
+                                  style: TextStyle(
+                                    fontSize: 6.5,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 1),
-                    Text(
-                      item.product.variant.isNotEmpty
-                          ? item.product.variant
-                          : '3-Color Sunburst • Maple Neck',
-                      style: const TextStyle(
-                        fontSize: 9.5,
-                        color: Color(0xFF7E756F),
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 5,
-                            vertical: 1,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFEDEAE6),
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                          child: Text(
-                            '${item.quantity} Unit',
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.product.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF5A524D),
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textPrimaryDark,
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          '@ ${formatRupiah(item.product.price)}',
-                          style: const TextStyle(
-                            fontSize: 9.5,
-                            color: Color(0xFF7E756F),
+                          const SizedBox(height: 1),
+                          Text(
+                            item.product.variant.isNotEmpty
+                                ? item.product.variant
+                                : item.product.brand.toUpperCase(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 9.5,
+                              color: Color(0xFF7E756F),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Total Item',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF6E6560),
+                          const SizedBox(height: 3),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                  vertical: 1,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFEDEAE6),
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                                child: Text(
+                                  '${item.quantity} Unit',
+                                  style: const TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF5A524D),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  '@ ${formatRupiah(item.product.price)}',
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    fontSize: 9.5,
+                                    color: Color(0xFF7E756F),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        Text(
-                          formatRupiah(item.itemTotal),
-                          style: const TextStyle(
-                            fontSize: 11.5,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFFC2410C),
+                          const SizedBox(height: 4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Total Item',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF6E6560),
+                                ),
+                              ),
+                              Flexible(
+                                child: Text(
+                                  formatRupiah(item.itemTotal),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFFC2410C),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
+              ],
+            );
+          }),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -1210,13 +1270,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             'Subtotal Produk',
             formatRupiah(activeOrder.subtotal),
           ),
-          const SizedBox(height: 5),
-          _buildDetailRow(
-            'Diskon Silver Tier (10%)',
-            '- ${formatRupiah(activeOrder.discount)}',
-            valueColor: const Color(0xFFC2410C),
-            showInfoIcon: true,
-          ),
+          if (activeOrder.discount > 0) ...[
+            const SizedBox(height: 5),
+            _buildDetailRow(
+              'Diskon Membership',
+              '- ${formatRupiah(activeOrder.discount)}',
+              valueColor: const Color(0xFFC2410C),
+              showInfoIcon: true,
+            ),
+          ],
           const SizedBox(height: 5),
           _buildDetailRow(
             'Biaya Ambil di Toko',
@@ -1279,31 +1341,38 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               border: Border.all(color: const Color(0xFFEBE8E3)),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
                   'Metode',
                   style: TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
                 ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.point_of_sale_rounded,
-                      size: 13,
-                      color: Color(0xFF8E837D),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      activeOrder.isCompleted
-                          ? '${activeOrder.paymentMethod} • Lunas di Kasir'
-                          : '${activeOrder.paymentMethod} • Bayar saat Pengambilan',
-                      style: const TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimaryDark,
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Icon(
+                        Icons.point_of_sale_rounded,
+                        size: 13,
+                        color: Color(0xFF8E837D),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          activeOrder.isCompleted
+                              ? '${activeOrder.paymentMethod} • Lunas di Kasir'
+                              : '${activeOrder.paymentMethod} • Bayar saat Pengambilan',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimaryDark,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -1322,28 +1391,41 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Text(
-              label,
-              style: const TextStyle(fontSize: 10, color: Color(0xFF6E6560)),
-            ),
-            if (showInfoIcon) ...[
-              const SizedBox(width: 3),
-              const Icon(
-                Icons.help_outline_rounded,
-                size: 11,
-                color: Color(0xFF8E837D),
+        Flexible(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: const TextStyle(fontSize: 10, color: Color(0xFF6E6560)),
+                ),
               ),
+              if (showInfoIcon) ...[
+                const SizedBox(width: 3),
+                const Icon(
+                  Icons.help_outline_rounded,
+                  size: 11,
+                  color: Color(0xFF8E837D),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            color: valueColor ?? AppColors.textPrimaryDark,
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: valueColor ?? AppColors.textPrimaryDark,
+            ),
           ),
         ),
       ],
@@ -1657,6 +1739,147 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildBlockchainCertificateOrderCard(
+    BuildContext context,
+    OrderModel order,
+  ) {
+    final eligibleItems = order.blockchainItems;
+    final firstItem = eligibleItems.isNotEmpty ? eligibleItems.first : null;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.all(14.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF1E172E), Color(0xFF120E1C)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(
+          color: const Color(0xFFE5A93C).withValues(alpha: 0.5),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFE5A93C).withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2E2248),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFF9E86FF), width: 0.8),
+                ),
+                child: const Icon(
+                  Icons.verified_rounded,
+                  size: 18,
+                  color: Color(0xFFD6C7FF),
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Sertifikat Keaslian Blockchain Terbit',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'Smart Contract ERC-721 di Jaringan Polygon',
+                      style: TextStyle(fontSize: 9.5, color: Color(0xFFBFB5D1)),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F3B2E),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Text(
+                  'ON-CHAIN',
+                  style: TextStyle(
+                    fontSize: 8.5,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF34D399),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Pesanan ini mencakup ${eligibleItems.length} instrumen dengan Sertifikat Keaslian Digital resmi yang tercatat di blockchain Polygon.',
+            style: const TextStyle(
+              fontSize: 10.5,
+              color: Color(0xFFD1C8DC),
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 36,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                if (firstItem != null) {
+                  final buyerName = BlockchainCertificateService.instance
+                      .getCurrentBuyerName(order: order);
+
+                  final cert = BlockchainCertificateService.instance
+                      .getCertificateForProduct(
+                    firstItem.product,
+                    orderNumber: order.orderNumber,
+                    ownerName: buyerName,
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          BlockchainCertificatePage(certificate: cert),
+                    ),
+                  );
+                } else {
+                  Navigator.pushNamed(context, '/blockchain-certificates');
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF5500),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              icon: const Icon(Icons.workspace_premium_rounded, size: 16),
+              label: const Text(
+                'Buka Sertifikat Keaslian NFT',
+                style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import '../services/cart_service.dart';
+import '../services/favorite_service.dart';
+import '../services/membership_service.dart';
+import '../services/order_service.dart';
 import '../services/user_profile_service.dart';
 
 /// Halaman Registrasi Akun Baru JNOVAMUSIC
@@ -299,6 +303,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
 
     if (result.isSuccess) {
+      UserProfileService.instance.resetProfile();
+      MembershipService.instance.resetPoints();
+      OrderService.instance.resetOrders();
+      FavoriteService.instance.resetFavorites();
+      CartService.instance.resetCart();
+
       final registeredEmail = _emailController.text.trim();
       if (widget.onRegisterSuccess != null) {
         widget.onRegisterSuccess!(registeredEmail);

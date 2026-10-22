@@ -21,24 +21,49 @@ class MembershipService extends ChangeNotifier {
   final SupabaseClientService _supabaseService = SupabaseClientService.instance;
   final SecureStorageService _storage = SecureStorageService.instance;
 
-  // Pengguna baru selalu mulai dari 0 poin
+  // Pengguna baru selalu mulai dari 0 poin (Non-Member)
+  // Menjadi member setelah berbelanja & mengumpulkan minimal 1.000 poin (Silver Member)
   int _currentPoints = 0;
 
   int get currentPoints => _currentPoints;
-  String get userTier => _currentPoints >= 10000
-      ? 'TIER 4'
-      : (_currentPoints >= 3000 ? 'TIER 3' : 'TIER 2');
-  String get tierName => _currentPoints >= 10000
-      ? 'Platinum Member'
-      : (_currentPoints >= 3000 ? 'Gold Member' : 'Silver Member');
-  int get discountPercentage =>
-      _currentPoints >= 10000 ? 35 : (_currentPoints >= 3000 ? 20 : 10);
+  bool get isMember => _currentPoints >= 1000;
+
+  String get userTier {
+    if (_currentPoints >= 10000) return 'TIER 3';
+    if (_currentPoints >= 3000) return 'TIER 2';
+    if (_currentPoints >= 1000) return 'TIER 1';
+    return 'NON-MEMBER';
+  }
+
+  String get tierName {
+    if (_currentPoints >= 10000) return 'Platinum Member';
+    if (_currentPoints >= 3000) return 'Gold Member';
+    if (_currentPoints >= 1000) return 'Silver Member';
+    return 'Non-Member';
+  }
+
+  int get discountPercentage {
+    if (_currentPoints >= 10000) return 35;
+    if (_currentPoints >= 3000) return 20;
+    if (_currentPoints >= 1000) return 10;
+    return 0;
+  }
+
   double get discountRate => discountPercentage / 100.0;
-  int get targetPoints =>
-      _currentPoints >= 10000 ? 10000 : (_currentPoints >= 3000 ? 10000 : 3000);
-  String get nextTierName => _currentPoints >= 10000
-      ? 'Maksimal'
-      : (_currentPoints >= 3000 ? 'Platinum' : 'Gold');
+
+  int get targetPoints {
+    if (_currentPoints >= 10000) return 10000;
+    if (_currentPoints >= 3000) return 10000;
+    if (_currentPoints >= 1000) return 3000;
+    return 1000;
+  }
+
+  String get nextTierName {
+    if (_currentPoints >= 10000) return 'Maksimal';
+    if (_currentPoints >= 3000) return 'Platinum';
+    if (_currentPoints >= 1000) return 'Gold';
+    return 'Silver';
+  }
 
   Future<void> _initializePoints() async {
     try {

@@ -86,6 +86,13 @@ class OrderModel {
 
   StoreBranch? get store => pickupStore;
 
+  /// Daftar item pesanan yang berhak mendapatkan sertifikat keaslian blockchain
+  List<CartItem> get blockchainItems =>
+      items.where((i) => i.product.hasBlockchainCertificate).toList();
+
+  /// Menandakan apakah pesanan ini memiliki produk dengan sertifikat keaslian blockchain
+  bool get hasBlockchainCertificate => blockchainItems.isNotEmpty;
+
   OrderModel copyWith({
     String? id,
     String? orderNumber,

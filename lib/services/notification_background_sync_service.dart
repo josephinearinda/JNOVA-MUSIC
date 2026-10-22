@@ -19,12 +19,14 @@ class NotificationBackgroundSyncService {
   static bool _initialized = false;
 
   static Future<void> initialize() async {
+    if (Platform.environment.containsKey('FLUTTER_TEST')) return;
     if (!Platform.isAndroid || _initialized) return;
     await Workmanager().initialize(notificationSyncCallbackDispatcher);
     _initialized = true;
   }
 
   static Future<void> enable() async {
+    if (Platform.environment.containsKey('FLUTTER_TEST')) return;
     if (!Platform.isAndroid) return;
     await initialize();
 
@@ -46,12 +48,14 @@ class NotificationBackgroundSyncService {
   }
 
   static Future<void> disable() async {
+    if (Platform.environment.containsKey('FLUTTER_TEST')) return;
     if (!Platform.isAndroid) return;
     await initialize();
     await Workmanager().cancelByUniqueName(_notificationSyncUniqueName);
   }
 
   static Future<bool> syncNow() async {
+    if (Platform.environment.containsKey('FLUTTER_TEST')) return true;
     final client = SupabaseClientService.instance.client;
     final user = client?.auth.currentUser;
     if (client == null || user == null) return true;

@@ -58,6 +58,23 @@ class Product {
     ],
   });
 
+  /// Kategori instrumen utama yang berhak mendapatkan sertifikat keaslian blockchain
+  static const Set<String> blockchainEligibleCategories = {
+    'Gitar',
+    'Bass',
+    'Drum',
+    'Piano',
+    'Biola',
+    'Saxophone',
+  };
+
+  /// Batas minimal harga produk untuk mendapatkan sertifikat blockchain (> Rp 6.000.000)
+  static const int blockchainMinPrice = 6000000;
+
+  /// Mengecek apakah produk ini berhak mendapatkan sertifikat keaslian digital blockchain
+  bool get hasBlockchainCertificate =>
+      blockchainEligibleCategories.contains(category) && price > blockchainMinPrice;
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,

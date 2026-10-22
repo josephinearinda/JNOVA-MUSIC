@@ -1,4 +1,6 @@
 import '../data/repositories/auth_repository.dart';
+import 'cart_service.dart';
+import 'favorite_service.dart';
 import 'membership_service.dart';
 import 'notification_background_sync_service.dart';
 import 'order_service.dart';
@@ -61,8 +63,8 @@ class AuthService {
   }
 
   /// Login menggunakan biometrik sidik jari dengan pemulihan sesi aman
-  Future<AuthResult> loginWithBiometrics() async {
-    final result = await _repository.loginWithBiometrics();
+  Future<AuthResult> loginWithBiometrics({String? email}) async {
+    final result = await _repository.loginWithBiometrics(email: email);
     if (result.isSuccess) {
       await NotificationBackgroundSyncService.enable();
     }
@@ -92,5 +94,7 @@ class AuthService {
     UserProfileService.instance.resetProfile();
     MembershipService.instance.resetPoints();
     OrderService.instance.resetOrders();
+    FavoriteService.instance.resetFavorites();
+    CartService.instance.resetCart();
   }
 }

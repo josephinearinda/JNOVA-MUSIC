@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
+import '../../core/storage/secure_storage_service.dart';
 import '../../models/product.dart';
+import '../../services/product_stock_service.dart';
 import '../datasources/local/app_database.dart';
 
 class CartRepository {
@@ -8,8 +10,15 @@ class CartRepository {
 
   final AppDatabase _dbHelper = AppDatabase.instance;
 
-  /// Mengambil semua item keranjang belanja dari SQLite
-  Future<List<CartItem>> getCartItems() async {
+  // ==============================================================================
+  // METODE KERANJANG TERISOLASI PER AKUN PENGGUNA (user_cart)
+  // ==============================================================================
+
+  /// Mengambil semua item keranjang belanja khusus untuk akun pengguna tertentu
+  Future<List<CartItem>> getCartItemsForUser(String email) async {
+    final cleanEmail = email.toLowerCase().trim();
+    if (cleanEmail.isEmpty) return [];
+
     final db = await _dbHelper.database;
 
     final results = await db.rawQuery('''
@@ -31,9 +40,11 @@ class CartRepository {
         p.is_best_seller, 
         p.image_url, 
         p.description
-      FROM local_cart c
+      FROM user_cart c
       LEFT JOIN cached_products p ON c.product_id = p.id
-    ''');
+      WHERE LOWER(c.user_email) = ?
+      ORDER BY c.updated_at DESC
+    ''', [cleanEmail]);
 
     final List<CartItem> items = [];
     for (final row in results) {
@@ -48,6 +59,9 @@ class CartRepository {
         );
       }
 
+      // Pastikan stok terupdate secara reaktif
+      prod = ProductStockService.instance.applyStock(prod);
+
       items.add(
         CartItem(
           product: prod,
@@ -60,31 +74,35 @@ class CartRepository {
     return items;
   }
 
-  /// Menambah atau mengupdate jumlah item di keranjang
-  Future<void> addToCart(String productId, int quantity) async {
+  /// Menambah atau mengupdate kuantitas item di keranjang pengguna
+  Future<void> addToCartForUser(String email, String productId, int quantity) async {
+    final cleanEmail = email.toLowerCase().trim();
+    if (cleanEmail.isEmpty) return;
+
     final db = await _dbHelper.database;
     final existing = await db.query(
-      'local_cart',
-      where: 'product_id = ?',
-      whereArgs: [productId],
+      'user_cart',
+      where: 'LOWER(user_email) = ? AND product_id = ?',
+      whereArgs: [cleanEmail, productId],
     );
 
     final now = DateTime.now().millisecondsSinceEpoch;
     if (existing.isNotEmpty) {
       final currentQty = (existing.first['quantity'] as num).toInt();
       await db.update(
-        'local_cart',
+        'user_cart',
         {
           'quantity': currentQty + quantity,
           'updated_at': now,
         },
-        where: 'product_id = ?',
-        whereArgs: [productId],
+        where: 'LOWER(user_email) = ? AND product_id = ?',
+        whereArgs: [cleanEmail, productId],
       );
     } else {
       await db.insert(
-        'local_cart',
+        'user_cart',
         {
+          'user_email': cleanEmail,
           'product_id': productId,
           'quantity': quantity,
           'is_selected': 1,
@@ -95,73 +113,162 @@ class CartRepository {
     }
   }
 
-  /// Memperbarui kuantitas produk tertentu
-  Future<void> updateQuantity(String productId, int quantity) async {
+  /// Memperbarui kuantitas produk tertentu untuk pengguna
+  Future<void> updateQuantityForUser(String email, String productId, int quantity) async {
+    final cleanEmail = email.toLowerCase().trim();
+    if (cleanEmail.isEmpty) return;
+
     final db = await _dbHelper.database;
     if (quantity <= 0) {
-      await removeItem(productId);
+      await removeItemForUser(cleanEmail, productId);
     } else {
       await db.update(
-        'local_cart',
+        'user_cart',
         {
           'quantity': quantity,
           'updated_at': DateTime.now().millisecondsSinceEpoch,
         },
-        where: 'product_id = ?',
-        whereArgs: [productId],
+        where: 'LOWER(user_email) = ? AND product_id = ?',
+        whereArgs: [cleanEmail, productId],
       );
     }
   }
 
-  /// Toggle centang pada satu produk
-  Future<void> toggleSelection(String productId) async {
+  /// Toggle centang pada satu produk untuk pengguna
+  Future<void> toggleSelectionForUser(String email, String productId) async {
+    final cleanEmail = email.toLowerCase().trim();
+    if (cleanEmail.isEmpty) return;
+
     final db = await _dbHelper.database;
     final existing = await db.query(
-      'local_cart',
-      where: 'product_id = ?',
-      whereArgs: [productId],
+      'user_cart',
+      where: 'LOWER(user_email) = ? AND product_id = ?',
+      whereArgs: [cleanEmail, productId],
     );
 
     if (existing.isNotEmpty) {
       final current = existing.first['is_selected'] == 1;
       await db.update(
-        'local_cart',
+        'user_cart',
         {'is_selected': current ? 0 : 1},
-        where: 'product_id = ?',
-        whereArgs: [productId],
+        where: 'LOWER(user_email) = ? AND product_id = ?',
+        whereArgs: [cleanEmail, productId],
       );
     }
   }
 
-  /// Toggle centang semua produk
+  /// Toggle centang semua produk untuk pengguna
+  Future<void> toggleSelectAllForUser(String email, bool selectAll) async {
+    final cleanEmail = email.toLowerCase().trim();
+    if (cleanEmail.isEmpty) return;
+
+    final db = await _dbHelper.database;
+    await db.update(
+      'user_cart',
+      {'is_selected': selectAll ? 1 : 0},
+      where: 'LOWER(user_email) = ?',
+      whereArgs: [cleanEmail],
+    );
+  }
+
+  /// Hapus produk dari keranjang pengguna
+  Future<void> removeItemForUser(String email, String productId) async {
+    final cleanEmail = email.toLowerCase().trim();
+    if (cleanEmail.isEmpty) return;
+
+    final db = await _dbHelper.database;
+    await db.delete(
+      'user_cart',
+      where: 'LOWER(user_email) = ? AND product_id = ?',
+      whereArgs: [cleanEmail, productId],
+    );
+  }
+
+  /// Hapus produk yang sedang dicentang dari keranjang pengguna
+  Future<void> removeSelectedForUser(String email) async {
+    final cleanEmail = email.toLowerCase().trim();
+    if (cleanEmail.isEmpty) return;
+
+    final db = await _dbHelper.database;
+    await db.delete(
+      'user_cart',
+      where: 'LOWER(user_email) = ? AND is_selected = ?',
+      whereArgs: [cleanEmail, 1],
+    );
+  }
+
+  /// Mengosongkan keranjang pengguna
+  Future<void> clearCartForUser(String email) async {
+    final cleanEmail = email.toLowerCase().trim();
+    if (cleanEmail.isEmpty) return;
+
+    final db = await _dbHelper.database;
+    await db.delete(
+      'user_cart',
+      where: 'LOWER(user_email) = ?',
+      whereArgs: [cleanEmail],
+    );
+  }
+
+  // ==============================================================================
+  // METODE LEGACY (Mendelegasikan ke akun pengguna aktif)
+  // ==============================================================================
+
+  Future<List<CartItem>> getCartItems() async {
+    final email = await SecureStorageService.instance.getUserEmail();
+    if (email != null && email.isNotEmpty) {
+      return getCartItemsForUser(email);
+    }
+    return [];
+  }
+
+  Future<void> addToCart(String productId, int quantity) async {
+    final email = await SecureStorageService.instance.getUserEmail();
+    if (email != null && email.isNotEmpty) {
+      await addToCartForUser(email, productId, quantity);
+    }
+  }
+
+  Future<void> updateQuantity(String productId, int quantity) async {
+    final email = await SecureStorageService.instance.getUserEmail();
+    if (email != null && email.isNotEmpty) {
+      await updateQuantityForUser(email, productId, quantity);
+    }
+  }
+
+  Future<void> toggleSelection(String productId) async {
+    final email = await SecureStorageService.instance.getUserEmail();
+    if (email != null && email.isNotEmpty) {
+      await toggleSelectionForUser(email, productId);
+    }
+  }
+
   Future<void> toggleSelectAll(bool selectAll) async {
-    final db = await _dbHelper.database;
-    await db.update('local_cart', {'is_selected': selectAll ? 1 : 0});
+    final email = await SecureStorageService.instance.getUserEmail();
+    if (email != null && email.isNotEmpty) {
+      await toggleSelectAllForUser(email, selectAll);
+    }
   }
 
-  /// Hapus produk dari keranjang
   Future<void> removeItem(String productId) async {
-    final db = await _dbHelper.database;
-    await db.delete(
-      'local_cart',
-      where: 'product_id = ?',
-      whereArgs: [productId],
-    );
+    final email = await SecureStorageService.instance.getUserEmail();
+    if (email != null && email.isNotEmpty) {
+      await removeItemForUser(email, productId);
+    }
   }
 
-  /// Hapus produk yang sedang dicentang
   Future<void> removeSelected() async {
-    final db = await _dbHelper.database;
-    await db.delete(
-      'local_cart',
-      where: 'is_selected = ?',
-      whereArgs: [1],
-    );
+    final email = await SecureStorageService.instance.getUserEmail();
+    if (email != null && email.isNotEmpty) {
+      await removeSelectedForUser(email);
+    }
   }
 
-  /// Mengosongkan keranjang
   Future<void> clearCart() async {
-    final db = await _dbHelper.database;
-    await db.delete('local_cart');
+    final email = await SecureStorageService.instance.getUserEmail();
+    if (email != null && email.isNotEmpty) {
+      await clearCartForUser(email);
+    }
   }
 }
+

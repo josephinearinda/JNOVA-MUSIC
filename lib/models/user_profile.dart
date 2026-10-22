@@ -57,7 +57,7 @@ class UserProfileModel {
       phoneNumber: '',
       birthDate: '',
       photoUrl: '',
-      tier: 'Silver Member',
+      tier: 'Non-Member',
       points: 0,
       isEmailVerified: false,
       isPhoneVerified: false,

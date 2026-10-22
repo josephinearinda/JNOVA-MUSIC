@@ -271,15 +271,18 @@ class SecureStorageService {
     final key = '$_keyPrefixBiometricEnabled$cleanEmail';
     final valStr = enabled.toString();
     _memoryFallback[key] = valStr;
+    if (enabled) {
+      _memoryFallback[_keyLastBiometricUser] = cleanEmail;
+    } else {
+      if (_memoryFallback[_keyLastBiometricUser] == cleanEmail) {
+        _memoryFallback.remove(_keyLastBiometricUser);
+      }
+    }
     try {
       await _storage.write(key: key, value: valStr);
       if (enabled) {
-        _memoryFallback[_keyLastBiometricUser] = cleanEmail;
         await _storage.write(key: _keyLastBiometricUser, value: cleanEmail);
       } else {
-        if (_memoryFallback[_keyLastBiometricUser] == cleanEmail) {
-          _memoryFallback.remove(_keyLastBiometricUser);
-        }
         final last = await getLastBiometricUser();
         if (last == cleanEmail) {
           await _storage.delete(key: _keyLastBiometricUser);
@@ -371,18 +374,45 @@ class SecureStorageService {
     return null;
   }
 
+  static const String _keyPrefixBiometricCredentials = 'biometric_credentials_';
+
+  Future<void> saveBiometricCredentials({
+    required String email,
+    required String password,
+  }) async {
+    final cleanEmail = email.toLowerCase().trim();
+    final key = '$_keyPrefixBiometricCredentials$cleanEmail';
+    _memoryFallback[key] = password;
+    try {
+      await _storage.write(key: key, value: password);
+    } catch (_) {}
+  }
+
+  Future<String?> getBiometricCredentials(String email) async {
+    final cleanEmail = email.toLowerCase().trim();
+    final key = '$_keyPrefixBiometricCredentials$cleanEmail';
+    try {
+      final val = await _storage.read(key: key);
+      if (val != null && val.isNotEmpty) return val;
+    } catch (_) {}
+    return _memoryFallback[key];
+  }
+
   Future<void> clearBiometricForUser(String email) async {
     final cleanEmail = email.toLowerCase().trim();
     final key = '$_keyPrefixBiometricEnabled$cleanEmail';
     final tokenKey = '$_keyPrefixBiometricRefreshToken$cleanEmail';
     final recordKey = '$_keyPrefixBiometricRecord$cleanEmail';
+    final credKey = '$_keyPrefixBiometricCredentials$cleanEmail';
     _memoryFallback[key] = 'false';
     _memoryFallback.remove(tokenKey);
     _memoryFallback.remove(recordKey);
+    _memoryFallback.remove(credKey);
     try {
       await _storage.write(key: key, value: 'false');
       await _storage.delete(key: tokenKey);
       await _storage.delete(key: recordKey);
+      await _storage.delete(key: credKey);
       if (_memoryFallback[_keyLastBiometricUser] == cleanEmail) {
         _memoryFallback.remove(_keyLastBiometricUser);
         await _storage.delete(key: _keyLastBiometricUser);

@@ -4,6 +4,7 @@ import '../models/product.dart';
 import '../services/cart_service.dart';
 import '../services/currency_service.dart';
 import '../services/favorite_service.dart';
+import '../services/product_stock_service.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/product_favorite_card.dart';
 
@@ -21,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final CartService _cartService = CartService.instance;
   final FavoriteService _favService = FavoriteService.instance;
   final CurrencyService _currencyService = CurrencyService.instance;
+  final ProductStockService _stockService = ProductStockService.instance;
 
   final List<_CategoryItem> _categories = const [
     _CategoryItem(name: 'Gitar', icon: Icons.music_note_rounded),
@@ -42,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _cartService.addListener(_onServiceUpdate);
     _favService.addListener(_onServiceUpdate);
     _currencyService.addListener(_onServiceUpdate);
+    _stockService.addListener(_onServiceUpdate);
   }
 
   @override
@@ -49,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _cartService.removeListener(_onServiceUpdate);
     _favService.removeListener(_onServiceUpdate);
     _currencyService.removeListener(_onServiceUpdate);
+    _stockService.removeListener(_onServiceUpdate);
     super.dispose();
   }
 
@@ -57,6 +61,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _addToCart(Product product) {
+    if (_stockService.isOutOfStock(product.id)) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Maaf, stok produk ini sedang habis.'),
+          backgroundColor: Color(0xFF2E2E2E),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
     _cartService.addToCart(product);
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -69,7 +84,11 @@ class _HomeScreenState extends State<HomeScreen> {
         action: SnackBarAction(
           label: 'Lihat',
           textColor: const Color(0xFFFF5500),
-          onPressed: () => Navigator.pushNamed(context, '/cart'),
+          onPressed: () {
+            if (mounted) {
+              Navigator.pushNamed(context, '/cart');
+            }
+          },
         ),
       ),
     );
@@ -79,7 +98,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final cartCount = _cartService.items.length;
     final favCount = _favService.items.length;
-    final products = Product.initialProducts;
+    final products = Product.initialProducts
+        .map((p) => _stockService.applyStock(p))
+        .toList();
 
     return Scaffold(
       backgroundColor: Colors.white,

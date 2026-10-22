@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import '../core/constants/app_colors.dart';
 import '../models/user_profile.dart';
 import '../services/auth_service.dart';
+import '../services/blockchain_certificate_service.dart';
 import '../services/currency_service.dart';
 import '../services/membership_service.dart';
 import '../services/order_service.dart';
 import '../services/user_profile_service.dart';
 import '../widgets/app_bottom_nav.dart';
-import '../widgets/logout_confirmation_dialog.dart';
 
 /// Halaman PROFIL SAYA JNOVAMUSIC sesuai desain Figma 5
 class ProfileScreen extends StatefulWidget {
@@ -648,8 +648,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildActivityItem(
             icon: Icons.military_tech_outlined,
             title: 'Membership Saya',
-            subtitle:
-                'Tier ${_membershipService.tierName} • $points Poin • Benefit Diskon ${_membershipService.discountPercentage}%',
+            subtitle: _membershipService.isMember
+                ? '${_membershipService.tierName} • $points Poin • Benefit Diskon ${_membershipService.discountPercentage}%'
+                : 'Non-Member • $points Poin • Min. 1.000 Poin untuk Silver',
             onTap: () => Navigator.pushNamed(context, '/membership-settings'),
           ),
           _buildActivityItem(
@@ -667,6 +668,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onTap: () => Navigator.pushNamed(context, '/order-history'),
           ),
           _buildActivityItem(
+            icon: Icons.verified_user_outlined,
+            title: 'Sertifikat Keaslian Blockchain',
+            subtitle: BlockchainCertificateService.instance
+                    .getUserCertificates()
+                    .where((c) => c.isClaimed)
+                    .isNotEmpty
+                ? '${BlockchainCertificateService.instance.getUserCertificates().where((c) => c.isClaimed).length} Instrumen Resmi Dimiliki'
+                : 'NFT Kepemilikan & Originalitas Instrumen Resmi',
+            onTap: () => Navigator.pushNamed(context, '/blockchain-certificates'),
+          ),
+          _buildActivityItem(
             icon: Icons.sports_esports_outlined,
             title: 'Riwayat Game',
             subtitle: 'JNova Rhythm - Skor 18.450',
@@ -677,12 +689,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             title: 'Riwayat Poin',
             subtitle: 'Poin Masuk & Penukaran Reward',
             onTap: () => Navigator.pushNamed(context, '/point-history'),
-          ),
-          _buildActivityItem(
-            icon: Icons.music_note_outlined,
-            title: 'Preferensi Musik & Lagu',
-            subtitle: 'Atur genre, instrumen & gaya bermusikmu',
-            onTap: () => Navigator.pushNamed(context, '/music-preferences'),
           ),
           _buildActivityItem(
             icon: Icons.rate_review_outlined,
@@ -940,42 +946,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 10.5, color: Color(0xFF7E756F)),
+        SizedBox(
+          width: 90,
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 10.5, color: Color(0xFF7E756F)),
+          ),
         ),
-        Row(
-          children: [
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimaryDark,
-              ),
-            ),
-            if (tag != null) ...[
-              const SizedBox(width: 6),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 5,
-                  vertical: 1.5,
-                ),
-                decoration: BoxDecoration(
-                  color: tagBgColor,
-                  borderRadius: BorderRadius.circular(4),
-                ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Flexible(
                 child: Text(
-                  tag,
-                  style: TextStyle(
-                    fontSize: 8,
-                    fontWeight: FontWeight.w800,
-                    color: tagColor,
+                  value,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  textAlign: TextAlign.end,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimaryDark,
                   ),
                 ),
               ),
+              if (tag != null) ...[
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 1.5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: tagBgColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    tag,
+                    style: TextStyle(
+                      fontSize: 8,
+                      fontWeight: FontWeight.w800,
+                      color: tagColor,
+                    ),
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ],
     );
@@ -994,8 +1012,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          onPressed: () {
-            LogoutConfirmationDialog.show(context);
+          onPressed: () async {
+            await AuthService.instance.logout();
+            if (mounted) {
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamedAndRemoveUntil('/login', (route) => false);
+            }
           },
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,

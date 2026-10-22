@@ -301,18 +301,24 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                   ),
                   Row(
                     children: [
-                      const Icon(
-                        Icons.verified_rounded,
+                      Icon(
+                        _membershipService.isMember
+                            ? Icons.verified_rounded
+                            : Icons.lock_outline_rounded,
                         size: 13,
-                        color: Color(0xFFB45309),
+                        color: _membershipService.isMember
+                            ? const Color(0xFFB45309)
+                            : const Color(0xFF8E837D),
                       ),
                       const SizedBox(width: 4),
                       Text(
                         _membershipService.tierName,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF8D4315),
+                          color: _membershipService.isMember
+                              ? const Color(0xFF8D4315)
+                              : const Color(0xFF7E756F),
                         ),
                       ),
                     ],
@@ -421,7 +427,9 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                   Text(
                     _membershipService.nextTierName == 'Maksimal'
                         ? 'Tier maksimal tercapai'
-                        : 'Progres ke ${_membershipService.nextTierName} Member',
+                        : _membershipService.isMember
+                            ? 'Progres ke ${_membershipService.nextTierName} Member'
+                            : 'Kumpulkan 1.000 Poin untuk Jadi Member',
                     style: const TextStyle(
                       fontSize: 9.5,
                       fontWeight: FontWeight.w700,
@@ -473,7 +481,9 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                   child: Text(
                     _membershipService.nextTierName == 'Maksimal'
                         ? 'Kamu sudah mencapai tier tertinggi dengan benefit diskon ${_membershipService.discountPercentage}%.'
-                        : 'Target: ${targetPoints.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (match) => '${match[1]}.')} poin. Butuh $pointsNeeded poin lagi untuk membuka benefit ${_membershipService.nextTierName}.',
+                        : _membershipService.isMember
+                            ? 'Target: ${targetPoints.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (match) => '${match[1]}.')} poin. Butuh $pointsNeeded poin lagi untuk membuka benefit ${_membershipService.nextTierName}.'
+                            : 'Belanja & kumpulkan $pointsNeeded poin lagi untuk membuka keanggotaan Silver Member dan nikmati diskon 10%!',
                     style: const TextStyle(
                       fontSize: 9,
                       color: Color(0xFF78350F),
@@ -490,9 +500,10 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
 
   Widget _buildMembershipTiersSection() {
     final currentTier = _membershipService.userTier;
-    final isSilverActive = currentTier == 'TIER 2';
-    final isGoldActive = currentTier == 'TIER 3';
-    final isPlatinumActive = currentTier == 'TIER 4';
+    final isNonMember = currentTier == 'NON-MEMBER';
+    final isSilverActive = currentTier == 'TIER 1';
+    final isGoldActive = currentTier == 'TIER 2';
+    final isPlatinumActive = currentTier == 'TIER 3';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -515,10 +526,10 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
         // 1. SILVER
         _buildTierCard(
           isActive: isSilverActive,
-          isNextTier: false,
+          isNextTier: isNonMember,
           tagColor: AppColors.primaryOrange,
           tagBg: const Color(0xFFFFEDDF),
-          pointRange: '0 - 2.999 POIN',
+          pointRange: '1.000 - 2.999 POIN',
           title: 'SILVER',
           subtitle: 'Kolektor Musik Pemula',
           icon: Icons.shield_rounded,
@@ -563,7 +574,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
           isNextTier: isGoldActive,
           tagColor: const Color(0xFF0369A1),
           tagBg: const Color(0xFFE0F2FE),
-          pointRange: '10.000 POIN',
+          pointRange: '10.000+ POIN',
           title: 'PLATINUM',
           subtitle: 'VIP & Pro Audiophile',
           icon: Icons.workspace_premium_rounded,
@@ -604,7 +615,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
         ? 'Tier Aktif Kamu'
         : isNextTier
         ? 'Tingkat Berikutnya'
-        : 'Tingkat Membership';
+        : 'Keanggotaan';
     final effectiveTagColor = isActive
         ? AppColors.primaryOrange
         : isNextTier
