@@ -693,7 +693,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildActivityItem(
             icon: Icons.rate_review_outlined,
             title: 'Saran dan Kesan',
-            subtitle: 'Kirim Feedback ke Tim JNOVAMUSIC',
+            subtitle: 'Evaluasi Kuliah Pemrograman Mobile',
             onTap: () => Navigator.pushNamed(context, '/suggestion-review'),
           ),
           _buildActivityItem(

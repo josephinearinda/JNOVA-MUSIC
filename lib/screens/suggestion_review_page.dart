@@ -21,7 +21,6 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
   // 0: Saran, 1: Kesan, 2: Kritik
   int _selectedTypeIndex = 0;
   int _rating = 0; // 0: Belum dinilai, 1..5
-  bool _simulateServerError = false;
   bool _isSubmitting = false;
 
   @override
@@ -91,45 +90,6 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
 
     if (!mounted) return;
 
-    if (_simulateServerError) {
-      setState(() => _isSubmitting = false);
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Row(
-            children: [
-              Icon(Icons.error_outline_rounded, color: Color(0xFFDC2626), size: 24),
-              SizedBox(width: 8),
-              Text(
-                'Gangguan Server',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
-                ),
-              ),
-            ],
-          ),
-          content: const Text(
-            'Pengiriman masukan gagal karena simulasi gangguan server aktif. Matikan sakelar simulasi untuk mengirim secara normal.',
-            style: TextStyle(fontSize: 12, color: Color(0xFF5A524D)),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text(
-                'Tutup',
-                style: TextStyle(color: AppColors.primaryOrange, fontWeight: FontWeight.w700),
-              ),
-            ),
-          ],
-        ),
-      );
-      return;
-    }
-
     setState(() {
       _isSubmitting = false;
       _feedbackController.clear();
@@ -156,7 +116,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
           ],
         ),
         content: const Text(
-          'Terima kasih atas masukan tulus Anda. Tim kurator & layanan pelanggan JNOVAMUSIC akan meninjau saran Anda untuk penyempurnaan layanan.',
+          'Terima kasih atas masukan tulus Anda. Saran dan kesan Anda untuk mata kuliah Pemrograman Aplikasi Mobile telah berhasil direkam.',
           style: TextStyle(fontSize: 12, color: Color(0xFF5A524D)),
         ),
         actions: [
@@ -342,7 +302,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   ),
                 ),
                 Text(
-                  'JNOVAMUSIC FEEDBACK',
+                  'PEMROGRAMAN APLIKASI MOBILE',
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w700,
@@ -358,7 +318,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(
-                    'Kritik dan saran Anda sangat membantu kami dalam menyempurnakan kurasi dan layanan musisi.',
+                    'Kritik, saran, dan kesan Anda untuk proses pembelajaran mata kuliah Pemrograman Aplikasi Mobile.',
                   ),
                   duration: Duration(seconds: 2),
                 ),
@@ -415,7 +375,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Suara Anda Berarti Bagi Kami',
+                  'Evaluasi Pembelajaran Mata Kuliah',
                   style: TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w800,
@@ -424,7 +384,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  'Bantu JNOVAMUSIC menyempurnakan kurasi alat musik akustik, elektrik, dan studio audio dengan berbagi ulasan tulus Anda.',
+                  'Bagikan saran, kesan, dan pengalaman Anda selama mengikuti perkuliahan Pemrograman Aplikasi Mobile serta pengerjaan proyek akhir ini.',
                   style: TextStyle(
                     fontSize: 10,
                     color: Color(0xFF6E6560),
@@ -545,7 +505,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.all(12),
                 hintText:
-                    'Tulis saran, kesan, atau kritikmu tentang JNOVAMUSIC (misal: pengemasan gitar akustik, respon teknisi, atau ketersediaan stok synths)...',
+                    'Tuliskan saran, kesan, atau kritik Anda untuk mata kuliah Pemrograman Aplikasi Mobile (misal: materi kuliah, praktikum Flutter, bimbingan proyek, atau saran pengembangan ke depan)...',
                 hintStyle: TextStyle(
                   fontSize: 10.5,
                   color: Color(0xFF9E958F),
@@ -577,7 +537,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Rating Pengalaman (Opsional)',
+                'Rating Pengalaman Kuliah (Opsional)',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
@@ -706,46 +666,6 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
           ),
           const SizedBox(height: 10),
 
-          // Simulasi Gangguan Server Switch
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFAF9F7),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFEBE8E3)),
-            ),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.tune_rounded,
-                  size: 15,
-                  color: Color(0xFF6E6560),
-                ),
-                const SizedBox(width: 8),
-                const Expanded(
-                  child: Text(
-                    'Simulasi Gangguan Server',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF5A524D),
-                    ),
-                  ),
-                ),
-                Transform.scale(
-                  scale: 0.75,
-                  child: Switch(
-                    value: _simulateServerError,
-                    onChanged: (val) {
-                      setState(() => _simulateServerError = val);
-                    },
-                    activeThumbColor: AppColors.primaryOrange,
-                    activeTrackColor: AppColors.primaryOrange.withValues(alpha: 0.5),
-                  ),
-                ),
-              ],
-            ),
-          ),
           const SizedBox(height: 14),
 
           // Tombol Kirim Masukan
@@ -861,7 +781,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Masukan Anda akan ditinjau secara langsung oleh tim layanan pelanggan JNOVAMUSIC.',
+                  'Saran dan kesan ini ditujukan untuk evaluasi proses pembelajaran mata kuliah Pemrograman Aplikasi Mobile.',
                   style: TextStyle(
                     fontSize: 9.5,
                     color: Color(0xFF8E837D),
@@ -870,7 +790,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                 ),
                 SizedBox(height: 2),
                 Text(
-                  'JNOVAMUSIC Care © 2024',
+                  'Mata Kuliah Pemrograman Aplikasi Mobile © 2024',
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w700,
