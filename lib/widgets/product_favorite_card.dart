@@ -187,30 +187,40 @@ class ProductFavoriteCard extends StatelessWidget {
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Row(
-                          children: [
-                            const Icon(
-                              Icons.star_rounded,
-                              size: 13,
-                              color: Color(0xFFF59E0B),
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              product.rating.toStringAsFixed(1),
-                              style: const TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.textPrimaryDark,
-                              ),
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              '(${product.reviewCount})',
-                              style: const TextStyle(
-                                fontSize: 9.5,
-                                color: AppColors.textMuted,
-                              ),
-                            ),
-                          ],
+                          children: product.reviewCount > 0
+                              ? [
+                                  const Icon(
+                                    Icons.star_rounded,
+                                    size: 13,
+                                    color: Color(0xFFF59E0B),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    product.rating.toStringAsFixed(1),
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.textPrimaryDark,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    '(${product.reviewCount})',
+                                    style: const TextStyle(
+                                      fontSize: 9.5,
+                                      color: AppColors.textMuted,
+                                    ),
+                                  ),
+                                ]
+                              : const [
+                                  Text(
+                                    'Belum ada ulasan',
+                                    style: TextStyle(
+                                      fontSize: 9.5,
+                                      color: AppColors.textMuted,
+                                    ),
+                                  ),
+                                ],
                         ),
                       ),
 

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -51,6 +52,8 @@ void main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
+  await Product.loadCatalogFromAssets();
+
   // 1. Inisialisasi Environment Variables (.env)
   await AppConfig.initialize();
 
@@ -62,7 +65,6 @@ void main() async {
 
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -139,7 +141,14 @@ class MyApp extends StatelessWidget {
           },
         ),
         '/membership': (context) => const MembershipSettingsPage(),
-        '/all-products': (context) => const AllProductsScreen(),
+        '/all-products': (context) {
+          final category = ModalRoute.of(context)?.settings.arguments;
+          return AllProductsScreen(
+            initialCategory: category is String && category.trim().isNotEmpty
+                ? category
+                : 'Semua',
+          );
+        },
         '/search': (context) => const SearchScreen(),
         '/product-detail': (context) {
           final product =

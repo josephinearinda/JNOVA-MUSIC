@@ -1,5 +1,18 @@
 # JNOVAMUSIC
 
+## Katalog produk aplikasi
+
+Katalog utama dibaca dari `Katalog/Katalog_AlatMusik.csv` saat aplikasi
+dimulai. Foto produk dicocokkan dengan nama produk di folder
+`GAMBAR KATALOG/<kategori>/`. CSV memakai pemisah titik koma dan kolom
+`kategori`, `merk`, `nama`, `jenis`, `deskripsi`, dan `harga`. Stok aplikasi
+sementara menggunakan nilai default 5 karena CSV belum memuat kolom stok.
+Rating dan jumlah ulasan tidak ditampilkan sebagai nilai buatan karena CSV
+belum memuat informasi tersebut.
+Saat pembaruan aplikasi pertama kali dibuka, cache katalog lama diperbarui
+dari CSV; item keranjang/favorit yang cocok berdasarkan merek dan nama tetap
+dipertahankan.
+
 ## Menyiapkan Jnova AI tanpa API key di aplikasi
 
 Jnova AI mengirim permintaan Gemini melalui Supabase Edge Function. Pengguna

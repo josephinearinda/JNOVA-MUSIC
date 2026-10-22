@@ -37,19 +37,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   late String _selectedColor;
   bool _isDescriptionExpanded = false;
 
-  final List<Map<String, String>> _thumbnails = [
-    {'title': 'FRONT', 'image': 'assets/images/thumb_front.png'},
-    {'title': 'BACK', 'image': 'assets/images/thumb_back.png'},
-    {'title': 'HEADSTOCK', 'image': 'assets/images/thumb_headstock.png'},
-    {'title': 'PICKUPS', 'image': 'assets/images/thumb_pickups.png'},
-  ];
+  List<Map<String, String>> get _thumbnails {
+    if (widget.product.id.startsWith('catalog_')) {
+      return [
+        {'title': 'PRODUK', 'image': widget.product.image},
+      ];
+    }
+    return [
+      {'title': 'FRONT', 'image': 'assets/images/thumb_front.png'},
+      {'title': 'BACK', 'image': 'assets/images/thumb_back.png'},
+      {'title': 'HEADSTOCK', 'image': 'assets/images/thumb_headstock.png'},
+      {'title': 'PICKUPS', 'image': 'assets/images/thumb_pickups.png'},
+    ];
+  }
 
   @override
   void initState() {
     super.initState();
     _selectedColor = widget.product.colorVariants.isNotEmpty
         ? widget.product.colorVariants.first
-        : '3-Color Sunburst';
+        : '';
     _cartService.addListener(_handleStateChanged);
     _favoriteService.addListener(_handleStateChanged);
     _currencyService.addListener(_handleStateChanged);
@@ -236,7 +243,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     const SizedBox(height: 16),
 
                     // Pilihan Warna Body
-                    _buildColorVariants(),
+                    if (widget.product.colorVariants.isNotEmpty)
+                      _buildColorVariants(),
 
                     const SizedBox(height: 16),
 
@@ -515,9 +523,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Image.asset(
-                _selectedThumbIndex < _thumbnails.length
-                    ? _thumbnails[_selectedThumbIndex]['image']!
-                    : product.image,
+                _thumbnails[_selectedThumbIndex]['image'] ?? product.image,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) => Image.asset(
                   product.image,
@@ -576,62 +582,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     size: 16,
                     color: AppColors.primaryOrange,
                   ),
-                ),
-              ),
-            ),
-          ),
-
-          // Pill "Lihat 360°"
-          Positioned(
-            bottom: 12,
-            left: 12,
-            child: InkWell(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Mode Tampilan Interaktif 360° dibuka.'),
-                    duration: Duration(seconds: 1),
-                  ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4.5,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: const Color(0xFFE0DDD8),
-                    width: 1.0,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.threesixty_rounded,
-                      size: 14,
-                      color: AppColors.primaryOrange,
-                    ),
-                    SizedBox(width: 4),
-                    Text(
-                      'Lihat 360°',
-                      style: TextStyle(
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimaryDark,
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ),
@@ -775,46 +725,57 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: [
-          const Icon(
-            Icons.star_rounded,
-            size: 15,
-            color: AppColors.primaryOrange,
-          ),
-          const SizedBox(width: 3),
-          Text(
-            product.rating.toStringAsFixed(1),
-            style: const TextStyle(
-              fontSize: 11.5,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
+          if (product.reviewCount > 0) ...[
+            const Icon(
+              Icons.star_rounded,
+              size: 15,
+              color: AppColors.primaryOrange,
             ),
-          ),
-          const SizedBox(width: 4),
-          Text(
-            '(${product.reviewCount} Pembeli Terverifikasi)',
-            style: const TextStyle(fontSize: 10.5, color: AppColors.textMuted),
-          ),
-          const SizedBox(width: 8),
-          const Text('•', style: TextStyle(color: Color(0xFFCCC8C4))),
-          const SizedBox(width: 8),
-          const Row(
-            children: [
-              Icon(
-                Icons.local_fire_department_rounded,
-                size: 14,
-                color: AppColors.primaryOrange,
+            const SizedBox(width: 3),
+            Text(
+              product.rating.toStringAsFixed(1),
+              style: const TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimaryDark,
               ),
-              SizedBox(width: 2),
-              Text(
-                'Terjual 120+',
-                style: TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimaryDark,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              '(${product.reviewCount} Pembeli Terverifikasi)',
+              style: const TextStyle(
+                fontSize: 10.5,
+                color: AppColors.textMuted,
+              ),
+            ),
+          ] else
+            const Text(
+              'Belum ada ulasan',
+              style: TextStyle(fontSize: 10.5, color: AppColors.textMuted),
+            ),
+          if (!product.id.startsWith('catalog_')) ...[
+            const SizedBox(width: 8),
+            const Text('•', style: TextStyle(color: Color(0xFFCCC8C4))),
+            const SizedBox(width: 8),
+            const Row(
+              children: [
+                Icon(
+                  Icons.local_fire_department_rounded,
+                  size: 14,
+                  color: AppColors.primaryOrange,
                 ),
-              ),
-            ],
-          ),
+                SizedBox(width: 2),
+                Text(
+                  'Terjual 120+',
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimaryDark,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

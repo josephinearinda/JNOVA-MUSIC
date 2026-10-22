@@ -16,6 +16,7 @@ import 'package:jnova/screens/register_screen.dart';
 import 'package:jnova/screens/favorite_screen.dart';
 import 'package:jnova/screens/cart_screen.dart';
 import 'package:jnova/screens/all_products_screen.dart';
+import 'package:jnova/screens/home_screen.dart';
 import 'package:jnova/screens/search_screen.dart';
 import 'package:jnova/screens/product_detail_screen.dart';
 import 'package:jnova/screens/checkout_screen.dart';
@@ -199,7 +200,7 @@ void main() {
     expect(find.text('Semua Produk'), findsOneWidget);
     expect(find.text('Temukan alat musik yang cocok...'), findsOneWidget);
     expect(find.text('Cari nama alat musik atau merek...'), findsOneWidget);
-    expect(find.text('Menampilkan 12 Produk'), findsOneWidget);
+    expect(find.text('Menampilkan 15 Produk'), findsOneWidget);
     expect(find.text('Pengiriman Cepat & Aman'), findsNothing);
     expect(find.text('Fender Player II Stratocaster HSS'), findsOneWidget);
 
@@ -208,6 +209,47 @@ void main() {
     await tester.pump();
 
     expect(find.text('Roland TD-07KV V-Drums Electronic'), findsOneWidget);
+  });
+
+  testWidgets('AllProductsScreen opens with the selected home category', (
+    WidgetTester tester,
+  ) async {
+    await Product.loadCatalogFromAssets();
+    await tester.pumpWidget(
+      const MaterialApp(home: AllProductsScreen(initialCategory: 'Drum')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Yamaha Rydeen'), findsOneWidget);
+    expect(find.text('Yamaha C315'), findsNothing);
+    expect(find.text('Menampilkan 15 Produk'), findsOneWidget);
+  });
+
+  testWidgets('Home category tap opens its filtered product list', (
+    WidgetTester tester,
+  ) async {
+    await Product.loadCatalogFromAssets();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: const HomeScreen(),
+        onGenerateRoute: (settings) {
+          if (settings.name == '/all-products') {
+            final category = settings.arguments as String? ?? 'Semua';
+            return MaterialPageRoute<void>(
+              builder: (_) => AllProductsScreen(initialCategory: category),
+            );
+          }
+          return null;
+        },
+      ),
+    );
+
+    await tester.tap(find.text('Drum').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Yamaha Rydeen'), findsOneWidget);
+    expect(find.text('Yamaha C315'), findsNothing);
+    expect(find.text('Menampilkan 15 Produk'), findsOneWidget);
   });
 
   testWidgets('SearchScreen smoke test and UX empty state simulation', (
@@ -252,6 +294,7 @@ void main() {
 
     expect(find.text('Beranda'), findsWidgets);
     expect(find.text('Kode : 0140512500'), findsOneWidget);
+    expect(find.text('Lihat 360°'), findsNothing);
     expect(find.text('+ Keranjang'), findsOneWidget);
     expect(find.text('Beli Sekarang'), findsOneWidget);
 
@@ -274,32 +317,31 @@ void main() {
     expect(find.text('1'), findsWidgets);
   });
 
-  testWidgets(
-    'CheckoutScreen smoke test for pure Store Pickup flow',
-    (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: CheckoutScreen(initialMethod: FulfillmentMethod.pickup),
-        ),
-      );
+  testWidgets('CheckoutScreen smoke test for pure Store Pickup flow', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: CheckoutScreen(initialMethod: FulfillmentMethod.pickup),
+      ),
+    );
 
-      expect(find.text('Checkout'), findsOneWidget);
-      expect(find.text('Ambil di Toko (Store Pickup)'), findsOneWidget);
-      expect(find.text('Produk yang Dipesan'), findsOneWidget);
-      expect(find.text('Ambil di Toko'), findsWidgets);
-      expect(find.text('Gratis Sound Check & Luthier Setup'), findsOneWidget);
-      expect(find.text('Pilih Toko Pengambilan'), findsOneWidget);
-      expect(find.text('JNOVAMUSIC Flagship Jakarta'), findsOneWidget);
-      expect(find.text('Buka Peta & Rute'), findsOneWidget);
-      expect(find.text('Member Silver'), findsOneWidget);
-      expect(find.text('Ringkasan Biaya'), findsOneWidget);
-      expect(find.text('Bayar Sekarang'), findsOneWidget);
+    expect(find.text('Checkout'), findsOneWidget);
+    expect(find.text('Ambil di Toko (Store Pickup)'), findsOneWidget);
+    expect(find.text('Produk yang Dipesan'), findsOneWidget);
+    expect(find.text('Ambil di Toko'), findsWidgets);
+    expect(find.text('Gratis Sound Check & Luthier Setup'), findsOneWidget);
+    expect(find.text('Pilih Toko Pengambilan'), findsOneWidget);
+    expect(find.text('JNOVAMUSIC Flagship Jakarta'), findsOneWidget);
+    expect(find.text('Buka Peta & Rute'), findsOneWidget);
+    expect(find.text('Member Silver'), findsOneWidget);
+    expect(find.text('Ringkasan Biaya'), findsOneWidget);
+    expect(find.text('Bayar Sekarang'), findsOneWidget);
 
-      // Verify that home delivery is not present
-      expect(find.text('Pengiriman ke Rumah'), findsNothing);
-      expect(find.text('Pengiriman Rumah'), findsNothing);
-    },
-  );
+    // Verify that home delivery is not present
+    expect(find.text('Pengiriman ke Rumah'), findsNothing);
+    expect(find.text('Pengiriman Rumah'), findsNothing);
+  });
 
   testWidgets('PickupDetailScreen smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: PickupDetailScreen()));
@@ -322,7 +364,10 @@ void main() {
       expect(find.text('Detail Pesanan'), findsOneWidget);
       expect(find.text('PEMBAYARAN TERVERIFIKASI'), findsOneWidget);
       expect(find.text('Status Pesanan'), findsOneWidget);
-      expect(find.text('Metode: Ambil di Toko Resmi (Store Pickup)'), findsOneWidget);
+      expect(
+        find.text('Metode: Ambil di Toko Resmi (Store Pickup)'),
+        findsOneWidget,
+      );
       expect(find.text('SIAP DIAMBIL'), findsOneWidget);
       expect(find.text('Informasi Toko Pengambilan'), findsOneWidget);
       expect(find.text('Tampilkan QR Code'), findsOneWidget);
@@ -442,16 +487,15 @@ void main() {
     expect(find.text('Simpan Perubahan'), findsOneWidget);
   });
 
-  testWidgets('AddressEditPage smoke test and interaction', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
-      home: AddressEditPage(
-        onSaved: () {},
-        onBack: () {},
+  testWidgets('AddressEditPage smoke test and interaction', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AddressEditPage(onSaved: () {}, onBack: () {}),
+        routes: {'/profile': (context) => const Scaffold()},
       ),
-      routes: {
-        '/profile': (context) => const Scaffold(),
-      },
-    ));
+    );
 
     expect(find.text('Ubah Alamat'), findsOneWidget);
     expect(find.text('TIPE LOKASI'), findsOneWidget);
@@ -592,39 +636,46 @@ void main() {
   });
 
   testWidgets(
-      'AIChatPage interaction test: sending question displays user message and configuration prompt',
-      (WidgetTester tester) async {
-    tester.view.physicalSize = const Size(1080, 2400);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(() {
-      tester.view.resetPhysicalSize();
-      tester.view.resetDevicePixelRatio();
-    });
+    'AIChatPage interaction test: sending question displays user message and configuration prompt',
+    (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
 
-    await tester.pumpWidget(const MaterialApp(home: AIChatPage()));
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(const MaterialApp(home: AIChatPage()));
+      await tester.pumpAndSettle();
 
-    final inputFinder = find.byType(TextField);
-    expect(inputFinder, findsOneWidget);
+      final inputFinder = find.byType(TextField);
+      expect(inputFinder, findsOneWidget);
 
-    await tester.enterText(
-        inputFinder, 'Carikan rekomendasi bass harga Rp1.000.000');
-    await tester.pump();
+      await tester.enterText(
+        inputFinder,
+        'Carikan rekomendasi bass harga Rp1.000.000',
+      );
+      await tester.pump();
 
-    final sendButton = find.byIcon(Icons.arrow_upward_rounded);
-    expect(sendButton, findsOneWidget);
-    await tester.tap(sendButton);
-    await tester.pump();
+      final sendButton = find.byIcon(Icons.arrow_upward_rounded);
+      expect(sendButton, findsOneWidget);
+      await tester.tap(sendButton);
+      await tester.pump();
 
-    expect(
-        find.text('Carikan rekomendasi bass harga Rp1.000.000'), findsOneWidget);
+      expect(
+        find.text('Carikan rekomendasi bass harga Rp1.000.000'),
+        findsOneWidget,
+      );
 
-    await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
 
-    expect(
-        find.textContaining('Google Gemini API belum dikonfigurasi'), findsOneWidget);
-    expect(find.text('Konfigurasi Gemini API Key Sekarang'), findsOneWidget);
-  });
+      expect(
+        find.textContaining('Google Gemini API belum dikonfigurasi'),
+        findsOneWidget,
+      );
+      expect(find.text('Konfigurasi Gemini API Key Sekarang'), findsOneWidget);
+    },
+  );
 
   testWidgets('LogoutConfirmationDialog smoke test and behavior', (
     WidgetTester tester,
@@ -693,93 +744,102 @@ void main() {
       await storage.clearBiometricForUser('other.user@email.com');
     });
 
-    test('1. Menyimpan dan membaca biometric auth record tanpa plaintext password', () async {
-      const email = 'budi.pratama@email.com';
-      await storage.saveBiometricAuthRecord(
-        email: email,
-        userId: 'user_123',
-        fullName: 'Budi Pratama',
-        refreshToken: 'refresh_token_test_123',
-      );
+    test(
+      '1. Menyimpan dan membaca biometric auth record tanpa plaintext password',
+      () async {
+        const email = 'budi.pratama@email.com';
+        await storage.saveBiometricAuthRecord(
+          email: email,
+          userId: 'user_123',
+          fullName: 'Budi Pratama',
+          refreshToken: 'refresh_token_test_123',
+        );
 
-      final record = await storage.getBiometricAuthRecord(email);
-      expect(record, isNotNull);
-      expect(record!['email'], equals(email));
-      expect(record['userId'], equals('user_123'));
-      expect(record['fullName'], equals('Budi Pratama'));
-      expect(record['refreshToken'], equals('refresh_token_test_123'));
-      expect(record.containsKey('password'), isFalse);
-    });
+        final record = await storage.getBiometricAuthRecord(email);
+        expect(record, isNotNull);
+        expect(record!['email'], equals(email));
+        expect(record['userId'], equals('user_123'));
+        expect(record['fullName'], equals('Budi Pratama'));
+        expect(record['refreshToken'], equals('refresh_token_test_123'));
+        expect(record.containsKey('password'), isFalse);
+      },
+    );
 
-    test('2. Logout / clearSession tidak menghapus record biometrik yang sah', () async {
-      const email = 'budi.pratama@email.com';
-      await storage.saveSession(
-        accessToken: 'temp_access',
-        refreshToken: 'temp_refresh',
-        userId: 'temp_user',
-        email: email,
-      );
+    test(
+      '2. Logout / clearSession tidak menghapus record biometrik yang sah',
+      () async {
+        const email = 'budi.pratama@email.com';
+        await storage.saveSession(
+          accessToken: 'temp_access',
+          refreshToken: 'temp_refresh',
+          userId: 'temp_user',
+          email: email,
+        );
 
-      await storage.saveBiometricAuthRecord(
-        email: email,
-        userId: 'user_123',
-        fullName: 'Budi Pratama',
-        refreshToken: 'refresh_token_test_123',
-      );
-      await storage.setBiometricEnabledForUser(email, true);
+        await storage.saveBiometricAuthRecord(
+          email: email,
+          userId: 'user_123',
+          fullName: 'Budi Pratama',
+          refreshToken: 'refresh_token_test_123',
+        );
+        await storage.setBiometricEnabledForUser(email, true);
 
-      // Pastikan session ada sebelum logout
-      expect(await storage.getUserEmail(), equals(email));
+        // Pastikan session ada sebelum logout
+        expect(await storage.getUserEmail(), equals(email));
 
-      // Logout
-      await authRepo.logout();
+        // Logout
+        await authRepo.logout();
 
-      // Session sementara bersih
-      expect(await storage.getUserEmail(), isNull);
-      expect(await storage.getAccessToken(), isNull);
+        // Session sementara bersih
+        expect(await storage.getUserEmail(), isNull);
+        expect(await storage.getAccessToken(), isNull);
 
-      // Record biometrik tetap persisten di secure storage
-      expect(await storage.getLastBiometricUser(), equals(email));
-      expect(await storage.isBiometricEnabledForUser(email), isTrue);
-      expect(await storage.getBiometricAuthRecord(email), isNotNull);
-    });
+        // Record biometrik tetap persisten di secure storage
+        expect(await storage.getLastBiometricUser(), equals(email));
+        expect(await storage.isBiometricEnabledForUser(email), isTrue);
+        expect(await storage.getBiometricAuthRecord(email), isNotNull);
+      },
+    );
 
-    test('3. Alur login biometrik sukses memulihkan sesi akun yang sah', () async {
-      const email = 'budi.pratama@email.com';
-      const password = 'Password123!';
+    test(
+      '3. Alur login biometrik sukses memulihkan sesi akun yang sah',
+      () async {
+        const email = 'budi.pratama@email.com';
+        const password = 'Password123!';
 
-      // Simulasikan pendaftaran / akun terdaftar
-      await storage.saveRegisteredUser(
-        email: email,
-        password: password,
-        fullName: 'Budi Pratama',
-      );
+        // Simulasikan pendaftaran / akun terdaftar
+        await storage.saveRegisteredUser(
+          email: email,
+          password: password,
+          fullName: 'Budi Pratama',
+        );
 
-      // Login dengan password
-      final loginRes = await authRepo.login(email: email, password: password);
-      expect(loginRes.isSuccess, isTrue);
+        // Login dengan password
+        final loginRes = await authRepo.login(email: email, password: password);
+        expect(loginRes.isSuccess, isTrue);
 
-      // Aktifkan biometrik & simpan kredensial aman
-      await storage.saveBiometricAuthRecord(
-        email: email,
-        userId: 'local_user_${email.hashCode}',
-        fullName: 'Budi Pratama',
-        refreshToken: 'local_refresh',
-      );
-      await storage.setBiometricEnabledForUser(email, true);
+        // Aktifkan biometrik & simpan kredensial aman
+        await storage.saveBiometricAuthRecord(
+          email: email,
+          userId: 'local_user_${email.hashCode}',
+          fullName: 'Budi Pratama',
+          refreshToken: 'local_refresh',
+        );
+        await storage.setBiometricEnabledForUser(email, true);
 
-      // Logout
-      await authRepo.logout();
-      expect(await storage.getUserEmail(), isNull);
+        // Logout
+        await authRepo.logout();
+        expect(await storage.getUserEmail(), isNull);
 
-      // Login kembali dengan sidik jari
-      final bioResult = await authRepo.loginWithBiometrics();
-      expect(bioResult.isSuccess, isTrue);
-      expect(bioResult.message, contains('Selamat datang kembali'));
+        // Login kembali dengan sidik jari
+        final bioResult = await authRepo.loginWithBiometrics();
+        expect(bioResult.isSuccess, isTrue);
+        expect(bioResult.message, contains('Selamat datang kembali'));
 
-      // Sesi aktif pulih
-      expect(await storage.getUserEmail(), equals(email));
-    });
+        // Sesi aktif pulih
+        expect(await storage.getUserEmail(), equals(email));
+      },
+    );
 
     test('4. Login biometrik gagal dengan pesan jelas jika belum ada akun dihubungkan', () async {
       final res = await authRepo.loginWithBiometrics();
@@ -787,21 +847,24 @@ void main() {
       expect(res.message, contains('Belum ada akun yang dihubungkan'));
     });
 
-    test('5. Login biometrik gagal jika fitur dinonaktifkan untuk akun tersebut', () async {
-      const email = 'budi.pratama@email.com';
-      await storage.saveBiometricAuthRecord(
-        email: email,
-        userId: 'user_123',
-        fullName: 'Budi Pratama',
-        refreshToken: 'refresh_123',
-      );
-      await storage.setBiometricEnabledForUser(email, true);
-      // Nonaktifkan
-      await storage.setBiometricEnabledForUser(email, false);
+    test(
+      '5. Login biometrik gagal jika fitur dinonaktifkan untuk akun tersebut',
+      () async {
+        const email = 'budi.pratama@email.com';
+        await storage.saveBiometricAuthRecord(
+          email: email,
+          userId: 'user_123',
+          fullName: 'Budi Pratama',
+          refreshToken: 'refresh_123',
+        );
+        await storage.setBiometricEnabledForUser(email, true);
+        // Nonaktifkan
+        await storage.setBiometricEnabledForUser(email, false);
 
-      final res = await authRepo.loginWithBiometrics();
-      expect(res.isSuccess, isFalse);
-    });
+        final res = await authRepo.loginWithBiometrics();
+        expect(res.isSuccess, isFalse);
+      },
+    );
 
     test('6. Pergantian akun tidak tertukar kredensial biometriknya', () async {
       const userA = 'budi.pratama@email.com';

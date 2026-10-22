@@ -11,6 +11,7 @@ import '../widgets/product_favorite_card.dart';
 
 /// Halaman SEMUA PRODUK JNOVAMUSIC sesuai desain Figma 4
 class AllProductsScreen extends StatefulWidget {
+  final String initialCategory;
   final VoidCallback? onBack;
   final VoidCallback? onOpenCart;
   final VoidCallback? onOpenSearch;
@@ -18,6 +19,7 @@ class AllProductsScreen extends StatefulWidget {
 
   const AllProductsScreen({
     super.key,
+    this.initialCategory = 'Semua',
     this.onBack,
     this.onOpenCart,
     this.onOpenSearch,
@@ -37,18 +39,17 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   String _selectedSort = 'Terpopuler';
   List<Product> _allProducts = Product.allCatalog;
 
-  final List<String> _categories = [
-    'Semua',
-    'Gitar',
-    'Drum',
-    'Bass',
-    'Piano',
-    'Audio',
-  ];
+  List<String> get _categories {
+    final categories =
+        _allProducts.map((product) => product.category).toSet().toList()
+          ..sort();
+    return ['Semua', ...categories];
+  }
 
   @override
   void initState() {
     super.initState();
+    _selectedCategory = widget.initialCategory;
     _cartService.addListener(_handleStateChanged);
     _favoriteService.addListener(_handleStateChanged);
     _currencyService.addListener(_handleStateChanged);
@@ -81,7 +82,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   List<Product> _getFilteredProducts() {
     List<Product> list;
     if (_selectedCategory == 'Semua') {
-      list = _allProducts.take(12).toList();
+      list = List<Product>.of(_allProducts);
     } else {
       list = _allProducts
           .where(
@@ -581,7 +582,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
       ),
     );
   }
-
 
   void _showFilterBottomSheet() {
     showModalBottomSheet(

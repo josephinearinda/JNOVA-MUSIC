@@ -81,6 +81,17 @@ flutter:
     - assets/audio/lagu.mp3
     - assets/audio/lagu2.mp3
     - Katalog/Katalog_AlatMusik.csv
+    - GAMBAR KATALOG/GITAR/
+    - GAMBAR KATALOG/DRUM/
+    - GAMBAR KATALOG/AKSESORIS/
+    - GAMBAR KATALOG/AUDIO/
+    - GAMBAR KATALOG/BASS/
+    - GAMBAR KATALOG/PIANO/
+    - GAMBAR KATALOG/BIOLA/
+    - GAMBAR KATALOG/AMPLIFIER/
+    - GAMBAR KATALOG/EFEK & PEDAL/
+    - GAMBAR KATALOG/KABEL JACK/
+    - GAMBAR KATALOG/SAXOPHONE/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

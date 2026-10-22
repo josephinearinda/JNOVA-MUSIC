@@ -531,7 +531,11 @@ class _HomeScreenState extends State<HomeScreen> {
           itemBuilder: (context, index) {
             final cat = _categories[index];
             return GestureDetector(
-              onTap: () => Navigator.pushNamed(context, '/all-products'),
+              onTap: () => Navigator.pushNamed(
+                context,
+                '/all-products',
+                arguments: cat.name,
+              ),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,

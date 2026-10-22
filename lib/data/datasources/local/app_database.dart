@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 import '../../../models/product.dart';
 
 /// Database Helper SQLite untuk JNOVAMUSIC
@@ -11,7 +13,7 @@ class AppDatabase {
   static final AppDatabase instance = AppDatabase._();
 
   static const String _dbName = 'jnova_music.db';
-  static const int _dbVersion = 1;
+  static const int _dbVersion = 2;
 
   Database? _database;
 
@@ -34,7 +36,14 @@ class AppDatabase {
       path,
       version: _dbVersion,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await _replaceCatalogWithCsvProducts(db);
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -145,25 +154,7 @@ class AppDatabase {
     for (final prod in Product.allCatalog) {
       batch.insert(
         'cached_products',
-        {
-          'id': prod.id,
-          'brand': prod.brand,
-          'name': prod.name,
-          'price': prod.price,
-          'category': prod.category,
-          'variant': prod.variant,
-          'code': prod.code,
-          'stock': prod.stock,
-          'rating': prod.rating,
-          'review_count': prod.reviewCount,
-          'is_original': prod.isOriginal ? 1 : 0,
-          'is_best_seller': prod.isBestSeller ? 1 : 0,
-          'image_url': prod.image,
-          'description': prod.description,
-          'specs_json': jsonEncode(prod.specs),
-          'color_variants_json': jsonEncode(prod.colorVariants),
-          'cached_at': now,
-        },
+        _productCacheMap(prod, now),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
@@ -171,32 +162,113 @@ class AppDatabase {
     // Seed default cart items (3 produk teratas)
     final initialThree = Product.allCatalog.take(3).toList();
     for (final item in initialThree) {
-      batch.insert(
-        'local_cart',
-        {
-          'product_id': item.id,
-          'quantity': 1,
-          'is_selected': 1,
-          'updated_at': now,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      batch.insert('local_cart', {
+        'product_id': item.id,
+        'quantity': 1,
+        'is_selected': 1,
+        'updated_at': now,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
     }
 
     // Seed default favorites (4 produk teratas)
     for (final fav in Product.initialProducts) {
-      batch.insert(
-        'local_favorites',
-        {
-          'product_id': fav.id,
-          'created_at': now,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      batch.insert('local_favorites', {
+        'product_id': fav.id,
+        'created_at': now,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
     }
 
     await batch.commit(noResult: true);
   }
+
+  Future<void> _replaceCatalogWithCsvProducts(Database db) async {
+    final previousProducts = await db.query(
+      'cached_products',
+      columns: ['id', 'brand', 'name'],
+    );
+    final catalogByName = {
+      for (final product in Product.allCatalog)
+        _productKey(product.brand, product.name): product,
+    };
+
+    for (final previous in previousProducts) {
+      final previousId = previous['id']?.toString() ?? '';
+      final product =
+          catalogByName[_productKey(
+            previous['brand']?.toString() ?? '',
+            previous['name']?.toString() ?? '',
+          )];
+      if (product == null) {
+        await db.delete(
+          'local_cart',
+          where: 'product_id = ?',
+          whereArgs: [previousId],
+        );
+        await db.delete(
+          'local_favorites',
+          where: 'product_id = ?',
+          whereArgs: [previousId],
+        );
+        await db.update(
+          'local_ai_chat_messages',
+          {'recommended_product_id': null},
+          where: 'recommended_product_id = ?',
+          whereArgs: [previousId],
+        );
+        continue;
+      }
+
+      await db.rawUpdate(
+        'UPDATE OR REPLACE local_cart SET product_id = ? WHERE product_id = ?',
+        [product.id, previousId],
+      );
+      await db.rawUpdate(
+        'UPDATE OR REPLACE local_favorites SET product_id = ? WHERE product_id = ?',
+        [product.id, previousId],
+      );
+      await db.update(
+        'local_ai_chat_messages',
+        {'recommended_product_id': product.id},
+        where: 'recommended_product_id = ?',
+        whereArgs: [previousId],
+      );
+    }
+
+    await db.delete('cached_products');
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final batch = db.batch();
+    for (final product in Product.allCatalog) {
+      batch.insert(
+        'cached_products',
+        _productCacheMap(product, now),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    await batch.commit(noResult: true);
+  }
+
+  Map<String, Object?> _productCacheMap(Product product, int cachedAt) => {
+    'id': product.id,
+    'brand': product.brand,
+    'name': product.name,
+    'price': product.price,
+    'category': product.category,
+    'variant': product.variant,
+    'code': product.code,
+    'stock': product.stock,
+    'rating': product.rating,
+    'review_count': product.reviewCount,
+    'is_original': product.isOriginal ? 1 : 0,
+    'is_best_seller': product.isBestSeller ? 1 : 0,
+    'image_url': product.image,
+    'description': product.description,
+    'specs_json': jsonEncode(product.specs),
+    'color_variants_json': jsonEncode(product.colorVariants),
+    'cached_at': cachedAt,
+  };
+
+  String _productKey(String brand, String name) =>
+      '${brand.trim().toLowerCase()}|${name.trim().toLowerCase()}';
 
   Future<void> close() async {
     if (_database != null) {
