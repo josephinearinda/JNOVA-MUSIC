@@ -13,7 +13,7 @@ class AppDatabase {
   static final AppDatabase instance = AppDatabase._();
 
   static const String _dbName = 'jnova_music.db';
-  static const int _dbVersion = 2;
+  static const int _dbVersion = 5;
 
   Database? _database;
 
@@ -43,6 +43,15 @@ class AppDatabase {
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await _replaceCatalogWithCsvProducts(db);
+    }
+    if (oldVersion < 3) {
+      await _createNotificationTables(db);
+    }
+    if (oldVersion < 4) {
+      await _createPointHistoryTable(db);
+    }
+    if (oldVersion < 5) {
+      await _removeUntouchedDefaultSelections(db);
     }
   }
 
@@ -129,6 +138,9 @@ class AppDatabase {
       )
     ''');
 
+    await _createNotificationTables(db);
+    await _createPointHistoryTable(db);
+
     // 7. Riwayat Obrolan AI Gemini Lokal
     await db.execute('''
       CREATE TABLE local_ai_chat_messages (
@@ -147,6 +159,133 @@ class AppDatabase {
     await _seedInitialProducts(db);
   }
 
+  Future<void> _createNotificationTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE notification_poll_state (
+        user_id TEXT PRIMARY KEY,
+        snapshot_json TEXT NOT NULL,
+        updated_at INTEGER NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE notification_delivered_events (
+        event_key TEXT PRIMARY KEY,
+        created_at INTEGER NOT NULL
+      )
+    ''');
+  }
+
+  Future<void> _createPointHistoryTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE user_point_history (
+        user_email TEXT NOT NULL,
+        id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        date_formatted TEXT NOT NULL,
+        category TEXT NOT NULL,
+        points INTEGER NOT NULL,
+        transaction_type TEXT NOT NULL,
+        order_id TEXT,
+        created_at INTEGER NOT NULL,
+        PRIMARY KEY (user_email, id)
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX user_point_history_created_at
+      ON user_point_history (user_email, created_at)
+    ''');
+  }
+
+  Future<List<Map<String, Object?>>> getRecentPointHistory(
+    String userEmail, {
+    required int cutoff,
+  }) async {
+    final db = await database;
+    final cleanEmail = userEmail.toLowerCase().trim();
+    await db.delete(
+      'user_point_history',
+      where: 'created_at < ?',
+      whereArgs: [cutoff],
+    );
+    return db.query(
+      'user_point_history',
+      where: 'user_email = ? AND created_at >= ?',
+      whereArgs: [cleanEmail, cutoff],
+      orderBy: 'created_at DESC',
+    );
+  }
+
+  Future<void> savePointHistory(
+    String userEmail,
+    Map<String, Object?> transaction,
+  ) async {
+    final cleanEmail = userEmail.toLowerCase().trim();
+    if (cleanEmail.isEmpty) return;
+
+    final db = await database;
+    await db.insert('user_point_history', {
+      ...transaction,
+      'user_email': cleanEmail,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<Map<String, dynamic>?> getNotificationPollSnapshot(
+    String userId,
+  ) async {
+    final db = await database;
+    final rows = await db.query(
+      'notification_poll_state',
+      columns: ['snapshot_json'],
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    return jsonDecode(rows.first['snapshot_json'] as String)
+        as Map<String, dynamic>;
+  }
+
+  Future<void> saveNotificationPollSnapshot(
+    String userId,
+    Map<String, dynamic> snapshot,
+  ) async {
+    final db = await database;
+    await db.insert('notification_poll_state', {
+      'user_id': userId,
+      'snapshot_json': jsonEncode(snapshot),
+      'updated_at': DateTime.now().millisecondsSinceEpoch,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<bool> claimNotificationEvent(String eventKey) async {
+    final db = await database;
+    return db.transaction((txn) async {
+      final existing = await txn.query(
+        'notification_delivered_events',
+        columns: ['event_key'],
+        where: 'event_key = ?',
+        whereArgs: [eventKey],
+        limit: 1,
+      );
+      if (existing.isNotEmpty) return false;
+
+      await txn.insert('notification_delivered_events', {
+        'event_key': eventKey,
+        'created_at': DateTime.now().millisecondsSinceEpoch,
+      });
+      await txn.delete(
+        'notification_delivered_events',
+        where: 'created_at < ?',
+        whereArgs: [
+          DateTime.now()
+              .subtract(const Duration(days: 90))
+              .millisecondsSinceEpoch,
+        ],
+      );
+      return true;
+    });
+  }
+
   Future<void> _seedInitialProducts(Database db) async {
     final now = DateTime.now().millisecondsSinceEpoch;
     final batch = db.batch();
@@ -159,26 +298,41 @@ class AppDatabase {
       );
     }
 
-    // Seed default cart items (3 produk teratas)
-    final initialThree = Product.allCatalog.take(3).toList();
-    for (final item in initialThree) {
-      batch.insert('local_cart', {
-        'product_id': item.id,
-        'quantity': 1,
-        'is_selected': 1,
-        'updated_at': now,
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
-    }
-
-    // Seed default favorites (4 produk teratas)
-    for (final fav in Product.initialProducts) {
-      batch.insert('local_favorites', {
-        'product_id': fav.id,
-        'created_at': now,
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
-    }
-
     await batch.commit(noResult: true);
+  }
+
+  Future<void> _removeUntouchedDefaultSelections(Database db) async {
+    final initialCartIds = Product.allCatalog
+        .take(3)
+        .map((product) => product.id)
+        .toSet();
+    final cartRows = await db.query(
+      'local_cart',
+      columns: ['product_id', 'quantity', 'is_selected'],
+    );
+    if (cartRows.length == initialCartIds.length &&
+        cartRows.every(
+          (row) =>
+              initialCartIds.contains(row['product_id']) &&
+              row['quantity'] == 1 &&
+              row['is_selected'] == 1,
+        )) {
+      await db.delete('local_cart');
+    }
+
+    final initialFavoriteIds = Product.initialProducts
+        .map((product) => product.id)
+        .toSet();
+    final favoriteRows = await db.query(
+      'local_favorites',
+      columns: ['product_id'],
+    );
+    if (favoriteRows.length == initialFavoriteIds.length &&
+        favoriteRows.every(
+          (row) => initialFavoriteIds.contains(row['product_id']),
+        )) {
+      await db.delete('local_favorites');
+    }
   }
 
   Future<void> _replaceCatalogWithCsvProducts(Database db) async {

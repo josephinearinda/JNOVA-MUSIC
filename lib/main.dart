@@ -18,12 +18,13 @@ import 'screens/product_detail_screen.dart';
 import 'screens/checkout_screen.dart';
 import 'screens/pickup_detail_screen.dart';
 import 'screens/order_detail_screen.dart';
+import 'screens/order_history_screen.dart';
 import 'screens/tracking_screen.dart';
 import 'screens/game_selection_page.dart';
 import 'screens/game/motion_permission_page.dart';
-import 'screens/game/beat_tilt_home_page.dart';
-import 'screens/game/beat_tilt_gameplay_page.dart';
-import 'screens/game/beat_tilt_result_page.dart';
+import 'screens/game/jnova_rhythm_home_page.dart';
+import 'screens/game/jnova_rhythm_gameplay_page.dart';
+import 'screens/game/jnova_rhythm_result_page.dart';
 import 'screens/game2/jnova_dodge_game_page.dart';
 import 'screens/profile_screen.dart';
 import 'screens/edit_profile_page.dart';
@@ -42,6 +43,9 @@ import 'models/store_branch.dart';
 import 'core/config/app_config.dart';
 import 'data/datasources/local/app_database.dart';
 import 'data/datasources/remote/supabase_client_service.dart';
+import 'services/notification_background_sync_service.dart';
+import 'services/notification_service.dart';
+import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,6 +67,13 @@ void main() async {
   // 3. Inisialisasi Database SQLite Lokal
   await AppDatabase.instance.database;
 
+  // 4. Siapkan notifikasi perangkat sebelum layar aplikasi dimulai.
+  await NotificationService.instance.initialize();
+  await NotificationBackgroundSyncService.initialize();
+  if (SupabaseClientService.instance.isAuthenticated) {
+    await NotificationBackgroundSyncService.enable();
+  }
+
   runApp(const MyApp());
 }
 
@@ -83,8 +94,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(
-          onAnimationFinished: () {
-            Navigator.of(context).pushReplacementNamed('/login');
+          onAnimationFinished: () async {
+            final hasSession = await AuthService.instance.hasActiveSession();
+            if (!context.mounted) return;
+            Navigator.of(context)
+                .pushReplacementNamed(hasSession ? '/home' : '/login');
           },
         ),
         '/login': (context) {
@@ -171,16 +185,17 @@ class MyApp extends StatelessWidget {
           return SelectPickupStorePage(selectedBranch: branch);
         },
         '/order-detail': (context) => const OrderDetailScreen(),
+        '/order-history': (context) => const OrderHistoryScreen(),
         '/tracking': (context) => const TrackingScreen(),
         '/games': (context) => const GameSelectionPage(),
         '/game-permission': (context) => const MotionPermissionPage(),
-        '/game-home': (context) => const BeatTiltHomePage(),
-        '/game-play': (context) => const BeatTiltGameplayPage(),
+        '/game-home': (context) => const JNovaRhythmHomePage(),
+        '/game-play': (context) => const JNovaRhythmGameplayPage(),
         '/game2': (context) => const JNovaDodgeGamePage(),
         '/game-result': (context) {
           final result =
               ModalRoute.of(context)?.settings.arguments as GameResultData?;
-          return BeatTiltResultPage(resultData: result);
+          return JNovaRhythmResultPage(resultData: result);
         },
         '/profile': (context) => const ProfileScreen(),
         '/profile-edit': (context) => const EditProfilePage(),

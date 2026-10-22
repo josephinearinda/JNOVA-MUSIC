@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
+
 import '../core/config/app_config.dart';
 import '../core/network/network_info.dart';
 import '../core/storage/secure_storage_service.dart';
 import '../data/datasources/remote/supabase_client_service.dart';
 import '../models/point_history_model.dart';
+import 'notification_background_sync_service.dart';
+import 'notification_service.dart';
 import 'point_history_repository.dart';
 import 'user_profile_service.dart';
 
@@ -22,17 +25,20 @@ class MembershipService extends ChangeNotifier {
   int _currentPoints = 0;
 
   int get currentPoints => _currentPoints;
-  String get userTier =>
-      _currentPoints >= 10000 ? 'TIER 4' : (_currentPoints >= 3000 ? 'TIER 3' : 'TIER 2');
-  String get tierName =>
-      _currentPoints >= 10000 ? 'Platinum Member' : (_currentPoints >= 3000 ? 'Gold Member' : 'Silver Member');
+  String get userTier => _currentPoints >= 10000
+      ? 'TIER 4'
+      : (_currentPoints >= 3000 ? 'TIER 3' : 'TIER 2');
+  String get tierName => _currentPoints >= 10000
+      ? 'Platinum Member'
+      : (_currentPoints >= 3000 ? 'Gold Member' : 'Silver Member');
   int get discountPercentage =>
       _currentPoints >= 10000 ? 35 : (_currentPoints >= 3000 ? 20 : 10);
   double get discountRate => discountPercentage / 100.0;
   int get targetPoints =>
       _currentPoints >= 10000 ? 10000 : (_currentPoints >= 3000 ? 10000 : 3000);
-  String get nextTierName =>
-      _currentPoints >= 10000 ? 'Maksimal' : (_currentPoints >= 3000 ? 'Platinum' : 'Gold');
+  String get nextTierName => _currentPoints >= 10000
+      ? 'Maksimal'
+      : (_currentPoints >= 3000 ? 'Platinum' : 'Gold');
 
   Future<void> _initializePoints() async {
     try {
@@ -124,13 +130,23 @@ class MembershipService extends ChangeNotifier {
     // Catat ke PointHistoryRepository
     final now = DateTime.now();
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
     ];
     final dateStr =
         '${now.day} ${months[now.month - 1]} ${now.year} • ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')} WIB';
 
-    PointHistoryRepository.instance.addTransaction(
+    await PointHistoryRepository.instance.addTransaction(
       PointHistoryModel(
         id: 'tx_${now.millisecondsSinceEpoch}',
         title: 'Pembelian $orderTitle',
@@ -143,13 +159,21 @@ class MembershipService extends ChangeNotifier {
       userEmail: email,
     );
 
-    _syncPointTransactionToSupabase(
+    final transactionId = await _syncPointTransactionToSupabase(
       points: points,
       title: 'Pembelian $orderTitle',
       category: 'Pembelian Produk',
       type: 'purchase',
       orderId: orderNumber,
     );
+
+    await NotificationService.instance.showMembershipUpdate(
+      title: 'Poin pembelian ditambahkan',
+      message: '+$points poin dari pembelian $orderTitle.',
+      eventKey:
+          'point:${transactionId ?? 'local_tx_${now.millisecondsSinceEpoch}'}',
+    );
+    await NotificationBackgroundSyncService.syncNow();
   }
 
   /// Menambahkan poin yang diperoleh dari sesi game yang valid
@@ -169,16 +193,26 @@ class MembershipService extends ChangeNotifier {
       tier: tierName,
     );
 
-    final title = gameTitle ?? 'Bonus JNova Beat Tilt - Skor Ritme';
+    final title = gameTitle ?? 'Bonus JNova Rhythm - Skor Ritme';
     final now = DateTime.now();
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
     ];
     final dateStr =
         '${now.day} ${months[now.month - 1]} ${now.year} • ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')} WIB';
 
-    PointHistoryRepository.instance.addTransaction(
+    await PointHistoryRepository.instance.addTransaction(
       PointHistoryModel(
         id: 'tx_game_${now.millisecondsSinceEpoch}',
         title: title,
@@ -190,15 +224,23 @@ class MembershipService extends ChangeNotifier {
       userEmail: email,
     );
 
-    _syncPointTransactionToSupabase(
+    final transactionId = await _syncPointTransactionToSupabase(
       points: points,
       title: title,
       category: 'Aktivitas Game',
       type: 'game_bonus',
     );
+
+    await NotificationService.instance.showGameUpdate(
+      title: 'Poin game ditambahkan',
+      message: '+$points poin berhasil ditambahkan dari aktivitas game.',
+      eventKey:
+          'point:${transactionId ?? 'local_tx_${now.millisecondsSinceEpoch}'}',
+    );
+    await NotificationBackgroundSyncService.syncNow();
   }
 
-  Future<void> _syncPointTransactionToSupabase({
+  Future<String?> _syncPointTransactionToSupabase({
     required int points,
     required String title,
     required String category,
@@ -206,28 +248,43 @@ class MembershipService extends ChangeNotifier {
     String? orderId,
   }) async {
     if (!AppConfig.isSupabaseConfigured || !_supabaseService.isInitialized) {
-      return;
+      return null;
     }
     final isOnline = await NetworkInfo.instance.isConnected;
     if (!isOnline) {
-      return;
+      return null;
     }
 
     try {
       final client = _supabaseService.client;
       final user = client?.auth.currentUser;
       if (client != null && user != null) {
-        await client.from('point_transactions').insert({
-          'user_id': user.id,
-          'title': title,
-          'category': category,
-          'points': points,
-          'transaction_type': type,
-          'order_id': ?orderId,
-          'created_at': DateTime.now().toIso8601String(),
-        });
+        final response = await client
+            .from('point_transactions')
+            .insert({
+              'user_id': user.id,
+              'title': title,
+              'category': category,
+              'points': points,
+              'transaction_type': type,
+              'order_id': ?orderId,
+              'created_at': DateTime.now().toIso8601String(),
+            })
+            .select('id')
+            .single();
+        return response['id'] as String?;
       }
-    } catch (_) {}
+    } catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'JNOVAMUSIC membership',
+          context: ErrorDescription('while syncing a point transaction'),
+        ),
+      );
+    }
+    return null;
   }
 
   /// Reset poin untuk keperluan logout atau pergantian akun

@@ -1,11 +1,12 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 
-/// Layanan audio pendukung mini-game JNova Beat Tilt
-class BeatTiltAudioService extends ChangeNotifier {
-  BeatTiltAudioService._();
+/// Layanan audio pendukung mini-game JNova Rhythm.
+class JNovaRhythmAudioService extends ChangeNotifier {
+  JNovaRhythmAudioService._();
 
-  static final BeatTiltAudioService instance = BeatTiltAudioService._();
+  static final JNovaRhythmAudioService instance =
+      JNovaRhythmAudioService._();
 
   bool _isPlaying = false;
   bool _isMuted = false;

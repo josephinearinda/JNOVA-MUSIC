@@ -7,7 +7,6 @@ import 'membership_service.dart';
 class CartService extends ChangeNotifier {
   CartService._() {
     _membershipService.addListener(_handleMembershipChanged);
-    _initializeDefaultItems();
     _loadFromDatabase();
   }
 
@@ -37,42 +36,29 @@ class CartService extends ChangeNotifier {
   Future<void> _loadFromDatabase() async {
     try {
       final dbItems = await _repository.getCartItems();
-      if (dbItems.isNotEmpty) {
-        _items.clear();
-        _items.addAll(dbItems);
-      } else {
-        _initializeDefaultItems();
-      }
-    } catch (_) {
-      _initializeDefaultItems();
+      _items
+        ..clear()
+        ..addAll(dbItems);
+    } catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'cart service',
+          context: ErrorDescription('while loading the persisted cart'),
+        ),
+      );
     } finally {
       _isLoaded = true;
       notifyListeners();
     }
   }
 
-  void _initializeDefaultItems() {
-    final products = Product.initialProducts;
-    if (products.length >= 3 && _items.isEmpty) {
-      _items.addAll([
-        CartItem(product: products[0], quantity: 1, isSelected: true),
-        CartItem(product: products[1], quantity: 1, isSelected: true),
-        CartItem(product: products[2], quantity: 1, isSelected: true),
-      ]);
-    }
-  }
-
-  /// Mengembalikan isi keranjang ke kondisi awal
+  /// Mengosongkan keranjang atas permintaan eksplisit pengguna.
   Future<void> reset() async {
     _items.clear();
-    _initializeDefaultItems();
     notifyListeners();
-    try {
-      await _repository.clearCart();
-      for (final it in _items) {
-        await _repository.addToCart(it.product.id, it.quantity);
-      }
-    } catch (_) {}
+    await _repository.clearCart();
   }
 
   /// Menambah produk ke keranjang

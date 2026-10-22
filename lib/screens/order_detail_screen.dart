@@ -55,6 +55,61 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     }
   }
 
+  Future<void> _showCustomerServiceOptions(BuildContext context) async {
+    final admin = await showModalBottomSheet<String>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 8),
+              child: Text(
+                'Hubungi Bantuan CS',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimaryDark,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.support_agent_rounded),
+              title: const Text('Admin 1'),
+              subtitle: const Text('081575586614'),
+              onTap: () => Navigator.pop(sheetContext, '6281575586614'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.support_agent_rounded),
+              title: const Text('Admin 2'),
+              subtitle: const Text('0882005171057'),
+              onTap: () => Navigator.pop(sheetContext, '62882005171057'),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+
+    if (admin == null || !context.mounted) return;
+
+    final uri = Uri.https('wa.me', '/$admin');
+    try {
+      final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!opened && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('WhatsApp tidak dapat dibuka.')),
+        );
+      }
+    } on PlatformException {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('WhatsApp tidak dapat dibuka.')),
+        );
+      }
+    }
+  }
+
   void _showQrModal(
     BuildContext context,
     OrderModel activeOrder,
@@ -106,12 +161,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            Center(
-              child: QrCodeWidget(
-                data: pickupCode,
-                size: 150,
-              ),
-            ),
+            Center(child: QrCodeWidget(data: pickupCode, size: 150)),
             const SizedBox(height: 14),
             Text(
               pickupCode,
@@ -197,7 +247,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final orders = OrderService.instance.orders;
-    final activeOrder = widget.order ??
+    final activeOrder =
+        widget.order ??
         (ModalRoute.of(context)?.settings.arguments as OrderModel?) ??
         OrderService.instance.currentOrder ??
         (orders.isNotEmpty ? orders.first : null);
@@ -338,7 +389,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Tidak ada notifikasi baru untuk pesananmu.'),
+                      content: Text(
+                        'Tidak ada notifikasi baru untuk pesananmu.',
+                      ),
                       duration: Duration(seconds: 1),
                     ),
                   );
@@ -541,10 +594,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 SizedBox(height: 2),
                 Text(
                   'Ambil langsung di gerai resmi pilihan & cek fisik bersama Luthier',
-                  style: TextStyle(
-                    fontSize: 9.5,
-                    color: Color(0xFF7E756F),
-                  ),
+                  style: TextStyle(fontSize: 9.5, color: Color(0xFF7E756F)),
                 ),
               ],
             ),
@@ -579,7 +629,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         color: isCompleted ? const Color(0xFFF0FDF4) : const Color(0xFFFFF7ED),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isCompleted ? const Color(0xFF86EFAC) : const Color(0xFFFFD8BF),
+          color: isCompleted
+              ? const Color(0xFF86EFAC)
+              : const Color(0xFFFFD8BF),
           width: 1.2,
         ),
       ),
@@ -849,7 +901,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     final uri = Uri.parse(store.getDirectionsUrl());
                     try {
                       if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
                       } else {
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -980,7 +1035,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             vertical: 1,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF333333).withValues(alpha: 0.85),
+                            color: const Color(0xFF333333)
+                                .withValues(alpha: 0.85),
                             borderRadius: BorderRadius.circular(2),
                           ),
                           child: const Text(
@@ -1312,7 +1368,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.check_circle_rounded, size: 18, color: Color(0xFF15803D)),
+                  Icon(
+                    Icons.check_circle_rounded,
+                    size: 18,
+                    color: Color(0xFF15803D),
+                  ),
                   SizedBox(width: 8),
                   Text(
                     'Pesanan Telah Selesai',
@@ -1341,7 +1401,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.check_circle_outline_rounded, size: 18, color: Colors.white),
+                    Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: 18,
+                      color: Colors.white,
+                    ),
                     SizedBox(width: 8),
                     Text(
                       'Pesanan Selesai',
@@ -1358,62 +1422,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
           const SizedBox(height: 10),
 
-          // Tombol Unduh E-Invoice (PDF) Solid Orange
-          SizedBox(
-            width: double.infinity,
-            height: 42,
-            child: ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'E-Invoice resmi berhasil diunduh ke perangkat (PDF).',
-                    ),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.description_outlined, size: 16, color: Colors.white),
-                  SizedBox(width: 6),
-                  Text(
-                    'Unduh E-Invoice (PDF)',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-
           // Tombol Bantuan CS & Beli Lagi dengan grey pill background
           Row(
             children: [
               Expanded(
                 child: GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Menghubungkan ke Customer Care JNOVAMUSIC...',
-                        ),
-                        duration: Duration(seconds: 1),
-                      ),
-                    );
-                  },
+                  onTap: () => _showCustomerServiceOptions(context),
                   child: Container(
                     height: 38,
                     decoration: BoxDecoration(
@@ -1497,7 +1511,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
-            Icon(Icons.help_outline_rounded, color: AppColors.primaryOrange, size: 24),
+            Icon(
+              Icons.help_outline_rounded,
+              color: AppColors.primaryOrange,
+              size: 24,
+            ),
             SizedBox(width: 8),
             Text(
               'Konfirmasi Selesai',
@@ -1507,23 +1525,35 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         ),
         content: Text(
           'Pastikan Anda telah mengambil barang dan menyelesaikan pembayaran di kasir $branchName.\n\nAnda akan mendapatkan +$pointsEarned Poin Membership JNOVAMUSIC.',
-          style: const TextStyle(fontSize: 12, color: Color(0xFF5A524D), height: 1.4),
+          style: const TextStyle(
+            fontSize: 12,
+            color: Color(0xFF5A524D),
+            height: 1.4,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Belum', style: TextStyle(color: Color(0xFF7E756F))),
+            child: const Text(
+              'Belum',
+              style: TextStyle(color: Color(0xFF7E756F)),
+            ),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF16A34A),
               elevation: 0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: const Text(
               'Ya, Sudah Selesai',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
@@ -1541,7 +1571,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
             backgroundColor: const Color(0xFF15803D),
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         );
       }
@@ -1605,7 +1637,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.storefront_rounded, size: 16, color: Colors.white),
+                    Icon(
+                      Icons.storefront_rounded,
+                      size: 16,
+                      color: Colors.white,
+                    ),
                     SizedBox(width: 8),
                     Text(
                       'Mulai Belanja',

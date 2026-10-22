@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../services/membership_service.dart';
 
-/// Data hasil permainan JNova Beat Tilt.
+/// Data hasil permainan JNova Rhythm.
 class GameResultData {
   final int validShakes;
   final int pointsEarned;
@@ -19,13 +19,13 @@ class GameResultData {
 }
 
 /// Halaman keempat: hasil permainan.
-class BeatTiltResultPage extends StatefulWidget {
+class JNovaRhythmResultPage extends StatefulWidget {
   final GameResultData? resultData;
   final VoidCallback? onBack;
   final VoidCallback? onPlayAgain;
   final VoidCallback? onReturnHome;
 
-  const BeatTiltResultPage({
+  const JNovaRhythmResultPage({
     super.key,
     this.resultData,
     this.onBack,
@@ -34,10 +34,10 @@ class BeatTiltResultPage extends StatefulWidget {
   });
 
   @override
-  State<BeatTiltResultPage> createState() => _BeatTiltResultPageState();
+  State<JNovaRhythmResultPage> createState() => _JNovaRhythmResultPageState();
 }
 
-class _BeatTiltResultPageState extends State<BeatTiltResultPage> {
+class _JNovaRhythmResultPageState extends State<JNovaRhythmResultPage> {
   final MembershipService _membershipService = MembershipService.instance;
   late int _initialPoints;
   late int _pointsEarned;
@@ -51,7 +51,10 @@ class _BeatTiltResultPageState extends State<BeatTiltResultPage> {
 
     // Sinkronisasi penambahan poin satu kali saat halaman hasil dibuka
     if (!_isPointsSynced && _pointsEarned > 0) {
-      _membershipService.addGamePoints(_pointsEarned);
+      _membershipService.addGamePoints(
+        _pointsEarned,
+        gameTitle: 'Bonus JNova Rhythm - Skor Ritme',
+      );
       _isPointsSynced = true;
     }
   }

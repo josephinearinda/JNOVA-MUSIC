@@ -58,6 +58,38 @@ class ProductRepository {
     return res.isNotEmpty;
   }
 
+  Future<List<Product>> getFavoriteProducts() async {
+    final db = await _dbHelper.database;
+    final rows = await db.rawQuery('''
+      SELECT p.*
+      FROM local_favorites f
+      INNER JOIN cached_products p ON p.id = f.product_id
+      ORDER BY f.created_at DESC
+    ''');
+    return rows.map(Product.fromMap).toList();
+  }
+
+  Future<void> setFavorite(String productId, {required bool isFavorite}) async {
+    final db = await _dbHelper.database;
+    if (isFavorite) {
+      await db.insert('local_favorites', {
+        'product_id': productId,
+        'created_at': DateTime.now().millisecondsSinceEpoch,
+      }, conflictAlgorithm: ConflictAlgorithm.ignore);
+    } else {
+      await db.delete(
+        'local_favorites',
+        where: 'product_id = ?',
+        whereArgs: [productId],
+      );
+    }
+  }
+
+  Future<void> clearFavorites() async {
+    final db = await _dbHelper.database;
+    await db.delete('local_favorites');
+  }
+
   /// Toggle status favorit
   Future<bool> toggleFavorite(String productId) async {
     final db = await _dbHelper.database;

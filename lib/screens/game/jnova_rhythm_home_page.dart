@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../services/membership_service.dart';
-import '../../services/beat_tilt_audio_service.dart';
+import '../../services/jnova_rhythm_audio_service.dart';
 
-/// Halaman kedua: beranda game JNova Beat Tilt.
-class BeatTiltHomePage extends StatefulWidget {
+/// Beranda mini-game JNova Rhythm.
+class JNovaRhythmHomePage extends StatefulWidget {
   final VoidCallback? onBack;
   final VoidCallback? onStartGame;
 
-  const BeatTiltHomePage({super.key, this.onBack, this.onStartGame});
+  const JNovaRhythmHomePage({super.key, this.onBack, this.onStartGame});
 
   @override
-  State<BeatTiltHomePage> createState() => _BeatTiltHomePageState();
+  State<JNovaRhythmHomePage> createState() => _JNovaRhythmHomePageState();
 }
 
-class _BeatTiltHomePageState extends State<BeatTiltHomePage> {
+class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
   final MembershipService _membershipService = MembershipService.instance;
-  final BeatTiltAudioService _audioService = BeatTiltAudioService.instance;
+  final JNovaRhythmAudioService _audioService =
+      JNovaRhythmAudioService.instance;
 
   @override
   void initState() {
@@ -165,7 +166,7 @@ class _BeatTiltHomePageState extends State<BeatTiltHomePage> {
           ),
           const SizedBox(width: 8),
           const Text(
-            'JNova Beat Tilt',
+            'JNova Rhythm',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w800,
@@ -271,7 +272,7 @@ class _BeatTiltHomePageState extends State<BeatTiltHomePage> {
         ),
         const SizedBox(height: 6),
         const Text(
-          'JNova Beat Tilt',
+          'JNova Rhythm',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w800,
@@ -281,7 +282,7 @@ class _BeatTiltHomePageState extends State<BeatTiltHomePage> {
         ),
         const SizedBox(height: 2),
         const Text(
-          '"Feel the Beat, Move with the Rhythm!"',
+          '"Feel the Rhythm, Move with the Music!"',
           style: TextStyle(
             fontSize: 11.5,
             fontStyle: FontStyle.italic,

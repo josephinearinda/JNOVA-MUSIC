@@ -1,7 +1,10 @@
 import '../data/repositories/auth_repository.dart';
 import 'membership_service.dart';
+import 'notification_background_sync_service.dart';
 import 'order_service.dart';
 import 'user_profile_service.dart';
+import '../core/storage/secure_storage_service.dart';
+import '../data/datasources/remote/supabase_client_service.dart';
 
 export '../data/repositories/auth_repository.dart' show AuthResult;
 
@@ -12,12 +15,28 @@ class AuthService {
 
   final AuthRepository _repository = AuthRepository.instance;
 
+  Future<bool> hasActiveSession() async {
+    if (SupabaseClientService.instance.isAuthenticated) return true;
+
+    final storage = SecureStorageService.instance;
+    final accessToken = await storage.getAccessToken();
+    final email = await storage.getUserEmail();
+    return email != null &&
+        email.isNotEmpty &&
+        (accessToken?.startsWith('local_token_') == true ||
+            accessToken?.startsWith('offline_token_') == true);
+  }
+
   /// Melakukan proses masuk akun melalui Supabase Auth
   Future<AuthResult> login({
     required String email,
     required String password,
   }) async {
-    return await _repository.login(email: email, password: password);
+    final result = await _repository.login(email: email, password: password);
+    if (result.isSuccess) {
+      await NotificationBackgroundSyncService.enable();
+    }
+    return result;
   }
 
   /// Pendaftaran akun baru
@@ -37,14 +56,17 @@ class AuthService {
   Future<AuthResult> loginWithGoogle() async {
     return const AuthResult(
       isSuccess: false,
-      message:
-          'Integrasi Google Sign-In memerlukan konfigurasi OAuth Client ID pada Supabase Dashboard.',
+      message: 'Integrasi Google Sign-In memerlukan konfigurasi OAuth Client ID pada Supabase Dashboard.',
     );
   }
 
   /// Login menggunakan biometrik sidik jari dengan pemulihan sesi aman
   Future<AuthResult> loginWithBiometrics() async {
-    return await _repository.loginWithBiometrics();
+    final result = await _repository.loginWithBiometrics();
+    if (result.isSuccess) {
+      await NotificationBackgroundSyncService.enable();
+    }
+    return result;
   }
 
   /// Mengaktifkan login biometrik untuk pengguna yang sedang aktif dengan verifikasi aman
@@ -65,10 +87,10 @@ class AuthService {
 
   /// Melakukan proses keluar dari akun dan menghapus sesi autentikasi pengguna
   Future<void> logout() async {
+    await NotificationBackgroundSyncService.disable();
     await _repository.logout();
     UserProfileService.instance.resetProfile();
     MembershipService.instance.resetPoints();
     OrderService.instance.resetOrders();
   }
 }
-

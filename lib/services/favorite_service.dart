@@ -5,53 +5,90 @@ import '../models/product.dart';
 /// Layanan state management Favorit Produk JNOVAMUSIC dengan penyimpanan SQLite
 class FavoriteService extends ChangeNotifier {
   FavoriteService._() {
-    _initializeDefaultItems();
+    _loadFuture = _loadFavorites();
   }
 
   static final FavoriteService instance = FavoriteService._();
   final ProductRepository _repository = ProductRepository.instance;
 
   final List<Product> _items = [];
+  final List<Product> _newestFirstItems = [];
+  late final Future<void> _loadFuture;
   String _currentSort = 'Terbaru';
+  bool _isLoaded = false;
 
   List<Product> get items => List.unmodifiable(_items);
   String get currentSort => _currentSort;
+  bool get isLoaded => _isLoaded;
 
-  void _initializeDefaultItems() {
-    _items.addAll(Product.initialProducts);
+  Future<void> _loadFavorites() async {
+    try {
+      final products = await _repository.getFavoriteProducts();
+      _newestFirstItems
+        ..clear()
+        ..addAll(products);
+      _applySort();
+    } catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'favorite service',
+          context: ErrorDescription('while loading persisted favorites'),
+        ),
+      );
+    } finally {
+      _isLoaded = true;
+      notifyListeners();
+    }
   }
 
   bool isFavorite(String productId) {
     return _items.any((item) => item.id == productId);
   }
 
-  void toggleFavorite(Product product) {
-    if (isFavorite(product.id)) {
-      _items.removeWhere((item) => item.id == product.id);
-    } else {
+  Future<void> toggleFavorite(Product product) async {
+    await _loadFuture;
+    final shouldFavorite = !isFavorite(product.id);
+    await _repository.setFavorite(product.id, isFavorite: shouldFavorite);
+    if (shouldFavorite) {
       _items.insert(0, product);
+      _newestFirstItems.insert(0, product);
+    } else {
+      _items.removeWhere((item) => item.id == product.id);
+      _newestFirstItems.removeWhere((item) => item.id == product.id);
     }
-    _repository.toggleFavorite(product.id);
+    _applySort();
     notifyListeners();
   }
 
-  void removeFavorite(String productId) {
+  Future<void> removeFavorite(String productId) async {
+    await _loadFuture;
     _items.removeWhere((item) => item.id == productId);
-    _repository.toggleFavorite(productId);
+    _newestFirstItems.removeWhere((item) => item.id == productId);
+    await _repository.setFavorite(productId, isFavorite: false);
     notifyListeners();
   }
 
-  void clearAll() {
-    for (final it in _items) {
-      _repository.toggleFavorite(it.id);
-    }
+  Future<void> clearAll() async {
+    await _loadFuture;
     _items.clear();
+    _newestFirstItems.clear();
+    await _repository.clearFavorites();
     notifyListeners();
   }
 
   void setSort(String sort) {
     _currentSort = sort;
-    switch (sort) {
+    _applySort();
+    notifyListeners();
+  }
+
+  void _applySort() {
+    _items
+      ..clear()
+      ..addAll(_newestFirstItems);
+    switch (_currentSort) {
       case 'Harga Terendah':
         _items.sort((a, b) => a.price.compareTo(b.price));
         break;
@@ -63,10 +100,7 @@ class FavoriteService extends ChangeNotifier {
         break;
       case 'Terbaru':
       default:
-        _items.clear();
-        _initializeDefaultItems();
         break;
     }
-    notifyListeners();
   }
 }

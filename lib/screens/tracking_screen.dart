@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../core/constants/app_colors.dart';
 import '../models/order_model.dart';
 import '../services/order_service.dart';
@@ -10,11 +12,7 @@ class TrackingScreen extends StatelessWidget {
   final OrderModel? order;
   final VoidCallback? onBack;
 
-  const TrackingScreen({
-    super.key,
-    this.order,
-    this.onBack,
-  });
+  const TrackingScreen({super.key, this.order, this.onBack});
 
   void _handleBack(BuildContext context) {
     if (onBack != null) {
@@ -26,10 +24,70 @@ class TrackingScreen extends StatelessWidget {
     }
   }
 
+  Future<void> _showCustomerServiceOptions(BuildContext context) async {
+    final admin = await showModalBottomSheet<String>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 8),
+              child: Text(
+                'Hubungi Bantuan CS',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimaryDark,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.support_agent_rounded),
+              title: const Text('Admin 1'),
+              subtitle: const Text('081575586614'),
+              onTap: () => Navigator.pop(sheetContext, '6281575586614'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.support_agent_rounded),
+              title: const Text('Admin 2'),
+              subtitle: const Text('0882005171057'),
+              onTap: () => Navigator.pop(sheetContext, '62882005171057'),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+
+    if (admin != null && context.mounted) {
+      await _openWhatsApp(context, admin);
+    }
+  }
+
+  Future<void> _openWhatsApp(BuildContext context, String phoneNumber) async {
+    final uri = Uri.https('wa.me', '/$phoneNumber');
+    try {
+      final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+      if (!opened && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('WhatsApp tidak dapat dibuka.')),
+        );
+      }
+    } on PlatformException {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('WhatsApp tidak dapat dibuka.')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final orders = OrderService.instance.orders;
-    final activeOrder = order ??
+    final activeOrder =
+        order ??
         (ModalRoute.of(context)?.settings.arguments as OrderModel?) ??
         OrderService.instance.currentOrder ??
         (orders.isNotEmpty ? orders.first : null);
@@ -156,14 +214,7 @@ class TrackingScreen extends StatelessWidget {
           ),
           const Spacer(),
           InkWell(
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Bantuan pelacakan dan estimasi ekspedisi.'),
-                  duration: Duration(seconds: 1),
-                ),
-              );
-            },
+            onTap: () => _showCustomerServiceOptions(context),
             child: const Icon(
               Icons.help_outline_rounded,
               size: 20,
@@ -261,7 +312,9 @@ class TrackingScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      activeOrder.isCompleted ? 'Pesanan Selesai' : 'Siap Diambil di Toko',
+                      activeOrder.isCompleted
+                          ? 'Pesanan Selesai'
+                          : 'Siap Diambil di Toko',
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
@@ -291,8 +344,11 @@ class TrackingScreen extends StatelessWidget {
           // Detail Cabang & Kode Pengambilan
           Row(
             children: [
-              const Icon(Icons.check_circle_rounded,
-                  size: 14, color: Color(0xFFB45309)),
+              const Icon(
+                Icons.check_circle_rounded,
+                size: 14,
+                color: Color(0xFFB45309),
+              ),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
@@ -326,10 +382,7 @@ class TrackingScreen extends StatelessWidget {
             children: [
               const Text(
                 'Kode Pengambilan: ',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Color(0xFF7E756F),
-                ),
+                style: TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
               ),
               Text(
                 activeOrder.pickupCode,
@@ -342,7 +395,9 @@ class TrackingScreen extends StatelessWidget {
               const SizedBox(width: 8),
               InkWell(
                 onTap: () {
-                  Clipboard.setData(ClipboardData(text: activeOrder.pickupCode));
+                  Clipboard.setData(
+                    ClipboardData(text: activeOrder.pickupCode),
+                  );
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Kode pengambilan berhasil disalin!'),
@@ -351,7 +406,10 @@ class TrackingScreen extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(4),
@@ -360,7 +418,11 @@ class TrackingScreen extends StatelessWidget {
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.copy_rounded, size: 9, color: Color(0xFF7E756F)),
+                      Icon(
+                        Icons.copy_rounded,
+                        size: 9,
+                        color: Color(0xFF7E756F),
+                      ),
                       SizedBox(width: 2),
                       Text(
                         'Salin',
@@ -431,10 +493,7 @@ class TrackingScreen extends StatelessWidget {
                   width: 44,
                   height: 44,
                   color: Colors.white,
-                  child: Image.asset(
-                    item.product.image,
-                    fit: BoxFit.contain,
-                  ),
+                  child: Image.asset(item.product.image, fit: BoxFit.contain),
                 ),
               ),
               const SizedBox(width: 10),
@@ -504,10 +563,7 @@ class TrackingScreen extends StatelessWidget {
           const SizedBox(height: 2),
           const Text(
             'Pembaruan Terakhir: 19 Mei 2025, 08:15 WIB',
-            style: TextStyle(
-              fontSize: 9.5,
-              color: Color(0xFF8E837D),
-            ),
+            style: TextStyle(fontSize: 9.5, color: Color(0xFF8E837D)),
           ),
           const SizedBox(height: 12),
 
@@ -531,28 +587,33 @@ class TrackingScreen extends StatelessWidget {
                             color: step.isCompleted
                                 ? AppColors.primaryOrange
                                 : (step.isActive
-                                    ? const Color(0xFFFFEDDF)
-                                    : const Color(0xFFE5E2DC)),
+                                      ? const Color(0xFFFFEDDF)
+                                      : const Color(0xFFE5E2DC)),
                             border: step.isActive
                                 ? Border.all(
-                                    color: AppColors.primaryOrange, width: 2)
+                                    color: AppColors.primaryOrange,
+                                    width: 2,
+                                  )
                                 : null,
                           ),
                           child: step.isCompleted
-                              ? const Icon(Icons.check,
-                                  size: 9, color: Colors.white)
+                              ? const Icon(
+                                  Icons.check,
+                                  size: 9,
+                                  color: Colors.white,
+                                )
                               : (step.isActive
-                                  ? Center(
-                                      child: Container(
-                                        width: 5,
-                                        height: 5,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: AppColors.primaryOrange,
+                                    ? Center(
+                                        child: Container(
+                                          width: 5,
+                                          height: 5,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: AppColors.primaryOrange,
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  : null),
+                                      )
+                                    : null),
                         ),
                         if (!isLast)
                           Expanded(
@@ -579,7 +640,8 @@ class TrackingScreen extends StatelessWidget {
                                   step.title,
                                   style: TextStyle(
                                     fontSize: 10.5,
-                                    fontWeight: step.isActive || step.isCompleted
+                                    fontWeight:
+                                        step.isActive || step.isCompleted
                                         ? FontWeight.w800
                                         : FontWeight.w600,
                                     color: step.isActive
@@ -634,8 +696,11 @@ class TrackingScreen extends StatelessWidget {
         children: [
           const Row(
             children: [
-              Icon(Icons.storefront_rounded,
-                  size: 15, color: AppColors.primaryOrange),
+              Icon(
+                Icons.storefront_rounded,
+                size: 15,
+                color: AppColors.primaryOrange,
+              ),
               SizedBox(width: 6),
               Text(
                 'Lokasi Toko Pengambilan',
@@ -684,7 +749,9 @@ class TrackingScreen extends StatelessWidget {
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Menghubungkan ke layanan pelacakan JNE Cargo...'),
+                          content: Text(
+                            'Menghubungkan ke layanan pelacakan JNE Cargo...',
+                          ),
                           duration: Duration(seconds: 1),
                         ),
                       );
@@ -699,8 +766,11 @@ class TrackingScreen extends StatelessWidget {
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.local_shipping_outlined,
-                            size: 14, color: AppColors.textPrimaryDark),
+                        Icon(
+                          Icons.local_shipping_outlined,
+                          size: 14,
+                          color: AppColors.textPrimaryDark,
+                        ),
                         SizedBox(width: 4),
                         Text(
                           'JNE Cargo',
@@ -720,14 +790,7 @@ class TrackingScreen extends StatelessWidget {
                 child: SizedBox(
                   height: 38,
                   child: OutlinedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Menghubungi Customer Service JNOVAMUSIC...'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                    },
+                    onPressed: () => _showCustomerServiceOptions(context),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Color(0xFFD4D0C8)),
                       shape: RoundedRectangleBorder(
@@ -738,8 +801,11 @@ class TrackingScreen extends StatelessWidget {
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.headset_mic_outlined,
-                            size: 14, color: AppColors.textPrimaryDark),
+                        Icon(
+                          Icons.headset_mic_outlined,
+                          size: 14,
+                          color: AppColors.textPrimaryDark,
+                        ),
                         SizedBox(width: 4),
                         Text(
                           'Bantuan CS',

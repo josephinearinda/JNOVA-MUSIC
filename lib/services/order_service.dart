@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../core/storage/secure_storage_service.dart';
 import '../data/repositories/order_repository.dart';
 import '../models/order_model.dart';
@@ -6,6 +7,8 @@ import '../models/product.dart';
 import '../models/store_branch.dart';
 import 'cart_service.dart';
 import 'membership_service.dart';
+import 'notification_background_sync_service.dart';
+import 'notification_service.dart';
 
 /// Layanan manajemen pesanan dan transaksi JNOVAMUSIC dengan alur Pickup & Bayar di Toko
 class OrderService extends ChangeNotifier {
@@ -55,12 +58,19 @@ class OrderService extends ChangeNotifier {
     double? discountRate,
   }) async {
     final activeEmail = userEmail ?? await _storage.getUserEmail() ?? '';
-    final effectiveDiscountRate = discountRate ?? CartService.instance.discountRate;
+    final effectiveDiscountRate =
+        discountRate ?? CartService.instance.discountRate;
 
     final order = await _repository.checkout(
       items: items.isNotEmpty
           ? items
-          : [CartItem(product: Product.allCatalog.first, quantity: 1, isSelected: true)],
+          : [
+              CartItem(
+                product: Product.allCatalog.first,
+                quantity: 1,
+                isSelected: true,
+              ),
+            ],
       fulfillment: fulfillment,
       paymentMethod: paymentMethod,
       store: store ?? StoreBranch.branches.first,
@@ -76,6 +86,13 @@ class OrderService extends ChangeNotifier {
 
     // Hapus item yang dibeli dari keranjang lokal
     CartService.instance.removeSelected();
+
+    await NotificationService.instance.showOrderUpdate(
+      title: 'Pesanan berhasil dibuat',
+      message: 'Pesanan ${order.orderNumber} berhasil dibuat.',
+      eventKey: 'order:${order.id}:menunggu_pembayaran',
+    );
+    await NotificationBackgroundSyncService.syncNow();
 
     notifyListeners();
     return order;
@@ -109,14 +126,22 @@ class OrderService extends ChangeNotifier {
 
     // 4. Hitung poin transaksi sesuai aturan resmi (1 poin per Rp 10.000 belanja)
     final pointsEarned = (order.totalPayment / 10000).floor();
-    final firstItemTitle =
-        order.items.isNotEmpty ? order.items.first.product.name : 'Alat Musik';
+    final firstItemTitle = order.items.isNotEmpty
+        ? order.items.first.product.name
+        : 'Alat Musik';
 
     await MembershipService.instance.addPurchasePoints(
       pointsEarned,
       orderNumber: order.orderNumber,
       orderTitle: firstItemTitle,
     );
+
+    await NotificationService.instance.showOrderUpdate(
+      title: 'Pesanan selesai',
+      message: 'Pesanan ${order.orderNumber} telah selesai.',
+      eventKey: 'order:${order.id}:${completedOrder.status}',
+    );
+    await NotificationBackgroundSyncService.syncNow();
 
     notifyListeners();
     return true;

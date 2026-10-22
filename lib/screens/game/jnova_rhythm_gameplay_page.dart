@@ -4,23 +4,25 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../services/game_sensor_service.dart';
-import '../../services/beat_tilt_audio_service.dart';
-import 'beat_tilt_result_page.dart';
+import '../../services/jnova_rhythm_audio_service.dart';
+import 'jnova_rhythm_result_page.dart';
 
 /// Halaman ketiga: gameplay goyang HP selama 10 detik.
-class BeatTiltGameplayPage extends StatefulWidget {
+class JNovaRhythmGameplayPage extends StatefulWidget {
   final VoidCallback? onBack;
   final ValueChanged<GameResultData>? onGameFinished;
 
-  const BeatTiltGameplayPage({super.key, this.onBack, this.onGameFinished});
+  const JNovaRhythmGameplayPage({super.key, this.onBack, this.onGameFinished});
 
   @override
-  State<BeatTiltGameplayPage> createState() => _BeatTiltGameplayPageState();
+  State<JNovaRhythmGameplayPage> createState() =>
+      _JNovaRhythmGameplayPageState();
 }
 
-class _BeatTiltGameplayPageState extends State<BeatTiltGameplayPage> {
+class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
   final GameSensorService _sensorService = GameSensorService.instance;
-  final BeatTiltAudioService _audioService = BeatTiltAudioService.instance;
+  final JNovaRhythmAudioService _audioService =
+      JNovaRhythmAudioService.instance;
 
   int _secondsRemaining = 10;
   Timer? _gameTimer;

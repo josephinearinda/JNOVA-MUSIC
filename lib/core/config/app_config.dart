@@ -9,7 +9,7 @@ import '../storage/secure_storage_service.dart';
 class AppConfig {
   AppConfig._();
 
-  static Future<void> initialize() async {
+  static Future<void> initialize({bool clearLegacyGeminiApiKey = true}) async {
     try {
       await dotenv.load(fileName: '.env', mergeWith: Platform.environment);
     } catch (_) {
@@ -37,7 +37,9 @@ class AppConfig {
       }
     }
 
-    await SecureStorageService.instance.clearGeminiApiKey();
+    if (clearLegacyGeminiApiKey) {
+      await SecureStorageService.instance.clearGeminiApiKey();
+    }
   }
 
   // Supabase Configuration

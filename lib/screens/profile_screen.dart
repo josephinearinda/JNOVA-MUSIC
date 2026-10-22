@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_colors.dart';
@@ -440,7 +441,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             'Email',
             profile.email.isNotEmpty ? profile.email : 'Belum diisi',
             tag: profile.email.isNotEmpty
-                ? (profile.isEmailVerified ? 'Terverifikasi' : 'Belum Verifikasi')
+                ? (profile.isEmailVerified
+                      ? 'Terverifikasi'
+                      : 'Belum Verifikasi')
                 : null,
             tagColor: profile.isEmailVerified
                 ? const Color(0xFF15803D)
@@ -452,9 +455,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 6),
           _buildInfoRow(
             'Nomor HP',
-            profile.phoneNumber.isNotEmpty ? profile.phoneNumber : 'Belum diisi',
+            profile.phoneNumber.isNotEmpty
+                ? profile.phoneNumber
+                : 'Belum diisi',
             tag: profile.phoneNumber.isNotEmpty
-                ? (profile.isPhoneVerified ? 'Terverifikasi' : 'Belum Verifikasi')
+                ? (profile.isPhoneVerified
+                      ? 'Terverifikasi'
+                      : 'Belum Verifikasi')
                 : null,
             tagColor: profile.isPhoneVerified
                 ? const Color(0xFF15803D)
@@ -656,13 +663,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             title: 'Riwayat Pesanan',
             subtitle: _orderService.orders.isEmpty
                 ? 'Belum Ada Transaksi'
-                : '${_orderService.orders.length} Transaksi Selesai & Berjalan',
-            onTap: () => Navigator.pushNamed(context, '/order-detail'),
+                : '${_orderService.orders.length} Pesanan Tersimpan',
+            onTap: () => Navigator.pushNamed(context, '/order-history'),
           ),
           _buildActivityItem(
             icon: Icons.sports_esports_outlined,
             title: 'Riwayat Game',
-            subtitle: 'JNova Beat Tilt - Skor 18.450',
+            subtitle: 'JNova Rhythm - Skor 18.450',
             onTap: () => Navigator.pushNamed(context, '/games'),
           ),
           _buildActivityItem(
@@ -771,11 +778,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   value: profile.isBiometricEnabled,
                   onChanged: (val) async {
                     if (val) {
-                      final res =
-                          await AuthService.instance.enableBiometricsForUser(
-                        email: profile.email,
-                        fullName: profile.fullName,
-                      );
+                      final res = await AuthService.instance
+                          .enableBiometricsForUser(
+                            email: profile.email,
+                            fullName: profile.fullName,
+                          );
                       if (!mounted) return;
                       if (res.isSuccess) {
                         await _profileService.toggleBiometric(true);
@@ -828,8 +835,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             badgeText: _currencyService.selectedCurrency == 'USD'
                 ? 'USD (\$)'
                 : (_currencyService.selectedCurrency == 'EUR'
-                    ? 'EUR (€)'
-                    : 'IDR (Rp)'),
+                      ? 'EUR (€)'
+                      : 'IDR (Rp)'),
             onTap: () => Navigator.pushNamed(context, '/currency-preferences'),
           ),
           _buildActivityItem(
@@ -1062,4 +1069,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
+import '../../services/membership_service.dart';
+
 class JNovaDodgeGamePage extends StatefulWidget {
   const JNovaDodgeGamePage({super.key});
 
@@ -21,6 +23,7 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
   final _random = Random();
   final _audioPlayer = AudioPlayer();
   final _gameAreaKey = GlobalKey();
+  final _membershipService = MembershipService.instance;
   final List<_FallingBlock> _blocks = [];
 
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
@@ -158,12 +161,34 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
 
   void _endGame() {
     if (!_isPlaying) return;
+    final pointsEarned = _score;
     setState(() {
       _isPlaying = false;
     });
     _spawnTimer?.cancel();
     _gameLoopTimer?.cancel();
     unawaited(_audioPlayer.stop());
+    if (pointsEarned > 0) {
+      unawaited(_addGamePoints(pointsEarned));
+    }
+  }
+
+  Future<void> _addGamePoints(int points) async {
+    try {
+      await _membershipService.addGamePoints(
+        points,
+        gameTitle: 'Bonus JNova Dodge - Skor Bertahan',
+      );
+    } catch (error, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stackTrace,
+          library: 'JNova Dodge membership',
+          context: ErrorDescription('while awarding game points'),
+        ),
+      );
+    }
   }
 
   void _restartGame() {
@@ -339,6 +364,17 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                                         fontSize: 22,
                                       ),
                                     ),
+                                    if (_score > 0) ...[
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        '+$_score POIN MEMBERSHIP',
+                                        style: const TextStyle(
+                                          color: Colors.cyanAccent,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                     const SizedBox(height: 28),
                                     ElevatedButton(
                                       onPressed: _restartGame,

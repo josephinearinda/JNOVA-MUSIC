@@ -25,8 +25,8 @@ import 'package:jnova/screens/order_detail_screen.dart';
 import 'package:jnova/screens/tracking_screen.dart';
 import 'package:jnova/services/currency_service.dart';
 import 'package:jnova/screens/game/motion_permission_page.dart';
-import 'package:jnova/screens/game/beat_tilt_home_page.dart';
-import 'package:jnova/screens/game/beat_tilt_result_page.dart';
+import 'package:jnova/screens/game/jnova_rhythm_home_page.dart';
+import 'package:jnova/screens/game/jnova_rhythm_result_page.dart';
 import 'package:jnova/screens/game_selection_page.dart';
 import 'package:jnova/screens/profile_screen.dart';
 import 'package:jnova/screens/edit_profile_page.dart';
@@ -403,10 +403,10 @@ void main() {
     expect(find.text('Kembali ke Beranda JNOVAMUSIC'), findsOneWidget);
   });
 
-  testWidgets('BeatTiltHomePage smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: BeatTiltHomePage()));
+  testWidgets('JNovaRhythmHomePage smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: JNovaRhythmHomePage()));
 
-    expect(find.text('JNova Beat Tilt'), findsNWidgets(2));
+    expect(find.text('JNova Rhythm'), findsNWidgets(2));
     expect(find.text('Kembali ke JNOVAMUSIC'), findsOneWidget);
     expect(find.text('MINI-GAME MEMBERSHIP'), findsOneWidget);
     expect(find.text('Sensor Siap Digunakan'), findsOneWidget);
@@ -421,7 +421,7 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: GameSelectionPage()));
 
     expect(find.text('Pilih Game'), findsOneWidget);
-    expect(find.text('JNova Beat Tilt'), findsOneWidget);
+    expect(find.text('JNova Rhythm'), findsOneWidget);
     expect(find.text('JNova Dodge'), findsOneWidget);
   });
 
@@ -443,10 +443,10 @@ void main() {
     expect(find.text('Dodge game opened'), findsOneWidget);
   });
 
-  testWidgets('BeatTiltResultPage smoke test', (WidgetTester tester) async {
+  testWidgets('JNovaRhythmResultPage smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: BeatTiltResultPage(
+        home: JNovaRhythmResultPage(
           resultData: GameResultData(
             validShakes: 32,
             pointsEarned: 65,

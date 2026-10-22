@@ -275,7 +275,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
         ),
         content: const Text(
           '1. Poin didapatkan dari pembelian instrumen musik resmi di JNOVAMUSIC (1% dari nominal belanja).\n\n'
-          '2. Poin ekstra dapat diperoleh melalui event mingguan dan mini game JNova Beat Tilt.\n\n'
+          '2. Poin ekstra dapat diperoleh melalui event mingguan dan mini game JNova Rhythm.\n\n'
           '3. Poin diakumulasikan sepanjang tahun aktif untuk menentukan status dan benefit tier Anda.\n\n'
           'Untuk informasi lebih lengkap, silakan cek Syarat & Ketentuan.',
           style: TextStyle(fontSize: 11, color: Color(0xFF5A524D), height: 1.4),

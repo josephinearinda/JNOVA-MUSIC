@@ -91,6 +91,38 @@ class SecureStorageService {
   static const String _keyProfileData = 'user_profile_data';
   static const String _keyPrefixProfileUser = 'profile_data_';
   static const String _keyPrefixPointsUser = 'points_balance_';
+  static const String _keyPrefixNotificationPreferences =
+      'notification_preferences_';
+
+  Future<void> saveNotificationPreferences(
+    Map<String, bool> preferences,
+  ) async {
+    final email = (await getUserEmail())?.toLowerCase().trim();
+    final key = '$_keyPrefixNotificationPreferences${email ?? 'guest'}';
+    final jsonStr = jsonEncode(preferences);
+    _memoryFallback[key] = jsonStr;
+    try {
+      await _storage.write(key: key, value: jsonStr);
+    } catch (_) {}
+  }
+
+  Future<Map<String, dynamic>?> getNotificationPreferences() async {
+    final email = (await getUserEmail())?.toLowerCase().trim();
+    final key = '$_keyPrefixNotificationPreferences${email ?? 'guest'}';
+    try {
+      final value = await _storage.read(key: key);
+      if (value != null && value.isNotEmpty) {
+        return jsonDecode(value) as Map<String, dynamic>;
+      }
+    } catch (_) {}
+    final fallback = _memoryFallback[key];
+    if (fallback == null || fallback.isEmpty) return null;
+    try {
+      return jsonDecode(fallback) as Map<String, dynamic>;
+    } catch (_) {
+      return null;
+    }
+  }
 
   Future<void> saveProfile(Map<String, dynamic> data) async {
     final jsonStr = jsonEncode(data);

@@ -41,9 +41,9 @@ class GameSelectionPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             _GameCard(
-              title: 'JNova Beat Tilt',
+              title: 'JNova Rhythm',
               description:
-                  'Ikuti beat dan kumpulkan poin dengan menggoyangkan HP.',
+                  'Ikuti irama musik dan kumpulkan poin dengan menggoyangkan HP.',
               icon: Icons.graphic_eq_rounded,
               color: AppColors.primaryOrange,
               onTap: () => Navigator.pushNamed(context, '/game-permission'),

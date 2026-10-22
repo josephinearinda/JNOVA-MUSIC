@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_colors.dart';
+import '../services/notification_background_sync_service.dart';
+import '../services/notification_service.dart';
 import '../widgets/app_bottom_nav.dart';
 
 class NotificationItem {
@@ -47,6 +49,139 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
   // Filter riwayat tab
   int _activeFilterIndex = 0; // 0: Semua, 1: Belum Dibaca
 
+  @override
+  void initState() {
+    super.initState();
+    _loadNotificationPreferences();
+  }
+
+  Future<void> _loadNotificationPreferences() async {
+    final preferences = await NotificationService.instance.loadPreferences();
+    if (!mounted) return;
+
+    setState(() {
+      _pushNotifications = preferences.pushEnabled;
+      _promoOffers = preferences.promoOffers;
+      _orderUpdates = preferences.orderUpdates;
+      _membershipPoints = preferences.membershipPoints;
+      _gameActivities = preferences.gameActivities;
+    });
+
+    if (preferences.pushEnabled) {
+      try {
+        final isGranted = await NotificationService.instance
+            .requestPermission();
+        if (!isGranted && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Izinkan notifikasi JNOVAMUSIC melalui pengaturan perangkat.',
+              ),
+            ),
+          );
+        }
+      } catch (error) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Izin notifikasi gagal diminta: $error')),
+        );
+      }
+    }
+  }
+
+  Future<void> _updatePreferences({
+    bool? pushEnabled,
+    bool? promoOffers,
+    bool? orderUpdates,
+    bool? membershipPoints,
+    bool? gameActivities,
+  }) async {
+    final previous = NotificationPreferences(
+      pushEnabled: _pushNotifications,
+      promoOffers: _promoOffers,
+      orderUpdates: _orderUpdates,
+      membershipPoints: _membershipPoints,
+      gameActivities: _gameActivities,
+    );
+    var updated = previous.copyWith(
+      pushEnabled: pushEnabled,
+      promoOffers: promoOffers,
+      orderUpdates: orderUpdates,
+      membershipPoints: membershipPoints,
+      gameActivities: gameActivities,
+    );
+
+    if (pushEnabled == true) {
+      try {
+        final isGranted = await NotificationService.instance
+            .requestPermission();
+        if (!isGranted) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'Notifikasi belum diizinkan di pengaturan perangkat.',
+                ),
+              ),
+            );
+          }
+          return;
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Izin notifikasi gagal diminta: $error')),
+          );
+        }
+        return;
+      }
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _pushNotifications = updated.pushEnabled;
+      _promoOffers = updated.promoOffers;
+      _orderUpdates = updated.orderUpdates;
+      _membershipPoints = updated.membershipPoints;
+      _gameActivities = updated.gameActivities;
+    });
+
+    try {
+      await NotificationService.instance.savePreferences(updated);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _pushNotifications = previous.pushEnabled;
+        _promoOffers = previous.promoOffers;
+        _orderUpdates = previous.orderUpdates;
+        _membershipPoints = previous.membershipPoints;
+        _gameActivities = previous.gameActivities;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Preferensi notifikasi gagal disimpan: $error')),
+      );
+      return;
+    }
+
+    try {
+      if (updated.pushEnabled) {
+        await NotificationBackgroundSyncService.enable();
+      } else {
+        await NotificationBackgroundSyncService.disable();
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Preferensi tersimpan, tetapi sinkronisasi background gagal: $error',
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   final List<NotificationItem> _notifications = [
     NotificationItem(
       id: '1',
@@ -92,7 +227,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       id: '5',
       title: 'Jackpot Hujan Poin Dibuka!',
       time: '2 hari lalu',
-      message: 'Putaran baru JNova Beat Tilt telah dimulai. Kumpulkan skor dan rebut 500 Poin.',
+      message: 'Event baru JNova Rhythm telah dimulai. Kumpulkan skor dan rebut 500 Poin.',
       icon: Icons.sports_esports_rounded,
       iconColor: const Color(0xFF7E756F),
       iconBg: const Color(0xFFECEAE6),
@@ -416,7 +551,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
-                  'Otomatis Aktif',
+                  'Aktif di perangkat',
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w700,
@@ -432,31 +567,31 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             'Notifikasi Push',
             'Terima pemberitahuan langsung di perangkat.',
             _pushNotifications,
-            (v) => setState(() => _pushNotifications = v),
+            (v) => _updatePreferences(pushEnabled: v),
           ),
           _buildToggleItem(
             'Promo dan Penawaran',
             'Info promo gear musik, diskon, & instrumen baru.',
             _promoOffers,
-            (v) => setState(() => _promoOffers = v),
+            (v) => _updatePreferences(promoOffers: v),
           ),
           _buildToggleItem(
             'Pembaruan Pesanan',
             'Informasi pembayaran, resi pengiriman, & ambil di toko.',
             _orderUpdates,
-            (v) => setState(() => _orderUpdates = v),
+            (v) => _updatePreferences(orderUpdates: v),
           ),
           _buildToggleItem(
             'Membership dan Poin',
             'Informasi perolehan poin, naik tier, & voucher reward.',
             _membershipPoints,
-            (v) => setState(() => _membershipPoints = v),
+            (v) => _updatePreferences(membershipPoints: v),
           ),
           _buildToggleItem(
             'Aktivitas Game',
-            'Info hadiah Jackpot Poin & event JNova Beat Tilt.',
+            'Info hadiah Jackpot Poin & event JNova Rhythm.',
             _gameActivities,
-            (v) => setState(() => _gameActivities = v),
+            (v) => _updatePreferences(gameActivities: v),
           ),
 
           const SizedBox(height: 6),
@@ -470,7 +605,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
               SizedBox(width: 5),
               Expanded(
                 child: Text(
-                  'Preferensi tersinkronisasi otomatis dengan server JNOVAMUSIC',
+                  'Preferensi notifikasi tersimpan di perangkat ini',
                   style: TextStyle(fontSize: 9, color: Color(0xFF8E837D)),
                 ),
               ),
