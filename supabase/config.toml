@@ -1,0 +1,4 @@
+project_id = "jnova-music"
+
+[functions.gemini-chat]
+verify_jwt = false

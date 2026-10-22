@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Layanan penyimpanan aman terenkripsi (Android Keystore / iOS Keychain)
@@ -119,7 +120,10 @@ class SecureStorageService {
     return null;
   }
 
-  Future<void> saveProfileForUser(String email, Map<String, dynamic> data) async {
+  Future<void> saveProfileForUser(
+    String email,
+    Map<String, dynamic> data,
+  ) async {
     final cleanEmail = email.toLowerCase().trim();
     final key = '$_keyPrefixProfileUser$cleanEmail';
     final jsonStr = jsonEncode(data);
@@ -227,7 +231,8 @@ class SecureStorageService {
   // --- Dukungan Autentikasi Biometrik ---
   static const String _keyPrefixBiometricEnabled = 'biometric_enabled_';
   static const String _keyLastBiometricUser = 'last_biometric_user';
-  static const String _keyPrefixBiometricRefreshToken = 'biometric_refresh_token_';
+  static const String _keyPrefixBiometricRefreshToken =
+      'biometric_refresh_token_';
 
   Future<void> setBiometricEnabledForUser(String email, bool enabled) async {
     final cleanEmail = email.toLowerCase().trim();
@@ -270,7 +275,10 @@ class SecureStorageService {
     return _memoryFallback[_keyLastBiometricUser];
   }
 
-  Future<void> saveBiometricRefreshToken(String email, String refreshToken) async {
+  Future<void> saveBiometricRefreshToken(
+    String email,
+    String refreshToken,
+  ) async {
     final cleanEmail = email.toLowerCase().trim();
     final key = '$_keyPrefixBiometricRefreshToken$cleanEmail';
     _memoryFallback[key] = refreshToken;
@@ -350,46 +358,13 @@ class SecureStorageService {
     } catch (_) {}
   }
 
-  // --- Konfigurasi Google Gemini AI ---
+  // Remove Gemini keys saved by older app versions.
   static const String _keyGeminiApiKey = 'gemini_api_key';
-  static const String _keyGeminiModel = 'gemini_model';
-
-  Future<void> saveGeminiApiKey(String apiKey) async {
-    final clean = apiKey.trim();
-    _memoryFallback[_keyGeminiApiKey] = clean;
-    try {
-      await _storage.write(key: _keyGeminiApiKey, value: clean);
-    } catch (_) {}
-  }
-
-  Future<String?> getGeminiApiKey() async {
-    try {
-      final val = await _storage.read(key: _keyGeminiApiKey);
-      if (val != null && val.trim().isNotEmpty) return val.trim();
-    } catch (_) {}
-    return _memoryFallback[_keyGeminiApiKey]?.trim();
-  }
 
   Future<void> clearGeminiApiKey() async {
     _memoryFallback.remove(_keyGeminiApiKey);
     try {
       await _storage.delete(key: _keyGeminiApiKey);
     } catch (_) {}
-  }
-
-  Future<void> saveGeminiModel(String model) async {
-    final clean = model.trim();
-    _memoryFallback[_keyGeminiModel] = clean;
-    try {
-      await _storage.write(key: _keyGeminiModel, value: clean);
-    } catch (_) {}
-  }
-
-  Future<String?> getGeminiModel() async {
-    try {
-      final val = await _storage.read(key: _keyGeminiModel);
-      if (val != null && val.trim().isNotEmpty) return val.trim();
-    } catch (_) {}
-    return _memoryFallback[_keyGeminiModel]?.trim();
   }
 }

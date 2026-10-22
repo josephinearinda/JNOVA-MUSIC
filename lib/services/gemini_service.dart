@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:google_generative_ai/google_generative_ai.dart';
+
 import '../core/config/app_config.dart';
 import '../core/network/network_info.dart';
+import '../data/datasources/remote/supabase_client_service.dart';
 import '../models/product.dart';
 
 /// Hasil dari respon Gemini AI untuk obrolan JNOVAMUSIC
@@ -31,8 +32,7 @@ class GeminiService {
   GeminiService._();
   static final GeminiService instance = GeminiService._();
 
-  GenerativeModel? _model;
-  ChatSession? _chatSession;
+  final List<Map<String, String>> _history = [];
 
   /// Membangun konteks produk katalog JNOVAMUSIC untuk diinjeksikan ke System Instruction
   String _buildSystemPrompt() {
@@ -144,127 +144,16 @@ class GeminiService {
     return buffer.toString();
   }
 
-  void _initModelIfNeeded([String? modelOverride]) {
-    if (!AppConfig.isGeminiConfigured) return;
-
-    final targetModel = modelOverride ?? AppConfig.geminiModel;
-
-    _model ??= GenerativeModel(
-      model: targetModel,
-      apiKey: AppConfig.geminiApiKey,
-      systemInstruction: Content.system(_buildSystemPrompt()),
-      generationConfig: GenerationConfig(
-        temperature: 0.7,
-        maxOutputTokens: 1000,
-      ),
-    );
-    _chatSession ??= _model!.startChat();
-  }
-
-  /// Reset sesi dan model agar membaca konfigurasi/key terbaru
+  /// Reset local conversation history.
   void reconfigure() {
-    _chatSession = null;
-    _model = null;
+    _history.clear();
   }
 
-  /// Reset riwayat percakapan sesi ini
   void resetChat() {
-    _chatSession = null;
-    if (_model != null) {
-      _chatSession = _model!.startChat();
-    }
+    _history.clear();
   }
 
-  /// Menguji koneksi Gemini API dengan key dan model tertentu secara langsung
-  Future<({bool success, String message})> testConnection({
-    required String apiKey,
-    String? model,
-  }) async {
-    final cleanKey = apiKey.trim();
-    if (cleanKey.isEmpty || cleanKey.length < 10) {
-      return (
-        success: false,
-        message: 'Format API Key tidak valid. Kunci harus memiliki minimal 10 karakter.',
-      );
-    }
-
-    final isOnline = await NetworkInfo.instance.isConnected;
-    if (!isOnline) {
-      return (
-        success: false,
-        message: 'Tidak ada koneksi internet. Pastikan perangkat Anda terhubung ke internet.',
-      );
-    }
-
-    final targetModel = (model != null && model.trim().isNotEmpty)
-        ? model.trim()
-        : AppConfig.geminiModel;
-
-    try {
-      final testModel = GenerativeModel(
-        model: targetModel,
-        apiKey: cleanKey,
-        generationConfig: GenerationConfig(
-          maxOutputTokens: 10,
-          temperature: 0.1,
-        ),
-      );
-      final res = await testModel.generateContent([
-        Content.text('Halo'),
-      ]).timeout(const Duration(seconds: 15));
-
-      if (res.text != null && res.text!.trim().isNotEmpty) {
-        return (
-          success: true,
-          message: 'Koneksi ke Google Gemini API ($targetModel) berhasil!',
-        );
-      } else {
-        return (
-          success: false,
-          message: 'Model terhubung namun tidak mengembalikan respons.',
-        );
-      }
-    } catch (e) {
-      final errStr = e.toString().toLowerCase();
-      if (errStr.contains('api_key_invalid') ||
-          errStr.contains('api key not valid') ||
-          errStr.contains('invalid api key') ||
-          (errStr.contains('400') && errStr.contains('api_key'))) {
-        return (
-          success: false,
-          message:
-              'API Key tidak valid. Silakan periksa kembali API Key Anda di Google AI Studio (aistudio.google.com).',
-        );
-      }
-      if (errStr.contains('permission_denied') || errStr.contains('403')) {
-        return (
-          success: false,
-          message:
-              'Akses ditolak (Permission Denied). Pastikan API Key memiliki izin Generative Language API.',
-        );
-      }
-      if (errStr.contains('quota') || errStr.contains('429')) {
-        return (
-          success: false,
-          message:
-              'Batas kuota penggunaan (Rate Limit) tercapai. Silakan coba beberapa saat lagi.',
-        );
-      }
-      if (errStr.contains('not found') || errStr.contains('404')) {
-        return (
-          success: false,
-          message:
-              'Model "$targetModel" tidak tersedia. Coba gunakan model gemini-1.5-flash.',
-        );
-      }
-      return (
-        success: false,
-        message: 'Gagal terhubung ke Gemini: ${e.toString().split('\n').first}',
-      );
-    }
-  }
-
-  /// Mengirim pesan ke Google Gemini API dengan penanganan error terperinci
+  /// Mengirim pesan melalui server agar Gemini API key tidak ada di aplikasi.
   Future<GeminiResponse> sendMessage(String userMessage) async {
     final cleanMessage = userMessage.trim();
     if (cleanMessage.isEmpty) {
@@ -279,101 +168,55 @@ class GeminiService {
     if (!isOnline) {
       return const GeminiResponse(
         isSuccess: false,
-        text:
-            'Koneksi internet tidak tersedia. Jnova AI memerlukan koneksi online untuk memproses pertanyaan musik Anda.',
+        text: 'Koneksi internet tidak tersedia. Jnova AI memerlukan koneksi online untuk memproses pertanyaan musik Anda.',
         errorCode: 'offline',
       );
     }
 
-    // 2. Cek Konfigurasi API Key
-    if (!AppConfig.isGeminiConfigured) {
+    final supabase = SupabaseClientService.instance;
+    if (!AppConfig.isAiBackendConfigured ||
+        !supabase.isInitialized ||
+        supabase.client == null) {
       return const GeminiResponse(
         isSuccess: false,
-        text:
-            'Google Gemini API belum dikonfigurasi. Silakan tambahkan GEMINI_API_KEY resmi pada file .env atau atur langsung melalui ikon kunci di atas.',
-        errorCode: 'unconfigured_key',
+        text: 'Jnova AI sedang tidak tersedia. Silakan coba lagi nanti.',
+        errorCode: 'backend_not_configured',
       );
     }
 
     try {
-      _initModelIfNeeded();
-
-      if (_chatSession == null) {
+      final response = await supabase.client!.functions
+          .invoke(
+            'gemini-chat',
+            body: {
+              'message': cleanMessage,
+              'systemInstruction': _buildSystemPrompt(),
+              'history': _history,
+            },
+          )
+          .timeout(const Duration(seconds: 35));
+      final data = response.data;
+      if (data is! Map || data['text'] is! String) {
         return const GeminiResponse(
           isSuccess: false,
-          text: 'Gagal menginisialisasi sesi percakapan dengan Google Gemini API.',
-          errorCode: 'session_init_failed',
+          text: 'Server AI mengirim respons dengan format yang tidak dikenal.',
+          errorCode: 'invalid_server_response',
         );
       }
 
-      GenerateContentResponse? response;
-      try {
-        response = await _chatSession!
-            .sendMessage(Content.text(cleanMessage))
-            .timeout(const Duration(seconds: 30));
-      } catch (innerError) {
-        final innerStr = innerError.toString().toLowerCase();
-
-        // Jika model tidak ditemukan (404), coba fallback otomatis ke model resmi alternatif
-        if (innerStr.contains('not found') || innerStr.contains('404')) {
-          final fallbackModels = [
-            'gemini-1.5-flash',
-            'gemini-2.0-flash',
-            'gemini-2.5-flash',
-          ].where((m) => m != AppConfig.geminiModel).toList();
-
-          for (final fbModel in fallbackModels) {
-            try {
-              final tempModel = GenerativeModel(
-                model: fbModel,
-                apiKey: AppConfig.geminiApiKey,
-                systemInstruction: Content.system(_buildSystemPrompt()),
-                generationConfig: GenerationConfig(
-                  temperature: 0.7,
-                  maxOutputTokens: 1000,
-                ),
-              );
-              final tempChat = tempModel.startChat();
-              final fbResponse = await tempChat
-                  .sendMessage(Content.text(cleanMessage))
-                  .timeout(const Duration(seconds: 30));
-
-              if (fbResponse.text != null && fbResponse.text!.trim().isNotEmpty) {
-                _model = tempModel;
-                _chatSession = tempChat;
-                response = fbResponse;
-                break;
-              }
-            } catch (_) {
-              continue;
-            }
-          }
-        }
-
-        // Jika sesi error karena masalah urutan riwayat percakapan sebelumnya
-        if (response == null &&
-            (innerStr.contains('previous turn') || innerStr.contains('session'))) {
-          resetChat();
-          if (_chatSession != null) {
-            response = await _chatSession!
-                .sendMessage(Content.text(cleanMessage))
-                .timeout(const Duration(seconds: 30));
-          }
-        }
-
-        if (response == null) {
-          rethrow;
-        }
-      }
-
-      final rawText = response.text ?? '';
+      final rawText = (data['text'] as String).trim();
       if (rawText.trim().isEmpty) {
         return const GeminiResponse(
           isSuccess: false,
-          text:
-              'Maaf, Jnova AI tidak menghasilkan respons untuk pertanyaan tersebut. Silakan ulangi pertanyaanmu.',
+          text: 'Maaf, Jnova AI tidak menghasilkan respons untuk pertanyaan tersebut. Silakan ulangi pertanyaanmu.',
           errorCode: 'empty_response',
         );
+      }
+      _history
+        ..add({'role': 'user', 'text': cleanMessage})
+        ..add({'role': 'model', 'text': rawText});
+      if (_history.length > 12) {
+        _history.removeRange(0, _history.length - 12);
       }
 
       // Deteksi rekomendasi produk dari tag [REKOMENDASI: ID]
@@ -406,7 +249,10 @@ class GeminiService {
 
       // Bersihkan seluruh tag [REKOMENDASI: ...] agar tidak tampak mentah di teks obrolan pengguna
       cleanedText = cleanedText
-          .replaceAll(RegExp(r'\[REKOMENDASI:\s*[^\]]+\]', caseSensitive: false), '')
+          .replaceAll(
+            RegExp(r'\[REKOMENDASI:\s*[^\]]+\]', caseSensitive: false),
+            '',
+          )
           .trim();
 
       String? badge;
@@ -427,74 +273,57 @@ class GeminiService {
     } on TimeoutException {
       return const GeminiResponse(
         isSuccess: false,
-        text:
-            'Waktu permintaan habis (timeout). Silakan periksa kestabilan jaringan internet Anda dan coba lagi.',
+        text: 'Waktu permintaan habis (timeout). Silakan periksa kestabilan jaringan internet Anda dan coba lagi.',
         errorCode: 'timeout',
       );
     } catch (e) {
       final errStr = e.toString().toLowerCase();
 
-      // Penanganan API Key tidak valid
-      if (errStr.contains('api_key_invalid') ||
-          errStr.contains('api key not valid') ||
-          errStr.contains('invalid api key') ||
-          (errStr.contains('400') && errStr.contains('api_key'))) {
+      if (errStr.contains('authentication_required') ||
+          errStr.contains('401') ||
+          errStr.contains('jwt')) {
         return const GeminiResponse(
           isSuccess: false,
-          text:
-              'API Key Google Gemini yang digunakan tidak valid atau sudah kedaluwarsa. Silakan periksa kembali API Key Anda di Google AI Studio (aistudio.google.com).',
-          errorCode: 'invalid_key',
+          text: 'Sesi login tidak valid untuk layanan AI. Keluar lalu masuk kembali dengan koneksi internet.',
+          errorCode: 'authentication_required',
         );
       }
 
-      // Penanganan Izin Akses Ditolak
-      if (errStr.contains('permission_denied') ||
-          errStr.contains('permissiondenied') ||
-          errStr.contains('403')) {
+      if (errStr.contains('rate_limit_exceeded')) {
         return const GeminiResponse(
           isSuccess: false,
-          text:
-              'Akses Google Gemini API ditolak (Permission Denied). Pastikan API Key Anda memiliki izin untuk menggunakan Generative Language API.',
-          errorCode: 'permission_denied',
+          text: 'Chat Jnova AI dari jaringan ini sedang dibatasi sementara. Silakan coba lagi nanti.',
+          errorCode: 'rate_limit_exceeded',
         );
       }
 
-      // Penanganan Batas Kuota (Rate Limit / Quota Exceeded)
-      if (errStr.contains('quota') ||
-          errStr.contains('rate') ||
-          errStr.contains('429') ||
-          errStr.contains('resource_exhausted')) {
+      if (errStr.contains('daily_limit_exceeded')) {
         return const GeminiResponse(
           isSuccess: false,
-          text:
-              'Batas kuota penggunaan Google Gemini API telah tercapai (Rate Limit). Silakan coba kembali dalam beberapa saat.',
+          text: 'Kuota harian Jnova AI sedang habis. Silakan coba lagi besok.',
+          errorCode: 'daily_limit_exceeded',
+        );
+      }
+
+      if (errStr.contains('quota_exceeded') || errStr.contains('429')) {
+        return const GeminiResponse(
+          isSuccess: false,
+          text: 'Kuota gratis Gemini sedang habis. Silakan coba lagi setelah kuota diperbarui.',
           errorCode: 'quota_exceeded',
         );
       }
 
-      // Penanganan Model Tidak Ditemukan / Region Tidak Didukung
-      if (errStr.contains('not found') ||
-          errStr.contains('model not found') ||
+      if (errStr.contains('ai_not_configured') ||
+          errStr.contains('server_not_configured') ||
+          errStr.contains('function not found') ||
           errStr.contains('404')) {
         return const GeminiResponse(
           isSuccess: false,
-          text:
-              'Model AI yang dikonfigurasi tidak tersedia pada region atau akun Anda. Silakan periksa konfigurasi model Gemini.',
-          errorCode: 'model_not_found',
+          text: 'Jnova AI sedang tidak tersedia. Silakan coba lagi nanti.',
+          errorCode: 'backend_not_configured',
         );
       }
 
-      // Penanganan Filter Keamanan Konten
-      if (errStr.contains('safety') || errStr.contains('blocked')) {
-        return const GeminiResponse(
-          isSuccess: false,
-          text:
-              'Pertanyaan tidak dapat diproses karena terdeteksi filter keamanan konten. Silakan gunakan pertanyaan seputar musik dan alat musik.',
-          errorCode: 'safety_blocked',
-        );
-      }
-
-      // Penanganan Masalah Jaringan / Socket
       if (errStr.contains('socketexception') ||
           errStr.contains('handshake') ||
           errStr.contains('failed host lookup') ||
@@ -502,29 +331,32 @@ class GeminiService {
           errStr.contains('connection')) {
         return const GeminiResponse(
           isSuccess: false,
-          text:
-              'Gagal terhubung ke layanan Google AI. Periksa koneksi internet Anda dan coba beberapa saat lagi.',
+          text: 'Gagal terhubung ke server AI. Periksa koneksi internet Anda lalu coba lagi.',
           errorCode: 'network_error',
         );
       }
 
-      // Penanganan Gangguan Server Google
-      if (errStr.contains('500') ||
-          errStr.contains('503') ||
-          errStr.contains('internal server error') ||
-          errStr.contains('unavailable')) {
+      if (errStr.contains('upstream_key_invalid')) {
         return const GeminiResponse(
           isSuccess: false,
-          text:
-              'Layanan Google Gemini AI sedang mengalami gangguan sementara dari sisi server. Silakan coba kembali nanti.',
-          errorCode: 'server_error',
+          text: 'Konfigurasi Gemini di server tidak valid. Pemilik aplikasi perlu memperbarui secret API key.',
+          errorCode: 'backend_configuration_error',
+        );
+      }
+
+      if (errStr.contains('upstream_busy') ||
+          errStr.contains('upstream_unavailable') ||
+          errStr.contains('upstream_error')) {
+        return const GeminiResponse(
+          isSuccess: false,
+          text: 'Layanan Jnova AI sedang ramai. Silakan kirim pesan lagi sebentar.',
+          errorCode: 'service_busy',
         );
       }
 
       return const GeminiResponse(
         isSuccess: false,
-        text:
-            'Terjadi kendala saat memproses pertanyaan Anda dengan Jnova AI. Silakan coba kembali sesaat lagi.',
+        text: 'Terjadi kendala saat memproses pertanyaan Anda dengan Jnova AI. Silakan coba kembali sesaat lagi.',
         errorCode: 'general_error',
       );
     }
