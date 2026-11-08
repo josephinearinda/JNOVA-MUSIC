@@ -13,6 +13,14 @@ Saat pembaruan aplikasi pertama kali dibuka, cache katalog lama diperbarui
 dari CSV; item keranjang/favorit yang cocok berdasarkan merek dan nama tetap
 dipertahankan.
 
+## Menyimpan Saran dan Kesan
+
+Kiriman pada halaman Saran dan Kesan disimpan di database lokal aplikasi,
+dipisahkan berdasarkan email akun. Data tetap tersedia setelah aplikasi ditutup
+atau pengguna keluar dan login kembali; tidak memerlukan tabel atau migrasi
+Supabase. Penyimpanan ini berlaku pada perangkat yang sama dan tidak
+menyinkronkan data ke perangkat lain.
+
 ## Menyiapkan Jnova AI tanpa API key di aplikasi
 
 Jnova AI mengirim permintaan Gemini melalui Supabase Edge Function. Pengguna
@@ -52,3 +60,19 @@ model berbiaya rendah dan berlatensi rendah. Riwayat yang dikirim dibatasi
 hingga empat giliran terakhir. Jika key, kuota model, atau wilayah Google tidak
 tersedia, pemilik project perlu memeriksa kuota/akses di Google AI Studio.
 Batas dan ketersediaan model ditentukan Google dan dapat berubah.
+
+### Jika muncul pesan kuota Gemini habis
+
+Error `quota_exceeded` berasal dari Google AI, bukan jumlah token di aplikasi.
+Membuat API key baru di project Google yang sama tidak mengisi ulang kuota
+project. Periksa pemakaian dan kuota di Google AI Studio. Tunggu reset kuota,
+aktifkan billing, atau gunakan API key dari project Google lain yang memiliki
+kuota untuk model yang dipilih. Perbarui `GEMINI_API_KEY` di Supabase Dashboard
+→ Project Settings → Edge Functions → Secrets; jangan menaruhnya di `.env`
+Flutter atau mengirimkannya lewat chat.
+
+Model dapat diubah dengan secret opsional `GEMINI_MODEL` (default
+`gemini-3.5-flash-lite`) sesuai model yang tersedia dan punya kuota di project
+Google tersebut. Setelah mengubah kode Edge Function, deploy ulang dengan
+`supabase functions deploy gemini-chat`. Mengganti model atau key tidak
+menjamin kuota tersedia; cek batas project di Google AI Studio terlebih dahulu.

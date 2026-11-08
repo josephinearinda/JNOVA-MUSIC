@@ -111,7 +111,10 @@ Deno.serve(async (request) => {
     return jsonResponse({ error: "daily_limit_exceeded" }, 429);
   }
 
-  const model = "gemini-3.5-flash-lite";
+  const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-3.5-flash-lite";
+  if (!/^gemini-[a-zA-Z0-9.-]+$/.test(model)) {
+    return jsonResponse({ error: "model_configuration_invalid" }, 503);
+  }
   const deadline = Date.now() + REQUEST_DEADLINE_MS;
   let geminiResponse: Response;
   const remainingMs = deadline - Date.now();

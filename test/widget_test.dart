@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:jnova/main.dart';
 import 'package:jnova/models/order_model.dart';
 import 'package:jnova/models/product.dart';
+import 'package:jnova/models/user_feedback.dart';
 import 'package:jnova/screens/splash_screen.dart';
 import 'package:jnova/screens/login_screen.dart';
 import 'package:jnova/screens/register_screen.dart';
@@ -46,9 +47,36 @@ import 'package:jnova/services/cart_service.dart';
 import 'package:jnova/core/network/network_info.dart';
 import 'package:jnova/core/storage/secure_storage_service.dart';
 import 'package:jnova/data/repositories/auth_repository.dart';
+import 'package:jnova/data/repositories/user_feedback_repository.dart';
 import 'package:jnova/services/auth_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+class _FakeUserFeedbackRepository implements UserFeedbackRepository {
+  final List<UserFeedback> _feedback = [];
+
+  @override
+  Future<List<UserFeedback>> getMyFeedback() async =>
+      List<UserFeedback>.of(_feedback);
+
+  @override
+  Future<UserFeedback> submitFeedback({
+    required String message,
+    required String type,
+    required String sender,
+    required int rating,
+  }) async {
+    final feedback = UserFeedback(
+      message: message,
+      type: type,
+      sender: sender,
+      rating: rating,
+      submittedAt: DateTime.now(),
+    );
+    _feedback.insert(0, feedback);
+    return feedback;
+  }
+}
 
 void main() {
   setUpAll(() {
@@ -617,7 +645,14 @@ void main() {
   });
 
   testWidgets('SuggestionReviewPage smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: SuggestionReviewPage()));
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SuggestionReviewPage(
+          feedbackRepository: _FakeUserFeedbackRepository(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
 
     expect(find.text('Saran dan Kesan'), findsWidgets);
     expect(find.text('Evaluasi Pembelajaran Mata Kuliah'), findsOneWidget);
@@ -631,7 +666,11 @@ void main() {
   testWidgets('SuggestionReviewPage shows submitted feedback below the form', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(const MaterialApp(home: SuggestionReviewPage()));
+    final repository = _FakeUserFeedbackRepository();
+    await tester.pumpWidget(
+      MaterialApp(home: SuggestionReviewPage(feedbackRepository: repository)),
+    );
+    await tester.pumpAndSettle();
 
     await tester.enterText(
       find.byType(TextField).first,
@@ -641,7 +680,6 @@ void main() {
     await tester.tap(find.text('Kesan').first);
     await tester.ensureVisible(find.text('Kirim Masukan'));
     await tester.tap(find.text('Kirim Masukan'));
-    await tester.pump(const Duration(milliseconds: 950));
     await tester.pumpAndSettle();
 
     expect(find.text('Masukan Saya'), findsOneWidget);
@@ -652,6 +690,15 @@ void main() {
       find.text('Masukan yang dikirim akan muncul di sini.'),
       findsNothing,
     );
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(
+      MaterialApp(home: SuggestionReviewPage(feedbackRepository: repository)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Materi Flutter mudah dipahami.'), findsOneWidget);
+    expect(find.text('1 kiriman'), findsOneWidget);
   });
 
   testWidgets('AIChatPage smoke test', (WidgetTester tester) async {

@@ -308,7 +308,7 @@ class GeminiService {
       if (errStr.contains('quota_exceeded') || errStr.contains('429')) {
         return const GeminiResponse(
           isSuccess: false,
-          text: 'Kuota gratis Gemini sedang habis. Silakan coba lagi setelah kuota diperbarui.',
+          text: 'Kuota Gemini untuk project Google yang dipakai server sudah habis. API key baru dari project yang sama tidak menambah kuota. Periksa pemakaian di Google AI Studio, aktifkan billing atau gunakan key dari project lain yang masih punya kuota, lalu perbarui secret GEMINI_API_KEY di Supabase.',
           errorCode: 'quota_exceeded',
         );
       }
@@ -336,6 +336,14 @@ class GeminiService {
         return const GeminiResponse(
           isSuccess: false,
           text: 'Model AI sedang tidak tersedia. Pemilik aplikasi perlu memeriksa konfigurasi model Gemini.',
+          errorCode: 'backend_configuration_error',
+        );
+      }
+
+      if (errStr.contains('model_configuration_invalid')) {
+        return const GeminiResponse(
+          isSuccess: false,
+          text: 'Konfigurasi model AI di server tidak valid. Pemilik aplikasi perlu memperbaiki secret GEMINI_MODEL di Supabase.',
           errorCode: 'backend_configuration_error',
         );
       }

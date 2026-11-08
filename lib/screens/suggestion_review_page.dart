@@ -1,31 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_colors.dart';
+import '../data/repositories/user_feedback_repository.dart';
+import '../models/user_feedback.dart';
 import '../models/user_profile.dart';
 import '../services/user_profile_service.dart';
 import '../widgets/app_bottom_nav.dart';
 
-class _SubmittedFeedback {
-  final String message;
-  final String type;
-  final String sender;
-  final int rating;
-  final DateTime submittedAt;
-
-  const _SubmittedFeedback({
-    required this.message,
-    required this.type,
-    required this.sender,
-    required this.rating,
-    required this.submittedAt,
-  });
-}
-
 /// Halaman SARAN DAN KESAN JNOVAMUSIC sesuai desain Figma (figma_slice_11_905x782.png)
 class SuggestionReviewPage extends StatefulWidget {
   final VoidCallback? onBack;
+  final UserFeedbackRepository? feedbackRepository;
 
-  const SuggestionReviewPage({super.key, this.onBack});
+  const SuggestionReviewPage({super.key, this.onBack, this.feedbackRepository});
 
   @override
   State<SuggestionReviewPage> createState() => _SuggestionReviewPageState();
@@ -35,20 +22,26 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
   final UserProfileService _profileService = UserProfileService.instance;
   final TextEditingController _feedbackController = TextEditingController();
   final GlobalKey _latestFeedbackKey = GlobalKey();
-  final List<_SubmittedFeedback> _submittedFeedback = [];
+  final List<UserFeedback> _submittedFeedback = [];
+  late final UserFeedbackRepository _feedbackRepository;
 
   // 0: Saran, 1: Kesan, 2: Kritik
   int _selectedTypeIndex = 0;
   int _rating = 0; // 0: Belum dinilai, 1..5
   bool _isSubmitting = false;
+  bool _isLoadingFeedback = true;
+  Object? _feedbackLoadError;
 
   @override
   void initState() {
     super.initState();
+    _feedbackRepository =
+        widget.feedbackRepository ?? LocalUserFeedbackRepository();
     _profileService.addListener(_handleProfileChanged);
     _feedbackController.addListener(() {
       setState(() {});
     });
+    _loadFeedback();
   }
 
   @override
@@ -89,7 +82,29 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
     }
   }
 
+  Future<void> _loadFeedback() async {
+    try {
+      final feedback = await _feedbackRepository.getMyFeedback();
+      if (!mounted) return;
+      setState(() {
+        _submittedFeedback
+          ..clear()
+          ..addAll(feedback);
+        _feedbackLoadError = null;
+        _isLoadingFeedback = false;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _feedbackLoadError = error;
+        _isLoadingFeedback = false;
+      });
+    }
+  }
+
   Future<void> _submitFeedback() async {
+    if (_isSubmitting) return;
+
     final text = _feedbackController.text.trim();
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -103,45 +118,55 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
     }
 
     final profile = _profileService.profile;
-    final feedback = _SubmittedFeedback(
-      message: text,
-      type: const ['Saran', 'Kesan', 'Kritik'][_selectedTypeIndex],
-      sender: profile.fullName,
-      rating: _rating,
-      submittedAt: DateTime.now(),
-    );
-
     setState(() => _isSubmitting = true);
 
-    await Future.delayed(const Duration(milliseconds: 900));
+    try {
+      final feedback = await _feedbackRepository.submitFeedback(
+        message: text,
+        type: const ['Saran', 'Kesan', 'Kritik'][_selectedTypeIndex],
+        sender: profile.fullName,
+        rating: _rating,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      _submittedFeedback.insert(0, feedback);
-      _isSubmitting = false;
-      _feedbackController.clear();
-      _rating = 0;
-    });
+      setState(() {
+        _submittedFeedback.insert(0, feedback);
+        _isSubmitting = false;
+        _feedbackController.clear();
+        _rating = 0;
+        _feedbackLoadError = null;
+      });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Masukan berhasil dikirim dan ditampilkan di bawah.'),
-        backgroundColor: Color(0xFF16A34A),
-        duration: Duration(seconds: 2),
-      ),
-    );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final latestContext = _latestFeedbackKey.currentContext;
-      if (latestContext != null) {
-        Scrollable.ensureVisible(
-          latestContext,
-          duration: const Duration(milliseconds: 350),
-          curve: Curves.easeOut,
-          alignment: 0.1,
-        );
-      }
-    });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Masukan berhasil disimpan.'),
+          backgroundColor: Color(0xFF16A34A),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final latestContext = _latestFeedbackKey.currentContext;
+        if (latestContext != null) {
+          Scrollable.ensureVisible(
+            latestContext,
+            duration: const Duration(milliseconds: 350),
+            curve: Curves.easeOut,
+            alignment: 0.1,
+          );
+        }
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _isSubmitting = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal menyimpan masukan: $error'),
+          backgroundColor: const Color(0xFFC2410C),
+          duration: const Duration(seconds: 4),
+        ),
+      );
+    }
   }
 
   @override
@@ -231,18 +256,55 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                 ),
               ),
             ),
-            Text(
-              '${_submittedFeedback.length} kiriman',
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF8E837D),
+            if (!_isLoadingFeedback && _feedbackLoadError == null)
+              Text(
+                '${_submittedFeedback.length} kiriman',
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF8E837D),
+                ),
               ),
-            ),
           ],
         ),
         const SizedBox(height: 8),
-        if (_submittedFeedback.isEmpty)
+        if (_isLoadingFeedback)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(14),
+              child: CircularProgressIndicator(color: AppColors.primaryOrange),
+            ),
+          )
+        else if (_feedbackLoadError != null)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF9F5),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFFFD8BF)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Masukan tidak dapat dimuat: $_feedbackLoadError',
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: Color(0xFFC2410C),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    setState(() => _isLoadingFeedback = true);
+                    _loadFeedback();
+                  },
+                  child: const Text('Coba lagi'),
+                ),
+              ],
+            ),
+          )
+        else if (_submittedFeedback.isEmpty)
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(14),
@@ -270,7 +332,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
     );
   }
 
-  Widget _buildSubmittedFeedbackCard(_SubmittedFeedback feedback) {
+  Widget _buildSubmittedFeedbackCard(UserFeedback feedback) {
     final time = feedback.submittedAt;
     final submittedTime =
         '${time.day.toString().padLeft(2, '0')}/${time.month.toString().padLeft(2, '0')}/${time.year} '

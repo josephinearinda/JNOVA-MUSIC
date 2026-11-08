@@ -90,6 +90,22 @@ class AppDatabase {
       CREATE INDEX IF NOT EXISTS idx_user_cart_email ON user_cart(user_email)
     ''');
 
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS user_feedback (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_email TEXT NOT NULL,
+        message TEXT NOT NULL,
+        type TEXT NOT NULL,
+        sender_name TEXT NOT NULL,
+        rating INTEGER NOT NULL DEFAULT 0 CHECK (rating BETWEEN 0 AND 5),
+        created_at TEXT NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_user_feedback_email
+      ON user_feedback(user_email)
+    ''');
+
     // Bersihkan cached_orders lama yang rusak / items kosong / tanpa user_email
     try {
       await db.execute('''
@@ -163,7 +179,9 @@ class AppDatabase {
         UNIQUE(user_email, product_id)
       )
     ''');
-    await db.execute('CREATE INDEX idx_user_cart_email ON user_cart(user_email)');
+    await db.execute(
+      'CREATE INDEX idx_user_cart_email ON user_cart(user_email)',
+    );
 
     // 3. Favorit Lokal (Legacy)
     await db.execute('''
@@ -183,7 +201,9 @@ class AppDatabase {
         UNIQUE(user_email, product_id)
       )
     ''');
-    await db.execute('CREATE INDEX idx_user_fav_email ON user_favorites(user_email)');
+    await db.execute(
+      'CREATE INDEX idx_user_fav_email ON user_favorites(user_email)',
+    );
 
     // 4. Antrean Pesanan Offline (Pending Sync)
     await db.execute('''

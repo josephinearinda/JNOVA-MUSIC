@@ -43,19 +43,22 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
 
   void _loadCertificates() {
     setState(() {
-      _certificates =
-          BlockchainCertificateService.instance.getUserCertificates();
+      _certificates = BlockchainCertificateService.instance
+          .getUserCertificates();
     });
   }
 
   List<BlockchainCertificate> get _filteredCertificates {
     final query = _searchController.text.trim().toLowerCase();
     return _certificates.where((cert) {
-      final matchesCategory = _selectedCategory == 'Semua' ||
+      final matchesCategory =
+          _selectedCategory == 'Semua' ||
           (_selectedCategory == 'Milik Saya'
               ? cert.isClaimed
-              : cert.product.category.toLowerCase() == _selectedCategory.toLowerCase());
-      final matchesQuery = query.isEmpty ||
+              : cert.product.category.toLowerCase() ==
+                    _selectedCategory.toLowerCase());
+      final matchesQuery =
+          query.isEmpty ||
           cert.product.name.toLowerCase().contains(query) ||
           cert.product.brand.toLowerCase().contains(query) ||
           cert.serialNumber.toLowerCase().contains(query) ||
@@ -101,10 +104,16 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
               textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
                 hintText: 'Contoh: SN-FENDER-014051-88421',
-                hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFAAA39D)),
+                hintStyle: const TextStyle(
+                  fontSize: 11,
+                  color: Color(0xFFAAA39D),
+                ),
                 filled: true,
                 fillColor: const Color(0xFFF7F6F3),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(color: Color(0xFFE2DFD8)),
@@ -124,7 +133,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
               spacing: 6,
               children: [
                 ActionChip(
-                  label: const Text('Coba Serial Demo', style: TextStyle(fontSize: 9.5)),
+                  label: const Text(
+                    'Coba Serial Demo',
+                    style: TextStyle(fontSize: 9.5),
+                  ),
                   backgroundColor: const Color(0xFFFFF0E6),
                   onPressed: () {
                     if (_certificates.isNotEmpty) {
@@ -139,7 +151,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal', style: TextStyle(color: Color(0xFF7E756F))),
+            child: const Text(
+              'Batal',
+              style: TextStyle(color: Color(0xFF7E756F)),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -150,11 +165,16 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFF5500),
               elevation: 0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: const Text(
               'Validasi On-Chain',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
@@ -163,7 +183,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
   }
 
   void _handleVerifyResult(String query) {
-    final cert = BlockchainCertificateService.instance.verifySerialNumber(query);
+    final cert = BlockchainCertificateService.instance.verifySerialNumber(
+      query,
+    );
     if (cert != null) {
       Navigator.push(
         context,
@@ -176,7 +198,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
           backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: const Row(
             children: [
               Icon(Icons.cancel_rounded, color: Color(0xFFDC2626), size: 24),
@@ -194,7 +218,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Tutup', style: TextStyle(color: Color(0xFFFF5500))),
+              child: const Text(
+                'Tutup',
+                style: TextStyle(color: Color(0xFFFF5500)),
+              ),
             ),
           ],
         ),
@@ -213,7 +240,11 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: Color(0xFF1E1E1E)),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: 18,
+            color: Color(0xFF1E1E1E),
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Column(
@@ -236,7 +267,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
         actions: [
           IconButton(
             tooltip: 'Validasi Serial Number',
-            icon: const Icon(Icons.qr_code_scanner_rounded, color: Color(0xFFFF5500)),
+            icon: const Icon(
+              Icons.qr_code_scanner_rounded,
+              color: Color(0xFFFF5500),
+            ),
             onPressed: _openVerifyDialog,
           ),
         ],
@@ -261,9 +295,16 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                   decoration: BoxDecoration(
                     color: const Color(0xFF8247E5).withValues(alpha: 0.25),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFF9E86FF), width: 0.8),
+                    border: Border.all(
+                      color: const Color(0xFF9E86FF),
+                      width: 0.8,
+                    ),
                   ),
-                  child: const Icon(Icons.security_rounded, size: 20, color: Color(0xFFD6C7FF)),
+                  child: const Icon(
+                    Icons.security_rounded,
+                    size: 20,
+                    color: Color(0xFFD6C7FF),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 const Expanded(
@@ -281,7 +322,11 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                       SizedBox(height: 2),
                       Text(
                         'Daftar sertifikat keaslian dan kepemilikan digital resmi instrumen musik Anda di blockchain Polygon.',
-                        style: TextStyle(fontSize: 9.5, color: Color(0xFFBFB5D1), height: 1.3),
+                        style: TextStyle(
+                          fontSize: 9.5,
+                          color: Color(0xFFBFB5D1),
+                          height: 1.3,
+                        ),
                       ),
                     ],
                   ),
@@ -298,8 +343,15 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
                 hintText: 'Cari merek, tipe, nomor seri, atau Token ID...',
-                hintStyle: const TextStyle(fontSize: 11.5, color: Color(0xFFA09891)),
-                prefixIcon: const Icon(Icons.search_rounded, size: 20, color: Color(0xFF8E837D)),
+                hintStyle: const TextStyle(
+                  fontSize: 11.5,
+                  color: Color(0xFFA09891),
+                ),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                  size: 20,
+                  color: Color(0xFF8E837D),
+                ),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear_rounded, size: 18),
@@ -311,7 +363,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                     : null,
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 12,
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(color: Color(0xFFEBE7DF)),
@@ -345,8 +400,12 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                       cat,
                       style: TextStyle(
                         fontSize: 11,
-                        fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                        color: isSelected ? Colors.white : const Color(0xFF4A423D),
+                        fontWeight: isSelected
+                            ? FontWeight.w800
+                            : FontWeight.w600,
+                        color: isSelected
+                            ? Colors.white
+                            : const Color(0xFF4A423D),
                       ),
                     ),
                     selected: isSelected,
@@ -358,11 +417,16 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                     backgroundColor: Colors.white,
                     selectedColor: const Color(0xFFFF5500),
                     showCheckmark: false,
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 0,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       side: BorderSide(
-                        color: isSelected ? const Color(0xFFFF5500) : const Color(0xFFE5E0D8),
+                        color: isSelected
+                            ? const Color(0xFFFF5500)
+                            : const Color(0xFFE5E0D8),
                       ),
                     ),
                   ),
@@ -397,7 +461,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         const SizedBox(height: 4),
                         const Text(
                           'Coba ganti filter kategori atau kata kunci pencarian.',
-                          style: TextStyle(fontSize: 11, color: Color(0xFF8E837D)),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Color(0xFF8E837D),
+                          ),
                         ),
                       ],
                     ),
@@ -450,7 +517,11 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.token_rounded, size: 12, color: Color(0xFF9E86FF)),
+                    const Icon(
+                      Icons.token_rounded,
+                      size: 12,
+                      color: Color(0xFF9E86FF),
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       'TOKEN ${cert.tokenId}',
@@ -465,7 +536,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                 const SizedBox(width: 8),
                 Flexible(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: cert.isClaimed
                           ? const Color(0xFF0F3B2E)
@@ -505,23 +579,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(9),
-                    child: cert.product.image.startsWith('assets/')
-                        ? Image.asset(
-                            cert.product.image,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) => const Icon(
-                              Icons.music_note_rounded,
-                              color: Color(0xFFFF5500),
-                            ),
-                          )
-                        : Image.network(
-                            cert.product.image,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) => const Icon(
-                              Icons.music_note_rounded,
-                              color: Color(0xFFFF5500),
-                            ),
-                          ),
+                    child: _buildProductImage(cert.product.image),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -598,11 +656,14 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BlockchainCertificatePage(certificate: cert),
+                  builder: (context) =>
+                      BlockchainCertificatePage(certificate: cert),
                 ),
               );
             },
-            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(15)),
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(15),
+            ),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -610,7 +671,11 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.verified_user_rounded, size: 14, color: Color(0xFFFF5500)),
+                  Icon(
+                    Icons.verified_user_rounded,
+                    size: 14,
+                    color: Color(0xFFFF5500),
+                  ),
                   SizedBox(width: 6),
                   Text(
                     'Lihat Sertifikat Keaslian Digital',
@@ -621,7 +686,11 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                     ),
                   ),
                   SizedBox(width: 4),
-                  Icon(Icons.arrow_forward_ios_rounded, size: 11, color: Color(0xFFFF5500)),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 11,
+                    color: Color(0xFFFF5500),
+                  ),
                 ],
               ),
             ),
@@ -629,5 +698,23 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildProductImage(String imagePath) {
+    final isNetworkImage =
+        imagePath.startsWith('https://') || imagePath.startsWith('http://');
+    const fallback = Icon(Icons.music_note_rounded, color: Color(0xFFFF5500));
+
+    return isNetworkImage
+        ? Image.network(
+            imagePath,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) => fallback,
+          )
+        : Image.asset(
+            imagePath,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) => fallback,
+          );
   }
 }
