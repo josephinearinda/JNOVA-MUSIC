@@ -40,11 +40,15 @@ tidak perlu memasukkan atau memiliki Gemini API key. Jangan masukkan
    `PROJECT_REF` dapat dilihat pada URL project Supabase.
 5. Edge Function dapat dipakai pengguna aplikasi tanpa login Supabase Auth.
    Fungsi membatasi 20 permintaan per alamat IP per jam dan 500 permintaan total
-   per hari untuk membantu melindungi kuota Gemini gratis. Gangguan sementara
-   dari Gemini dicoba ulang otomatis; kuota gratis Google tetap dapat
-   membatasi jumlah chat dan masa tunggunya.
+   per hari untuk membantu melindungi kuota Gemini gratis. Setiap pesan hanya
+   membuat satu permintaan ke Gemini dan tidak dicoba ulang otomatis, agar
+   gangguan jaringan tidak menggandakan pemakaian kuota. Fungsi membatasi
+   waktu menunggu Gemini hingga 25 detik; aplikasi menunggu hingga 45 detik
+   sebelum menampilkan pesan timeout. Kuota gratis Google tetap dapat
+   membatasi jumlah chat.
 
-Model server ditetapkan ke `gemini-3.8-flash`. Jika key Free tier, kuota model,
-atau wilayah Google tidak tersedia, pemilik project perlu memeriksa kuota/
-akses di Google AI Studio. Batas gratis dan ketersediaan model ditentukan
-Google dan dapat berubah.
+Model server ditetapkan ke Gemini 3.5 Flash-Lite (`gemini-3.5-flash-lite`),
+model berbiaya rendah dan berlatensi rendah. Riwayat yang dikirim dibatasi
+hingga empat giliran terakhir. Jika key, kuota model, atau wilayah Google tidak
+tersedia, pemilik project perlu memeriksa kuota/akses di Google AI Studio.
+Batas dan ketersediaan model ditentukan Google dan dapat berubah.

@@ -620,8 +620,38 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: SuggestionReviewPage()));
 
     expect(find.text('Saran dan Kesan'), findsWidgets);
-    expect(find.text('Suara Anda Berarti Bagi Kami'), findsOneWidget);
+    expect(find.text('Evaluasi Pembelajaran Mata Kuliah'), findsOneWidget);
     expect(find.text('Kirim Masukan'), findsOneWidget);
+    expect(
+      find.text('Masukan yang dikirim akan muncul di sini.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('SuggestionReviewPage shows submitted feedback below the form', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: SuggestionReviewPage()));
+
+    await tester.enterText(
+      find.byType(TextField).first,
+      'Materi Flutter mudah dipahami.',
+    );
+    await tester.ensureVisible(find.text('Kesan').first);
+    await tester.tap(find.text('Kesan').first);
+    await tester.ensureVisible(find.text('Kirim Masukan'));
+    await tester.tap(find.text('Kirim Masukan'));
+    await tester.pump(const Duration(milliseconds: 950));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Masukan Saya'), findsOneWidget);
+    expect(find.text('Materi Flutter mudah dipahami.'), findsOneWidget);
+    expect(find.text('Kesan'), findsWidgets);
+    expect(find.text('1 kiriman'), findsOneWidget);
+    expect(
+      find.text('Masukan yang dikirim akan muncul di sini.'),
+      findsNothing,
+    );
   });
 
   testWidgets('AIChatPage smoke test', (WidgetTester tester) async {

@@ -47,11 +47,15 @@ class AuthService {
     required String password,
     required String fullName,
   }) async {
-    return await _repository.register(
+    final result = await _repository.register(
       email: email,
       password: password,
       fullName: fullName,
     );
+    if (result.isSuccess && result.token != null) {
+      await NotificationBackgroundSyncService.enable();
+    }
+    return result;
   }
 
   /// Autentikasi menggunakan Google OAuth

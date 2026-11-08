@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../../core/config/app_config.dart';
 import '../../core/network/network_info.dart';
 import '../../core/storage/secure_storage_service.dart';
@@ -10,12 +11,14 @@ class AuthResult {
   final String message;
   final String? token;
   final User? user;
+  final String? email;
 
   const AuthResult({
     required this.isSuccess,
     required this.message,
     this.token,
     this.user,
+    this.email,
   });
 }
 
@@ -46,7 +49,8 @@ class AuthRepository {
         if (savedPassword != null && savedPassword != password) {
           return const AuthResult(
             isSuccess: false,
-            message: 'Kata sandi salah. Silakan periksa kembali kata sandi Anda.',
+            message:
+                'Kata sandi salah. Silakan periksa kembali kata sandi Anda.',
           );
         }
       }
@@ -67,11 +71,13 @@ class AuthRepository {
         fullName: cleanEmail,
       );
 
-      final isBioEnabled =
-          await _secureStorage.isBiometricEnabledForUser(cleanEmail);
+      final isBioEnabled = await _secureStorage.isBiometricEnabledForUser(
+        cleanEmail,
+      );
       if (isBioEnabled) {
-        final existingRecord =
-            await _secureStorage.getBiometricAuthRecord(cleanEmail);
+        final existingRecord = await _secureStorage.getBiometricAuthRecord(
+          cleanEmail,
+        );
         await _secureStorage.saveBiometricAuthRecord(
           email: cleanEmail,
           userId: 'local_user_${cleanEmail.hashCode}',
@@ -95,7 +101,8 @@ class AuthRepository {
         if (savedPassword != null && savedPassword != password) {
           return const AuthResult(
             isSuccess: false,
-            message: 'Kata sandi salah. Silakan periksa kembali kata sandi Anda.',
+            message:
+                'Kata sandi salah. Silakan periksa kembali kata sandi Anda.',
           );
         }
       }
@@ -116,11 +123,13 @@ class AuthRepository {
         fullName: cleanEmail,
       );
 
-      final isBioEnabled =
-          await _secureStorage.isBiometricEnabledForUser(cleanEmail);
+      final isBioEnabled = await _secureStorage.isBiometricEnabledForUser(
+        cleanEmail,
+      );
       if (isBioEnabled) {
-        final existingRecord =
-            await _secureStorage.getBiometricAuthRecord(cleanEmail);
+        final existingRecord = await _secureStorage.getBiometricAuthRecord(
+          cleanEmail,
+        );
         await _secureStorage.saveBiometricAuthRecord(
           email: cleanEmail,
           userId: 'offline_user_${cleanEmail.hashCode}',
@@ -179,11 +188,13 @@ class AuthRepository {
           );
         }
 
-        final isBioEnabled =
-            await _secureStorage.isBiometricEnabledForUser(cleanEmail);
+        final isBioEnabled = await _secureStorage.isBiometricEnabledForUser(
+          cleanEmail,
+        );
         if (isBioEnabled) {
-          final existingRecord =
-              await _secureStorage.getBiometricAuthRecord(cleanEmail);
+          final existingRecord = await _secureStorage.getBiometricAuthRecord(
+            cleanEmail,
+          );
           await _secureStorage.saveBiometricAuthRecord(
             email: cleanEmail,
             userId: user.id,
@@ -206,6 +217,22 @@ class AuthRepository {
         message: 'Gagal mendapatkan sesi autentikasi dari server.',
       );
     } on AuthException catch (e) {
+      final errorCode = e.code?.toLowerCase();
+      final errorMessage = e.message.toLowerCase();
+      if (errorCode == 'invalid_credentials' ||
+          errorMessage == 'invalid login credentials') {
+        return const AuthResult(
+          isSuccess: false,
+          message: 'Supabase menolak email atau kata sandi. Pastikan akun terdaftar di project Supabase yang dipakai aplikasi (Auth → Users), email sudah dikonfirmasi jika diwajibkan, dan kata sandinya benar. Akun yang dibuat saat mode offline belum otomatis terdaftar di Supabase.',
+        );
+      }
+      if (errorCode == 'email_not_confirmed' ||
+          errorMessage.contains('email not confirmed')) {
+        return const AuthResult(
+          isSuccess: false,
+          message: 'Email akun belum dikonfirmasi. Buka tautan verifikasi dari Supabase di email Anda, lalu coba masuk lagi.',
+        );
+      }
       return AuthResult(
         isSuccess: false,
         message: 'Autentikasi gagal: ${e.message}',
@@ -218,7 +245,7 @@ class AuthRepository {
     }
   }
 
-  /// Registrasi akun baru (tanpa otomatis login ke dashboard)
+  /// Registrasi akun baru. Jika Supabase mengembalikan sesi, pengguna langsung login.
   Future<AuthResult> register({
     required String email,
     required String password,
@@ -242,9 +269,10 @@ class AuthRepository {
       // Pastikan tidak ada sesi aktif (jangan auto-login)
       await _secureStorage.clearSession();
 
-      return const AuthResult(
+      return AuthResult(
         isSuccess: true,
         message: 'Pendaftaran berhasil! Silakan masuk dengan akun yang baru Anda buat.',
+        email: cleanEmail,
       );
     }
 
@@ -257,14 +285,22 @@ class AuthRepository {
       );
       await _secureStorage.clearSession();
 
-      return const AuthResult(
+      return AuthResult(
         isSuccess: true,
         message: 'Mode Offline: Pendaftaran berhasil disimpan! Silakan masuk.',
+        email: cleanEmail,
+      );
+    }
+
+    final client = _supabaseService.client;
+    if (client == null) {
+      return const AuthResult(
+        isSuccess: false,
+        message: 'Klien Supabase belum siap. Coba lagi sebentar.',
       );
     }
 
     try {
-      final client = _supabaseService.client!;
       final response = await client.auth.signUp(
         email: cleanEmail,
         password: password,
@@ -274,11 +310,11 @@ class AuthRepository {
       if (response.user == null) {
         return const AuthResult(
           isSuccess: false,
-          message: 'Pendaftaran gagal: Server tidak mengembalikan data pengguna.',
+          message:
+              'Pendaftaran gagal: Server tidak mengembalikan data pengguna.',
         );
       }
 
-      // Simpan kredensial aman akun agar pemulihan biometrik dapat berlangsung otomatis
       await _secureStorage.saveRegisteredUser(
         email: cleanEmail,
         password: password,
@@ -289,18 +325,105 @@ class AuthRepository {
         password: password,
       );
 
-      // Pastikan tidak ada sesi login otomatis dari Supabase
-      try {
-        await client.auth.signOut();
-      } catch (_) {}
-      await _secureStorage.clearSession();
+      final session = response.session;
+      if (session != null) {
+        await _secureStorage.saveSession(
+          accessToken: session.accessToken,
+          refreshToken: session.refreshToken ?? '',
+          userId: response.user!.id,
+          email: response.user!.email ?? cleanEmail,
+        );
+        if (session.refreshToken != null && session.refreshToken!.isNotEmpty) {
+          await _secureStorage.saveBiometricRefreshToken(
+            cleanEmail,
+            session.refreshToken!,
+          );
+        }
+      } else {
+        await _secureStorage.clearSession();
+      }
 
       return AuthResult(
         isSuccess: true,
-        message: 'Pendaftaran berhasil! Silakan masuk menggunakan akun baru Anda.',
+        message: session != null
+            ? 'Pendaftaran berhasil! Anda sudah masuk ke akun JNOVAMUSIC.'
+            : 'Akun berhasil dibuat. Supabase masih meminta konfirmasi email. Nonaktifkan Confirm email di pengaturan Auth Supabase agar pendaftaran berikutnya langsung masuk.',
+        token: session?.accessToken,
         user: response.user,
+        email: cleanEmail,
       );
     } on AuthException catch (e) {
+      if (e.code == 'over_email_send_rate_limit' ||
+          e.message.toLowerCase().contains('email rate limit exceeded')) {
+        try {
+          final loginResponse = await client.auth.signInWithPassword(
+            email: cleanEmail,
+            password: password,
+          );
+          final session = loginResponse.session;
+          final user = loginResponse.user;
+          if (session != null && user != null) {
+            await _secureStorage.saveSession(
+              accessToken: session.accessToken,
+              refreshToken: session.refreshToken ?? '',
+              userId: user.id,
+              email: user.email ?? cleanEmail,
+            );
+            await _secureStorage.saveRegisteredUser(
+              email: cleanEmail,
+              password: password,
+              fullName: fullName,
+            );
+            await _secureStorage.saveBiometricCredentials(
+              email: cleanEmail,
+              password: password,
+            );
+            if (session.refreshToken != null &&
+                session.refreshToken!.isNotEmpty) {
+              await _secureStorage.saveBiometricRefreshToken(
+                cleanEmail,
+                session.refreshToken!,
+              );
+            }
+            return AuthResult(
+              isSuccess: true,
+              message: 'Akun sudah terdaftar dan berhasil masuk. Supabase sedang membatasi pengiriman email pendaftaran.',
+              token: session.accessToken,
+              user: user,
+              email: cleanEmail,
+            );
+          }
+        } on AuthException catch (loginError) {
+          if (loginError.code == 'email_not_confirmed') {
+            return const AuthResult(
+              isSuccess: false,
+              message: 'Akun sudah ada, tetapi Supabase masih meminta konfirmasi email. Nonaktifkan Confirm email di Authentication → Sign In / Providers → Email dan konfirmasi akun ini di Authentication → Users.',
+            );
+          }
+          if (loginError.code == 'invalid_credentials') {
+            return const AuthResult(
+              isSuccess: false,
+              message: 'Supabase membatasi pengiriman email pendaftaran. Akun belum bisa diverifikasi dengan kata sandi yang dimasukkan. Tunggu hingga batas email direset, lalu coba lagi atau masuk dengan kata sandi akun yang benar.',
+            );
+          }
+          return AuthResult(
+            isSuccess: false,
+            message:
+                'Batas pengiriman email Supabase tercapai. Login otomatis juga gagal: ${loginError.message}',
+          );
+        } catch (loginError) {
+          return AuthResult(
+            isSuccess: false,
+            message:
+                'Batas pengiriman email Supabase tercapai dan login otomatis gagal: ${loginError.toString()}',
+          );
+        }
+
+        return const AuthResult(
+          isSuccess: false,
+          message: 'Batas pengiriman email Supabase tercapai. Tunggu sebelum mencoba pendaftaran lagi. Jika akun sudah ada, masuk dari halaman login menggunakan kata sandi akun tersebut.',
+        );
+      }
       return AuthResult(
         isSuccess: false,
         message: 'Pendaftaran gagal: ${e.message}',
@@ -332,8 +455,7 @@ class AuthRepository {
     if (lastUser == null || lastUser.isEmpty) {
       return const AuthResult(
         isSuccess: false,
-        message:
-            'Belum ada akun yang dihubungkan dengan login sidik jari. Silakan masuk dengan kata sandi dan aktifkan fitur di Pengaturan Akun.',
+        message: 'Belum ada akun yang dihubungkan dengan login sidik jari. Silakan masuk dengan kata sandi dan aktifkan fitur di Pengaturan Akun.',
       );
     }
 
@@ -345,7 +467,9 @@ class AuthRepository {
       );
     }
 
-    final biometricRecord = await _secureStorage.getBiometricAuthRecord(lastUser);
+    final biometricRecord = await _secureStorage.getBiometricAuthRecord(
+      lastUser,
+    );
 
     // 1. Jika Supabase dikonfigurasi & online
     if (AppConfig.isSupabaseConfigured && _supabaseService.isInitialized) {
@@ -387,8 +511,9 @@ class AuthRepository {
                 savedRefreshToken != 'offline_refresh' &&
                 savedRefreshToken != 'local_refresh') {
               try {
-                final refreshResponse =
-                    await client.auth.setSession(savedRefreshToken);
+                final refreshResponse = await client.auth.setSession(
+                  savedRefreshToken,
+                );
                 final session = refreshResponse.session;
                 final user = refreshResponse.user;
                 if (session != null && user != null) {
@@ -413,8 +538,7 @@ class AuthRepository {
                   }
                   return AuthResult(
                     isSuccess: true,
-                    message:
-                        'Selamat datang kembali! Sesi berhasil dipulihkan dengan sidik jari.',
+                    message: 'Selamat datang kembali! Sesi berhasil dipulihkan dengan sidik jari.',
                     user: user,
                     token: session.accessToken,
                   );
@@ -427,7 +551,10 @@ class AuthRepository {
             // Jika setSession gagal / token kedaluwarsa, pulihkan sesi secara transparan via kredensial aman
             final savedPassword =
                 await _secureStorage.getBiometricCredentials(lastUser) ??
-                (await _secureStorage.getRegisteredUsers())[lastUser.toLowerCase().trim()]?['password'] as String?;
+                (await _secureStorage.getRegisteredUsers())[lastUser
+                        .toLowerCase()
+                        .trim()]?['password']
+                    as String?;
 
             if (savedPassword != null && savedPassword.isNotEmpty) {
               try {
@@ -459,8 +586,7 @@ class AuthRepository {
                   }
                   return AuthResult(
                     isSuccess: true,
-                    message:
-                        'Selamat datang kembali! Sesi berhasil dipulihkan dengan sidik jari.',
+                    message: 'Selamat datang kembali! Sesi berhasil dipulihkan dengan sidik jari.',
                     user: newUser,
                     token: newSession.accessToken,
                   );
@@ -478,10 +604,12 @@ class AuthRepository {
 
     // 2. Mode lokal / offline: periksa data otorisasi biometrik aman
     if (biometricRecord != null) {
-      final recordEmail =
-          (biometricRecord['email'] as String? ?? lastUser).toLowerCase().trim();
+      final recordEmail = (biometricRecord['email'] as String? ?? lastUser)
+          .toLowerCase()
+          .trim();
       final recordUserId =
-          biometricRecord['userId'] as String? ?? 'user_${recordEmail.hashCode}';
+          biometricRecord['userId'] as String? ??
+          'user_${recordEmail.hashCode}';
       final recordRefreshToken =
           biometricRecord['refreshToken'] as String? ?? 'biometric_refresh';
 
@@ -557,8 +685,7 @@ class AuthRepository {
     if (!isSupported) {
       return const AuthResult(
         isSuccess: false,
-        message:
-            'Perangkat Anda tidak memiliki sensor biometrik atau hardware tidak didukung.',
+        message: 'Perangkat Anda tidak memiliki sensor biometrik atau hardware tidak didukung.',
       );
     }
 
@@ -567,21 +694,16 @@ class AuthRepository {
     if (!hasEnrolled) {
       return const AuthResult(
         isSuccess: false,
-        message:
-            'Belum ada sidik jari yang terdaftar pada perangkat ini. Silakan atur sidik jari di pengaturan sistem Android.',
+        message: 'Belum ada sidik jari yang terdaftar pada perangkat ini. Silakan atur sidik jari di pengaturan sistem Android.',
       );
     }
 
     // 3. Autentikasi lokal melalui API biometrik
     final bioResult = await BiometricService.instance.authenticate(
-      localizedReason:
-          'Pindai sidik jari Anda untuk mengonfirmasi aktivasi Login Biometrik JNOVAMUSIC',
+      localizedReason: 'Pindai sidik jari Anda untuk mengonfirmasi aktivasi Login Biometrik JNOVAMUSIC',
     );
     if (!bioResult.isSuccess) {
-      return AuthResult(
-        isSuccess: false,
-        message: bioResult.message,
-      );
+      return AuthResult(isSuccess: false, message: bioResult.message);
     }
 
     // 4. Siapkan kredensial pemulihan sesi yang aman
@@ -605,16 +727,15 @@ class AuthRepository {
         } else {
           return const AuthResult(
             isSuccess: false,
-            message:
-                'Sesi autentikasi server tidak ditemukan. Silakan masuk ulang dengan kata sandi sebelum mengaktifkan biometrik.',
+            message: 'Sesi autentikasi server tidak ditemukan. Silakan masuk ulang dengan kata sandi sebelum mengaktifkan biometrik.',
           );
         }
       }
     } else {
       userId =
-          await _secureStorage.getUserId() ?? 'local_user_${cleanEmail.hashCode}';
-      refreshToken =
-          await _secureStorage.getRefreshToken() ?? 'local_refresh';
+          await _secureStorage.getUserId() ??
+          'local_user_${cleanEmail.hashCode}';
+      refreshToken = await _secureStorage.getRefreshToken() ?? 'local_refresh';
     }
 
     // 5. Simpan kredensial aman di Android Keystore
@@ -626,13 +747,17 @@ class AuthRepository {
         refreshToken: refreshToken,
       );
       if (refreshToken.isNotEmpty) {
-        await _secureStorage.saveBiometricRefreshToken(cleanEmail, refreshToken);
+        await _secureStorage.saveBiometricRefreshToken(
+          cleanEmail,
+          refreshToken,
+        );
       }
       await _secureStorage.setBiometricEnabledForUser(cleanEmail, true);
 
       // Verifikasi penulisan secure storage berhasil
-      final isEnabled =
-          await _secureStorage.isBiometricEnabledForUser(cleanEmail);
+      final isEnabled = await _secureStorage.isBiometricEnabledForUser(
+        cleanEmail,
+      );
       final record = await _secureStorage.getBiometricAuthRecord(cleanEmail);
       if (!isEnabled || record == null) {
         throw Exception('Penyimpanan kredensial biometrik gagal diverifikasi.');

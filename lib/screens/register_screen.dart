@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../services/auth_service.dart';
 import '../services/cart_service.dart';
 import '../services/favorite_service.dart';
@@ -9,7 +10,7 @@ import '../services/user_profile_service.dart';
 /// Halaman Registrasi Akun Baru JNOVAMUSIC
 /// Dibuat persis sesuai desain referensi visual resmi JNOVAMUSIC.
 class RegisterScreen extends StatefulWidget {
-  final ValueChanged<String?>? onRegisterSuccess;
+  final ValueChanged<AuthResult>? onRegisterSuccess;
   final VoidCallback? onLoginPressed;
 
   const RegisterScreen({
@@ -32,8 +33,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
-  final TextEditingController _streetAddressController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _streetAddressController =
+      TextEditingController();
   final TextEditingController _kelurahanController = TextEditingController();
   final TextEditingController _kecamatanController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -203,12 +206,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         province,
                         style: TextStyle(
                           fontSize: 13,
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-                          color: isSelected ? const Color(0xFFFF5500) : const Color(0xFF1E1E1E),
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w400,
+                          color: isSelected
+                              ? const Color(0xFFFF5500)
+                              : const Color(0xFF1E1E1E),
                         ),
                       ),
                       trailing: isSelected
-                          ? const Icon(Icons.check, color: Color(0xFFFF5500), size: 18)
+                          ? const Icon(
+                              Icons.check,
+                              color: Color(0xFFFF5500),
+                              size: 18,
+                            )
                           : null,
                       onTap: () {
                         setState(() {
@@ -257,21 +268,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _isLoading = true;
     });
 
-    // Simpan data profil lengkap ke UserProfileService
-    await UserProfileService.instance.updateProfile(
-      fullName: _nameController.text.trim(),
-      username: _usernameController.text.trim(),
-      birthDate: _birthDateController.text.trim(),
-      phoneNumber: _phoneController.text.trim(),
-      email: _emailController.text.trim(),
-      streetAddress: _streetAddressController.text.trim(),
-      kelurahan: _kelurahanController.text.trim(),
-      kecamatan: _kecamatanController.text.trim(),
-      city: _cityController.text.trim(),
-      province: _provinceController.text.trim(),
-      postalCode: _postalCodeController.text.trim(),
-    );
-
     // Registrasi ke AuthService
     final result = await AuthService.instance.register(
       email: _emailController.text.trim(),
@@ -287,17 +283,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          result.isSuccess
-              ? 'Registrasi berhasil! Silakan masuk dengan akun baru Anda.'
-              : result.message,
-          style: const TextStyle(fontSize: 12.5),
-        ),
-        backgroundColor: result.isSuccess ? Colors.green : const Color(0xFF2E2E2E),
+        content: Text(result.message, style: const TextStyle(fontSize: 12.5)),
+        backgroundColor: result.isSuccess
+            ? Colors.green
+            : const Color(0xFF2E2E2E),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       ),
     );
@@ -309,9 +300,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
       FavoriteService.instance.resetFavorites();
       CartService.instance.resetCart();
 
-      final registeredEmail = _emailController.text.trim();
+      final registeredEmail = _emailController.text.trim().toLowerCase();
+      await UserProfileService.instance.updateProfile(
+        fullName: _nameController.text.trim(),
+        username: _usernameController.text.trim(),
+        birthDate: _birthDateController.text.trim(),
+        phoneNumber: _phoneController.text.trim(),
+        email: registeredEmail,
+        streetAddress: _streetAddressController.text.trim(),
+        kelurahan: _kelurahanController.text.trim(),
+        kecamatan: _kecamatanController.text.trim(),
+        city: _cityController.text.trim(),
+        province: _provinceController.text.trim(),
+        postalCode: _postalCodeController.text.trim(),
+      );
+      if (result.token != null) {
+        await MembershipService.instance.loadPointsForUser(registeredEmail);
+        await OrderService.instance.loadOrdersForUser(registeredEmail);
+        await FavoriteService.instance.loadFavoritesForUser(registeredEmail);
+        await CartService.instance.loadCartForUser(registeredEmail);
+      }
+      if (!mounted) return;
       if (widget.onRegisterSuccess != null) {
-        widget.onRegisterSuccess!(registeredEmail);
+        widget.onRegisterSuccess!(result);
+      } else if (result.token != null) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/home', (route) => false);
       } else {
         Navigator.of(context).pushNamedAndRemoveUntil(
           '/login',
@@ -594,7 +608,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value == null || value.trim().isEmpty) {
                       return 'Alamat email wajib diisi';
                     }
-                    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                    final emailRegex = RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                    );
                     if (!emailRegex.hasMatch(value.trim())) {
                       return 'Format email tidak valid';
                     }
@@ -864,10 +880,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: 19,
                         height: 19,
                         decoration: BoxDecoration(
-                          color: _agreeTerms ? const Color(0xFFFF5500) : const Color(0xFFF5F5F5),
+                          color: _agreeTerms
+                              ? const Color(0xFFFF5500)
+                              : const Color(0xFFF5F5F5),
                           borderRadius: BorderRadius.circular(4),
                           border: Border.all(
-                            color: _agreeTerms ? const Color(0xFFFF5500) : const Color(0xFFD6D6D6),
+                            color: _agreeTerms
+                                ? const Color(0xFFFF5500)
+                                : const Color(0xFFD6D6D6),
                             width: 1.2,
                           ),
                         ),
@@ -890,10 +910,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         child: const Text.rich(
                           TextSpan(
-                            style: TextStyle(
-                              fontSize: 11,
-                              height: 1.35,
-                            ),
+                            style: TextStyle(fontSize: 11, height: 1.35),
                             children: [
                               TextSpan(
                                 text: 'Saya menyetujui ',
@@ -955,7 +972,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               height: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                               ),
                             )
                           : const Row(
@@ -1015,7 +1034,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 // Badge Jaminan Transaksi Aman
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 7,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF3F3F5),
                       borderRadius: BorderRadius.circular(20),
@@ -1076,9 +1098,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return SizedBox(
       width: 13,
       height: 14,
-      child: CustomPaint(
-        painter: _ShieldBadgePainter(),
-      ),
+      child: CustomPaint(painter: _ShieldBadgePainter()),
     );
   }
 
@@ -1090,22 +1110,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(
-        fontSize: 12.5,
-        color: Color(0xFFA8A8A8),
-      ),
-      prefixIcon: Icon(
-        prefixIcon,
-        color: const Color(0xFF9E9E9E),
-        size: 19,
-      ),
+      hintStyle: const TextStyle(fontSize: 12.5, color: Color(0xFFA8A8A8)),
+      prefixIcon: Icon(prefixIcon, color: const Color(0xFF9E9E9E), size: 19),
       suffixIcon: suffixIcon,
       filled: true,
       fillColor: const Color(0xFFF6F6F6),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 13,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide.none,
@@ -1116,24 +1126,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(
-          color: Color(0xFFFF5500),
-          width: 1.2,
-        ),
+        borderSide: const BorderSide(color: Color(0xFFFF5500), width: 1.2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(
-          color: Colors.redAccent,
-          width: 1.0,
-        ),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 1.0),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(
-          color: Colors.redAccent,
-          width: 1.2,
-        ),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
       ),
     );
   }
@@ -1153,12 +1154,7 @@ class _ShieldBadgePainter extends CustomPainter {
       size.width * 0.5,
       size.height,
     );
-    path.quadraticBezierTo(
-      0,
-      size.height * 0.6,
-      0,
-      size.height * 0.2,
-    );
+    path.quadraticBezierTo(0, size.height * 0.6, 0, size.height * 0.2);
     path.close();
 
     // Sisi kiri (putih / abu perak)

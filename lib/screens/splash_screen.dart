@@ -2,15 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../core/constants/app_colors.dart';
 
-/// Halaman Splash Screen JNOVAMUSIC sesuai desain Figma asli.
-///
-/// Menggunakan animasi bertahap (staggered animation) yang halus:
-/// - Logo diamond & pick: Fade-in dan subtle scale
-/// - Ambient glow: Muncul lembut di latar belakang logo
-/// - Brand title (JNOVAMUSIC): Fade-in & slide-up halus
-/// - Badge resmi & tagline: Fade-in teratur
-/// - Soundwave loader: Gelombang suara ritmik halus yang kemudian stabil
-/// - Footer versi: Fade-in di bagian bawah layar
+
 class SplashScreen extends StatefulWidget {
   /// Callback opsional ketika durasi animasi selesai.
   /// Jika halaman berikutnya belum siap, Splash Screen tetap tampil.

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../core/constants/app_colors.dart';
 import '../core/storage/secure_storage_service.dart';
 import '../services/auth_service.dart';
@@ -10,18 +11,6 @@ import '../services/order_service.dart';
 import '../services/user_profile_service.dart';
 import 'register_screen.dart';
 
-/// Halaman Login JNOVAMUSIC sesuai spesifikasi desain Figma asli.
-///
-/// Fitur:
-/// - Logo identitas toko asli hasil ekstrak Figma
-/// - Field input Email dengan validasi format
-/// - Field input Kata Sandi dengan tombol tampilkan/sembunyikan
-/// - Tombol Masuk dengan drop shadow oranye dan state loading
-/// - Tombol Login Biometrik Sidik Jari resmi
-/// - Pemisah "ATAU" dan tombol "Lanjutkan dengan Google"
-/// - 3 kartu kategori toko (Gitar & Bass, Keyboard, Audio & Studio)
-/// - Tautan registrasi ("Daftar")
-/// - Badge jaminan keamanan transaksi toko resmi
 class LoginScreen extends StatefulWidget {
   final VoidCallback? onRegisterPressed;
   final VoidCallback? onForgotPasswordPressed;
@@ -66,8 +55,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final lastUser = await SecureStorageService.instance.getLastBiometricUser();
     bool enabled = false;
     if (lastUser != null && lastUser.isNotEmpty) {
-      enabled =
-          await SecureStorageService.instance.isBiometricEnabledForUser(lastUser);
+      enabled = await SecureStorageService.instance.isBiometricEnabledForUser(
+        lastUser,
+      );
     }
     if (mounted) {
       setState(() {
@@ -114,15 +104,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          result.message,
-          style: const TextStyle(fontSize: 13),
-        ),
+        content: Text(result.message, style: const TextStyle(fontSize: 13)),
         backgroundColor: result.isSuccess ? Colors.green : AppColors.darkGrey,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       ),
     );
@@ -165,7 +150,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final typedEmail = _emailController.text.trim().toLowerCase();
     String? targetUser;
     if (typedEmail.isNotEmpty &&
-        await SecureStorageService.instance.isBiometricEnabledForUser(typedEmail)) {
+        await SecureStorageService.instance.isBiometricEnabledForUser(
+          typedEmail,
+        )) {
       targetUser = typedEmail;
     } else {
       targetUser = await SecureStorageService.instance.getLastBiometricUser();
@@ -174,15 +161,20 @@ class _LoginScreenState extends State<LoginScreen> {
     if (targetUser == null || targetUser.isEmpty) {
       final regUsers = await SecureStorageService.instance.getRegisteredUsers();
       for (final key in regUsers.keys) {
-        if (await SecureStorageService.instance.isBiometricEnabledForUser(key)) {
+        if (await SecureStorageService.instance.isBiometricEnabledForUser(
+          key,
+        )) {
           targetUser = key;
           break;
         }
       }
     }
 
-    final isEnabled = targetUser != null &&
-        await SecureStorageService.instance.isBiometricEnabledForUser(targetUser);
+    final isEnabled =
+        targetUser != null &&
+        await SecureStorageService.instance.isBiometricEnabledForUser(
+          targetUser,
+        );
 
     if (targetUser == null || !isEnabled) {
       if (!mounted) return;
@@ -250,19 +242,18 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(authResult.message),
-        backgroundColor:
-            authResult.isSuccess ? Colors.green : AppColors.darkGrey,
+        backgroundColor: authResult.isSuccess
+            ? Colors.green
+            : AppColors.darkGrey,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       ),
     );
 
     if (authResult.isSuccess) {
-      final bioRecord =
-          await SecureStorageService.instance.getBiometricAuthRecord(targetUser);
+      final bioRecord = await SecureStorageService.instance
+          .getBiometricAuthRecord(targetUser);
       final fullName = bioRecord?['fullName'] as String?;
       await UserProfileService.instance.loadProfileForUser(
         targetUser,
@@ -312,11 +303,13 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => RegisterScreen(
-            onRegisterSuccess: (registeredEmail) {
+            onRegisterSuccess: (result) {
               Navigator.pop(context);
-              if (registeredEmail != null && registeredEmail.isNotEmpty) {
+              if (result.token != null) {
+                Navigator.pushReplacementNamed(context, '/home');
+              } else if (result.email != null && result.email!.isNotEmpty) {
                 setState(() {
-                  _emailController.text = registeredEmail;
+                  _emailController.text = result.email!;
                 });
               }
             },
@@ -335,7 +328,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: AppColors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Form(
             key: _formKey,
@@ -447,8 +440,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.trim().isEmpty) {
                       return 'Alamat email wajib diisi';
                     }
-                    final emailRegex =
-                        RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                    final emailRegex = RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                    );
                     if (!emailRegex.hasMatch(value.trim())) {
                       return 'Format email tidak valid';
                     }
@@ -584,8 +578,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color:
-                                  AppColors.primaryOrange.withValues(alpha: 0.35),
+                              color: AppColors.primaryOrange.withValues(
+                                alpha: 0.35,
+                              ),
                               blurRadius: 14,
                               offset: const Offset(0, 5),
                             ),
@@ -633,7 +628,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         _isBiometricEnabledForLastUser) ...[
                       const SizedBox(width: 10),
                       Tooltip(
-                        message: _lastBiometricUser != null &&
+                        message:
+                            _lastBiometricUser != null &&
                                 _isBiometricEnabledForLastUser
                             ? 'Masuk dengan Sidik Jari ($_lastBiometricUser)'
                             : 'Masuk dengan Sidik Jari',
@@ -654,8 +650,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             boxShadow: _isBiometricEnabledForLastUser
                                 ? [
                                     BoxShadow(
-                                      color: AppColors.primaryOrange
-                                          .withValues(alpha: 0.18),
+                                      color: AppColors.primaryOrange.withValues(
+                                        alpha: 0.18,
+                                      ),
                                       blurRadius: 10,
                                       offset: const Offset(0, 3),
                                     ),
@@ -805,10 +802,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   /// Komponen kartu kategori horizontal kecil
-  Widget _buildCategoryCard({
-    required IconData icon,
-    required String title,
-  }) {
+  Widget _buildCategoryCard({required IconData icon, required String title}) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
@@ -819,11 +813,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              color: AppColors.primaryOrange,
-              size: 18,
-            ),
+            Icon(icon, color: AppColors.primaryOrange, size: 18),
             const SizedBox(height: 5),
             Text(
               title,

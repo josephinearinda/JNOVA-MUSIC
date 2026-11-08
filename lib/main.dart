@@ -105,8 +105,13 @@ class MyApp extends StatelessWidget {
         '/': (context) => SplashScreen(
           onAnimationFinished: () async {
             final hasSession = await AuthService.instance.hasActiveSession();
+
             if (hasSession) {
-              final email = await SecureStorageService.instance.getUserEmail();
+              // Ambil email dari sesi Supabase terlebih dahulu.
+              final email =
+                  SupabaseClientService.instance.currentUser?.email ??
+                  await SecureStorageService.instance.getUserEmail();
+
               if (email != null && email.isNotEmpty) {
                 await UserProfileService.instance.loadProfileForUser(email);
                 await MembershipService.instance.loadPointsForUser(email);
@@ -121,11 +126,15 @@ class MyApp extends StatelessWidget {
               FavoriteService.instance.resetFavorites();
               CartService.instance.resetCart();
             }
+
             if (!context.mounted) return;
+
+            // Arahkan sesuai status autentikasi.
             Navigator.of(context)
                 .pushReplacementNamed(hasSession ? '/home' : '/login');
           },
         ),
+
         '/login': (context) {
           final args = ModalRoute.of(context)?.settings.arguments;
           final initialEmail = args is String ? args : null;
@@ -140,11 +149,11 @@ class MyApp extends StatelessWidget {
           );
         },
         '/register': (context) => RegisterScreen(
-          onRegisterSuccess: (registeredEmail) {
+          onRegisterSuccess: (result) {
             Navigator.of(context).pushNamedAndRemoveUntil(
-              '/login',
+              result.token != null ? '/home' : '/login',
               (route) => false,
-              arguments: registeredEmail,
+              arguments: result.token == null ? result.email : null,
             );
           },
           onLoginPressed: () {
@@ -243,8 +252,9 @@ class MyApp extends StatelessWidget {
         '/ai-chat': (context) => const AIChatPage(),
         '/blockchain-certificates': (context) => const MyCertificatesScreen(),
         '/blockchain-certificate-detail': (context) {
-          final cert = ModalRoute.of(context)?.settings.arguments
-              as BlockchainCertificate?;
+          final cert =
+              ModalRoute.of(context)?.settings.arguments
+                  as BlockchainCertificate?;
           if (cert == null) return const MyCertificatesScreen();
           return BlockchainCertificatePage(certificate: cert);
         },
@@ -320,7 +330,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('You have pushed the button this many times:'),
             Text(

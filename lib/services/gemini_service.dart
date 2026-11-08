@@ -194,7 +194,7 @@ class GeminiService {
               'history': _history,
             },
           )
-          .timeout(const Duration(seconds: 35));
+          .timeout(const Duration(seconds: 45));
       final data = response.data;
       if (data is! Map || data['text'] is! String) {
         return const GeminiResponse(
@@ -215,8 +215,8 @@ class GeminiService {
       _history
         ..add({'role': 'user', 'text': cleanMessage})
         ..add({'role': 'model', 'text': rawText});
-      if (_history.length > 12) {
-        _history.removeRange(0, _history.length - 12);
+      if (_history.length > 8) {
+        _history.removeRange(0, _history.length - 8);
       }
 
       // Deteksi rekomendasi produk dari tag [REKOMENDASI: ID]
@@ -321,6 +321,22 @@ class GeminiService {
           isSuccess: false,
           text: 'Jnova AI sedang tidak tersedia. Silakan coba lagi nanti.',
           errorCode: 'backend_not_configured',
+        );
+      }
+
+      if (errStr.contains('upstream_timeout')) {
+        return const GeminiResponse(
+          isSuccess: false,
+          text: 'Respons Jnova AI terlalu lama. Silakan coba kirim pesan lagi.',
+          errorCode: 'timeout',
+        );
+      }
+
+      if (errStr.contains('model_unavailable')) {
+        return const GeminiResponse(
+          isSuccess: false,
+          text: 'Model AI sedang tidak tersedia. Pemilik aplikasi perlu memeriksa konfigurasi model Gemini.',
+          errorCode: 'backend_configuration_error',
         );
       }
 

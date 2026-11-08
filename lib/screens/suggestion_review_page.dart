@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
+
 import '../core/constants/app_colors.dart';
 import '../models/user_profile.dart';
 import '../services/user_profile_service.dart';
 import '../widgets/app_bottom_nav.dart';
+
+class _SubmittedFeedback {
+  final String message;
+  final String type;
+  final String sender;
+  final int rating;
+  final DateTime submittedAt;
+
+  const _SubmittedFeedback({
+    required this.message,
+    required this.type,
+    required this.sender,
+    required this.rating,
+    required this.submittedAt,
+  });
+}
 
 /// Halaman SARAN DAN KESAN JNOVAMUSIC sesuai desain Figma (figma_slice_11_905x782.png)
 class SuggestionReviewPage extends StatefulWidget {
@@ -17,6 +34,8 @@ class SuggestionReviewPage extends StatefulWidget {
 class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
   final UserProfileService _profileService = UserProfileService.instance;
   final TextEditingController _feedbackController = TextEditingController();
+  final GlobalKey _latestFeedbackKey = GlobalKey();
+  final List<_SubmittedFeedback> _submittedFeedback = [];
 
   // 0: Saran, 1: Kesan, 2: Kritik
   int _selectedTypeIndex = 0;
@@ -83,60 +102,46 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
       return;
     }
 
+    final profile = _profileService.profile;
+    final feedback = _SubmittedFeedback(
+      message: text,
+      type: const ['Saran', 'Kesan', 'Kritik'][_selectedTypeIndex],
+      sender: profile.fullName,
+      rating: _rating,
+      submittedAt: DateTime.now(),
+    );
+
     setState(() => _isSubmitting = true);
 
-    // Simulasi delay jaringan
     await Future.delayed(const Duration(milliseconds: 900));
 
     if (!mounted) return;
 
     setState(() {
+      _submittedFeedback.insert(0, feedback);
       _isSubmitting = false;
       _feedbackController.clear();
       _rating = 0;
     });
 
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
-          children: [
-            Icon(Icons.check_circle_rounded, color: Color(0xFF16A34A), size: 24),
-            SizedBox(width: 8),
-            Text(
-              'Masukan Terkirim!',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w800,
-                color: AppColors.textPrimaryDark,
-              ),
-            ),
-          ],
-        ),
-        content: const Text(
-          'Terima kasih atas masukan tulus Anda. Saran dan kesan Anda untuk mata kuliah Pemrograman Aplikasi Mobile telah berhasil direkam.',
-          style: TextStyle(fontSize: 12, color: Color(0xFF5A524D)),
-        ),
-        actions: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryOrange,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            onPressed: () {
-              Navigator.pop(ctx);
-              _handleBack();
-            },
-            child: const Text(
-              'Kembali ke Profil',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-            ),
-          ),
-        ],
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Masukan berhasil dikirim dan ditampilkan di bawah.'),
+        backgroundColor: Color(0xFF16A34A),
+        duration: Duration(seconds: 2),
       ),
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final latestContext = _latestFeedbackKey.currentContext;
+      if (latestContext != null) {
+        Scrollable.ensureVisible(
+          latestContext,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOut,
+          alignment: 0.1,
+        );
+      }
+    });
   }
 
   @override
@@ -175,6 +180,10 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
 
                       const SizedBox(height: 14),
 
+                      _buildSubmittedFeedback(),
+
+                      const SizedBox(height: 14),
+
                       // Footer JNOVAMUSIC Care
                       _buildFooterCare(),
 
@@ -202,6 +211,156 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
             Navigator.pushReplacementNamed(context, '/profile');
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildSubmittedFeedback() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Expanded(
+              child: Text(
+                'Masukan Saya',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimaryDark,
+                ),
+              ),
+            ),
+            Text(
+              '${_submittedFeedback.length} kiriman',
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF8E837D),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (_submittedFeedback.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFAF9F7),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFEBE8E3)),
+            ),
+            child: const Text(
+              'Masukan yang dikirim akan muncul di sini.',
+              style: TextStyle(fontSize: 11, color: Color(0xFF8E837D)),
+            ),
+          )
+        else
+          ..._submittedFeedback.indexed.map((item) {
+            final index = item.$1;
+            final feedback = item.$2;
+            return Padding(
+              key: index == 0 ? _latestFeedbackKey : null,
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _buildSubmittedFeedbackCard(feedback),
+            );
+          }),
+      ],
+    );
+  }
+
+  Widget _buildSubmittedFeedbackCard(_SubmittedFeedback feedback) {
+    final time = feedback.submittedAt;
+    final submittedTime =
+        '${time.day.toString().padLeft(2, '0')}/${time.month.toString().padLeft(2, '0')}/${time.year} '
+        '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFFFD8BF)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0A000000),
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFEDDF),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  feedback.type,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFFC2410C),
+                  ),
+                ),
+              ),
+              const Spacer(),
+              Text(
+                submittedTime,
+                style: const TextStyle(fontSize: 9, color: Color(0xFF8E837D)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            feedback.message,
+            style: const TextStyle(
+              fontSize: 11,
+              height: 1.4,
+              color: AppColors.textPrimaryDark,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Dikirim oleh ${feedback.sender}',
+                  style: const TextStyle(
+                    fontSize: 9.5,
+                    color: Color(0xFF6E6560),
+                  ),
+                ),
+              ),
+              if (feedback.rating > 0) ...[
+                ...List.generate(
+                  feedback.rating,
+                  (_) => const Icon(
+                    Icons.star_rounded,
+                    size: 13,
+                    color: Color(0xFFF58A45),
+                  ),
+                ),
+                const SizedBox(width: 3),
+                Text(
+                  '${feedback.rating}/5',
+                  style: const TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF6E6560),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -424,10 +583,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               ),
               Text(
                 'Pilih salah satu',
-                style: TextStyle(
-                  fontSize: 9.5,
-                  color: Color(0xFF8E837D),
-                ),
+                style: TextStyle(fontSize: 9.5, color: Color(0xFF8E837D)),
               ),
             ],
           ),
@@ -477,10 +633,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               ),
               Text(
                 'Detail & jujur',
-                style: TextStyle(
-                  fontSize: 9.5,
-                  color: Color(0xFF8E837D),
-                ),
+                style: TextStyle(fontSize: 9.5, color: Color(0xFF8E837D)),
               ),
             ],
           ),
@@ -504,8 +657,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               ),
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.all(12),
-                hintText:
-                    'Tuliskan saran, kesan, atau kritik Anda untuk mata kuliah Pemrograman Aplikasi Mobile (misal: materi kuliah, praktikum Flutter, bimbingan proyek, atau saran pengembangan ke depan)...',
+                hintText: 'Tuliskan saran, kesan, atau kritik Anda untuk mata kuliah Pemrograman Aplikasi Mobile (misal: materi kuliah, praktikum Flutter, bimbingan proyek, atau saran pengembangan ke depan)...',
                 hintStyle: TextStyle(
                   fontSize: 10.5,
                   color: Color(0xFF9E958F),
@@ -644,7 +796,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                       const SizedBox(width: 6),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 1),
+                          horizontal: 5,
+                          vertical: 1,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFEDDF),
                           borderRadius: BorderRadius.circular(3),
@@ -770,11 +924,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.headset_mic_outlined,
-            size: 14,
-            color: Color(0xFF8E837D),
-          ),
+          Icon(Icons.headset_mic_outlined, size: 14, color: Color(0xFF8E837D)),
           SizedBox(width: 8),
           Expanded(
             child: Column(

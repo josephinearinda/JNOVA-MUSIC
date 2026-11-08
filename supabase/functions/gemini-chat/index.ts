@@ -7,6 +7,9 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+const UPSTREAM_TIMEOUT_MS = 25_000;
+const REQUEST_DEADLINE_MS = 30_000;
+
 function jsonResponse(body: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -49,7 +52,7 @@ Deno.serve(async (request) => {
     return jsonResponse({ error: "invalid_request" }, 400);
   }
 
-  const history = rawHistory.slice(-12).flatMap((entry) => {
+  const history = rawHistory.slice(-8).flatMap((entry) => {
     if (typeof entry !== "object" || entry === null) return [];
     const role = Reflect.get(entry, "role");
     const text = Reflect.get(entry, "text");
@@ -108,41 +111,40 @@ Deno.serve(async (request) => {
     return jsonResponse({ error: "daily_limit_exceeded" }, 429);
   }
 
-  const model = "gemini-3.8-flash";
+  const model = "gemini-3.5-flash-lite";
+  const deadline = Date.now() + REQUEST_DEADLINE_MS;
   let geminiResponse: Response;
-  for (let attempt = 0; ; attempt++) {
-    try {
-      geminiResponse = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-goog-api-key": geminiApiKey,
-          },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: systemInstruction }] },
-            contents: [...history, { role: "user", parts: [{ text: message }] }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 1000 },
-          }),
-          signal: AbortSignal.timeout(30000),
+  const remainingMs = deadline - Date.now();
+  if (remainingMs <= 0) {
+    return jsonResponse({ error: "upstream_timeout" }, 504);
+  }
+
+  try {
+    geminiResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": geminiApiKey,
         },
-      );
-    } catch {
-      if (attempt < 2) {
-        await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
-        continue;
-      }
-      return jsonResponse({ error: "upstream_unavailable" }, 502);
-    }
-
-    const isTransientError = [500, 502, 503, 504].includes(
-      geminiResponse.status,
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: systemInstruction }] },
+          contents: [...history, { role: "user", parts: [{ text: message }] }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 700 },
+        }),
+        signal: AbortSignal.timeout(
+          Math.min(UPSTREAM_TIMEOUT_MS, remainingMs),
+        ),
+      },
     );
-    if (geminiResponse.ok || !isTransientError || attempt === 2) break;
-
-    await geminiResponse.body?.cancel();
-    await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+  } catch (error) {
+    const isTimeout = error instanceof DOMException &&
+      error.name === "TimeoutError";
+    return jsonResponse(
+      { error: isTimeout ? "upstream_timeout" : "upstream_unavailable" },
+      isTimeout ? 504 : 502,
+    );
   }
 
   if (!geminiResponse.ok) {
