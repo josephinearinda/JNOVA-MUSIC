@@ -48,6 +48,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
 
   // Filter riwayat tab
   int _activeFilterIndex = 0; // 0: Semua, 1: Belum Dibaca
+  bool _isSystemPermissionGranted = true;
 
   @override
   void initState() {
@@ -57,6 +58,8 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
 
   Future<void> _loadNotificationPreferences() async {
     final preferences = await NotificationService.instance.loadPreferences();
+    final isAllowed =
+        await NotificationService.instance.areNotificationsEnabled();
     if (!mounted) return;
 
     setState(() {
@@ -65,6 +68,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       _orderUpdates = preferences.orderUpdates;
       _membershipPoints = preferences.membershipPoints;
       _gameActivities = preferences.gameActivities;
+      _isSystemPermissionGranted = isAllowed;
     });
 
     if (preferences.pushEnabled) {
@@ -73,9 +77,14 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             .requestPermission();
         if (!isGranted && mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
+            SnackBar(
+              content: const Text(
                 'Izinkan notifikasi JNOVAMUSIC melalui pengaturan perangkat.',
+              ),
+              action: SnackBarAction(
+                label: 'Buka',
+                onPressed: () =>
+                    NotificationService.instance.openNotificationSettings(),
               ),
             ),
           );
@@ -118,9 +127,14 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
         if (!isGranted) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
+              SnackBar(
+                content: const Text(
                   'Notifikasi belum diizinkan di pengaturan perangkat.',
+                ),
+                action: SnackBarAction(
+                  label: 'Pengaturan',
+                  onPressed: () =>
+                      NotificationService.instance.openNotificationSettings(),
                 ),
               ),
             );
@@ -168,6 +182,12 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
         await NotificationBackgroundSyncService.enable();
       } else {
         await NotificationBackgroundSyncService.disable();
+      }
+
+      if (updated.pushEnabled && updated.gameActivities) {
+        await NotificationService.instance.scheduleDailyGameReminder();
+      } else if (!updated.pushEnabled || !updated.gameActivities) {
+        await NotificationService.instance.cancelDailyGameReminder();
       }
     } catch (error) {
       if (mounted) {
@@ -283,6 +303,11 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                   children: [
                     // Sub Header
                     _buildSubHeader(),
+
+                    if (!_isSystemPermissionGranted) ...[
+                      const SizedBox(height: 8),
+                      _buildSystemPermissionWarning(),
+                    ],
 
                     const SizedBox(height: 12),
 
@@ -460,6 +485,65 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
     );
   }
 
+  Widget _buildSystemPermissionWarning() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFEF2F2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFFECACA)),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.warning_amber_rounded,
+            color: Color(0xFFDC2626),
+            size: 22,
+          ),
+          const SizedBox(width: 10),
+          const Expanded(
+            child: Text(
+              'Izin notifikasi dinonaktifkan di sistem Android emulator. Aktifkan agar popup dapat muncul.',
+              style: TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF991B1B),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          InkWell(
+            onTap: () async {
+              await NotificationService.instance.openNotificationSettings();
+              final isAllowed =
+                  await NotificationService.instance.areNotificationsEnabled();
+              if (mounted) {
+                setState(() => _isSystemPermissionGranted = isAllowed);
+              }
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFDC2626),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Text(
+                'Buka Izin',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildAudioAlertBanner() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -505,6 +589,82 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                 ),
               ],
             ),
+          ),
+          const SizedBox(width: 8),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              InkWell(
+                onTap: () async {
+                  await NotificationService.instance.showTestNotification();
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Notifikasi popup berhasil dikirim!'),
+                        backgroundColor: Color(0xFF2E2E2E),
+                        duration: Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryOrange,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    'Uji Popup',
+                    style: TextStyle(
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              InkWell(
+                onTap: () async {
+                  await NotificationService.instance
+                      .showGameReminderNowForTesting();
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Pengingat game 11:30 AM dikirim! Ketuk notifikasi untuk masuk ke JNova Rhythm.',
+                        ),
+                        backgroundColor: Color(0xFF2E2E2E),
+                        duration: Duration(seconds: 3),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE05275),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    '💗 Uji 11:30',
+                    style: TextStyle(
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

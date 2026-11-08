@@ -93,6 +93,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: NotificationService.navigatorKey,
       title: 'JNOVAMUSIC',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -132,6 +133,13 @@ class MyApp extends StatelessWidget {
             // Arahkan sesuai status autentikasi.
             Navigator.of(context)
                 .pushReplacementNamed(hasSession ? '/home' : '/login');
+
+            // Jika aplikasi dibuka dari ketukan notifikasi (misal: pengingat game)
+            if (NotificationService.pendingRoute != null) {
+              final route = NotificationService.pendingRoute!;
+              NotificationService.pendingRoute = null;
+              Navigator.of(context).pushNamed(route);
+            }
           },
         ),
 
@@ -256,7 +264,10 @@ class MyApp extends StatelessWidget {
               ModalRoute.of(context)?.settings.arguments
                   as BlockchainCertificate?;
           if (cert == null) return const MyCertificatesScreen();
-          return BlockchainCertificatePage(certificate: cert);
+          return BlockchainCertificatePage(
+            certificate: cert,
+            isPreview: !cert.isClaimed,
+          );
         },
       },
     );

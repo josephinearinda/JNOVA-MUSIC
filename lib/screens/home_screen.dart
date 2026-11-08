@@ -4,6 +4,7 @@ import '../models/product.dart';
 import '../services/cart_service.dart';
 import '../services/currency_service.dart';
 import '../services/favorite_service.dart';
+import '../services/notification_service.dart';
 import '../services/product_stock_service.dart';
 import '../widgets/app_bottom_nav.dart';
 import '../widgets/product_favorite_card.dart';
@@ -41,6 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        final prefs = await NotificationService.instance.loadPreferences();
+        if (prefs.pushEnabled) {
+          await NotificationService.instance.requestPermission();
+        }
+      } catch (_) {}
+    });
     _cartService.addListener(_onServiceUpdate);
     _favService.addListener(_onServiceUpdate);
     _currencyService.addListener(_onServiceUpdate);

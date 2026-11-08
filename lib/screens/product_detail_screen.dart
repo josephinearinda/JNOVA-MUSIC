@@ -1644,21 +1644,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1E172E), Color(0xFF120E1C)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
         border: Border.all(
-          color: const Color(0xFFE5A93C).withValues(alpha: 0.5),
+          color: const Color(0xFFFFD1B3),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFE5A93C).withValues(alpha: 0.08),
+            color: const Color(0xFFFF6B00).withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 3),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -1671,14 +1672,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2E2248),
+                  color: const Color(0xFFFFF2EB),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFF9E86FF), width: 0.8),
+                  border: Border.all(color: const Color(0xFFFFD1B3), width: 0.8),
                 ),
                 child: const Icon(
                   Icons.verified_user_rounded,
                   size: 18,
-                  color: Color(0xFFD6C7FF),
+                  color: Color(0xFFFF6B00),
                 ),
               ),
               const SizedBox(width: 10),
@@ -1691,12 +1692,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: Color(0xFF222222),
                       ),
                     ),
                     Text(
                       'Jaminan originalitas permanen di jaringan Polygon',
-                      style: TextStyle(fontSize: 9.5, color: Color(0xFFBFB5D1)),
+                      style: TextStyle(fontSize: 9.5, color: Color(0xFF777777)),
                     ),
                   ],
                 ),
@@ -1704,15 +1705,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0F3B2E),
+                  color: const Color(0xFFECFDF5),
                   borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: const Color(0xFFA7F3D0), width: 0.8),
                 ),
                 child: const Text(
                   'RESMI',
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF34D399),
+                    color: Color(0xFF059669),
                   ),
                 ),
               ),
@@ -1723,7 +1725,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             'Pembelian instrumen ini dilengkapi NFT Sertifikat Keaslian resmi di blockchain Polygon dengan nomor seri unik.',
             style: TextStyle(
               fontSize: 10.5,
-              color: Color(0xFFD1C8DC),
+              color: Color(0xFF555555),
               height: 1.4,
             ),
           ),
@@ -1736,25 +1738,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      BlockchainCertificatePage(certificate: cert),
+                      BlockchainCertificatePage(
+                        certificate: cert,
+                        isPreview: true,
+                      ),
                 ),
               );
             },
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.visibility_rounded, size: 14, color: Color(0xFFFF7A33)),
+                Icon(Icons.visibility_rounded, size: 14, color: Color(0xFFFF6B00)),
                 SizedBox(width: 6),
                 Text(
                   'Pratinjau Sertifikat Keaslian Digital',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFFFF7A33),
+                    color: Color(0xFFFF6B00),
                   ),
                 ),
                 SizedBox(width: 2),
-                Icon(Icons.arrow_forward_ios_rounded, size: 10, color: Color(0xFFFF7A33)),
+                Icon(Icons.arrow_forward_ios_rounded, size: 10, color: Color(0xFFFF6B00)),
               ],
             ),
           ),

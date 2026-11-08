@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../core/constants/app_colors.dart';
+import '../services/notification_service.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -35,6 +36,16 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+
+    // Minta izin runtime notifikasi perangkat (POST_NOTIFICATIONS) jika push aktif
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        final prefs = await NotificationService.instance.loadPreferences();
+        if (prefs.pushEnabled) {
+          await NotificationService.instance.requestPermission();
+        }
+      } catch (_) {}
+    });
 
     // Durasi total 2.0 detik (antara 1.5 - 2.5 detik)
     _controller = AnimationController(

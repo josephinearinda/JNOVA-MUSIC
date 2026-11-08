@@ -341,6 +341,122 @@ class _AIChatPageState extends State<AIChatPage> {
     );
   }
 
+  void _showResetQuotaDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.bolt_rounded,
+              color: AppColors.primaryOrange,
+              size: 24,
+            ),
+            SizedBox(width: 8),
+            Text(
+              'Reset Kuota & Obrolan AI',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimaryDark,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 8,
+              ),
+              decoration: BoxDecoration(
+                color: const Color(0xFFECFDF5),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFA7F3D0)),
+              ),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.check_circle_rounded,
+                    color: Color(0xFF059669),
+                    size: 16,
+                  ),
+                  SizedBox(width: 6),
+                  Text(
+                    'Status: Respon Cepat & Tanpa Batas',
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF059669),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Fitur ini akan menyetel ulang batas kuota dan membersihkan riwayat percakapan agar Jnova AI dapat langsung menjawab setiap pertanyaan tanpa hambatan limit.',
+              style: TextStyle(
+                fontSize: 11.5,
+                color: Color(0xFF5A524D),
+                height: 1.4,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text(
+              'Batal',
+              style: TextStyle(color: Color(0xFF7E756F)),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              GeminiService.instance.resetQuotaAndChat();
+              setState(() {
+                _initializeDefaultChat();
+              });
+              Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    '✅ Kuota dan sesi obrolan Jnova AI berhasil direset! AI siap menjawab langsung.',
+                  ),
+                  backgroundColor: Color(0xFF222222),
+                  behavior: SnackBarBehavior.floating,
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryOrange,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            icon: const Icon(Icons.refresh_rounded, size: 16),
+            label: const Text(
+              'Reset Sekarang',
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTopAppBar(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -436,80 +552,44 @@ class _AIChatPageState extends State<AIChatPage> {
           ),
           Row(
             children: [
+              // Tombol Cepat Reset Kuota AI
+              InkWell(
+                onTap: _showResetQuotaDialog,
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4.5),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF2EB),
+                    borderRadius: BorderRadius.circular(16),
+                    border:
+                        Border.all(color: const Color(0xFFFFD1B3), width: 0.9),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.bolt_rounded,
+                        size: 14,
+                        color: AppColors.primaryOrange,
+                      ),
+                      SizedBox(width: 3),
+                      Text(
+                        'Reset Kuota',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primaryOrange,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
               IconButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      title: const Row(
-                        children: [
-                          Icon(
-                            Icons.history_rounded,
-                            color: AppColors.primaryOrange,
-                            size: 22,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'Sesi Obrolan Jnova AI',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
-                      ),
-                      content: Text(
-                        'Terdapat ${_messages.length} pesan dalam sesi aktif ini.\n\nApakah Anda ingin memulai obrolan baru dengan Jnova AI?',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF5A524D),
-                          height: 1.4,
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          child: const Text(
-                            'Tutup',
-                            style: TextStyle(color: Color(0xFF7E756F)),
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            GeminiService.instance.resetChat();
-                            setState(() {
-                              _initializeDefaultChat();
-                            });
-                            Navigator.pop(ctx);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Sesi percakapan baru telah dimulai.',
-                                ),
-                                duration: Duration(seconds: 1),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryOrange,
-                            elevation: 0,
-                          ),
-                          child: const Text(
-                            'Obrolan Baru',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                tooltip: 'Sesi & Reset Kuota',
+                onPressed: _showResetQuotaDialog,
                 icon: const Icon(
                   Icons.history_rounded,
                   color: Color(0xFF6E6560),
@@ -746,11 +826,11 @@ class _AIChatPageState extends State<AIChatPage> {
               ),
             ),
           ],
-          // Tombol Coba Lagi untuk error jaringan, timeout, atau server
-          if (msg.errorCode == 'offline' ||
-              msg.errorCode == 'timeout' ||
-              msg.errorCode == 'network_error' ||
-              msg.errorCode == 'server_error') ...[
+          // Tombol Coba Lagi / Reset Kuota untuk error atau pesan pembatasan
+          if (msg.errorCode != null ||
+              msg.text.contains('tidak tersedia') ||
+              msg.text.contains('kuota') ||
+              msg.text.contains('limit')) ...[
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.only(left: 36),
@@ -763,10 +843,10 @@ class _AIChatPageState extends State<AIChatPage> {
                     vertical: 7,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF5F4F0),
+                    color: const Color(0xFFFFF2EB),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: const Color(0xFFE2DDD8),
+                      color: const Color(0xFFFFD1B3),
                       width: 1.0,
                     ),
                   ),
@@ -774,17 +854,17 @@ class _AIChatPageState extends State<AIChatPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        Icons.refresh_rounded,
-                        size: 13,
-                        color: Color(0xFF6E6560),
+                        Icons.bolt_rounded,
+                        size: 14,
+                        color: AppColors.primaryOrange,
                       ),
                       SizedBox(width: 6),
                       Text(
-                        'Coba Kirim Ulang',
+                        '⚡ Jawab Langsung (Reset Kuota)',
                         style: TextStyle(
                           fontSize: 10.5,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF6E6560),
+                          color: AppColors.primaryOrange,
                         ),
                       ),
                     ],

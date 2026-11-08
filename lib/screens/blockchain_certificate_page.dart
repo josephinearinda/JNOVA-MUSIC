@@ -6,12 +6,32 @@ import '../core/utils/currency_formatter.dart';
 import '../models/blockchain_certificate.dart';
 import '../widgets/qr_code_widget.dart';
 
-/// Halaman Sertifikat Keaslian Digital Blockchain (NFT On-chain Pass)
+/// Halaman Sertifikat Keaslian Digital Blockchain (NFT ERC-721 On-Chain Pass)
 /// Menampilkan bukti kepemilikan dan audit originalitas instrumen musik resmi JNOVAMUSIC
+/// Mengadopsi palet warna putih dan orange bersih yang selaras dengan halaman Beranda.
 class BlockchainCertificatePage extends StatelessWidget {
   final BlockchainCertificate certificate;
+  final bool isPreview;
 
-  const BlockchainCertificatePage({super.key, required this.certificate});
+  const BlockchainCertificatePage({
+    super.key,
+    required this.certificate,
+    this.isPreview = false,
+  });
+
+  // Palet Warna Resmi JNOVAMUSIC (White & Orange Theme)
+  static const Color _bgPrimary = Color(0xFFFFFFFF);
+  static const Color _bgCard = Color(0xFFFFFFFF);
+  static const Color _bgSection = Color(0xFFF8F8F8);
+  static const Color _primaryOrange = Color(0xFFFF6B00);
+  static const Color _orangeLight = Color(0xFFFFF2EB);
+  static const Color _orangeBorder = Color(0xFFFFD1B3);
+  static const Color _textPrimary = Color(0xFF222222);
+  static const Color _textSecondary = Color(0xFF777777);
+  static const Color _borderLight = Color(0xFFEAEAEA);
+  static const Color _verifiedGreen = Color(0xFF059669);
+  static const Color _verifiedGreenBg = Color(0xFFECFDF5);
+  static const Color _verifiedGreenBorder = Color(0xFFA7F3D0);
 
   void _copyToClipboard(BuildContext context, String text, String label) {
     Clipboard.setData(ClipboardData(text: text));
@@ -19,9 +39,10 @@ class BlockchainCertificatePage extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('$label berhasil disalin ke clipboard!'),
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: const Color(0xFF222222),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -35,6 +56,8 @@ class BlockchainCertificatePage extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Tautan PolygonScan sertifikat tidak valid.'),
+          backgroundColor: Color(0xFF222222),
+          behavior: SnackBarBehavior.floating,
         ),
       );
       return;
@@ -44,13 +67,21 @@ class BlockchainCertificatePage extends StatelessWidget {
       final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
       if (!opened && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('PolygonScan tidak dapat dibuka.')),
+          const SnackBar(
+            content: Text('PolygonScan tidak dapat dibuka.'),
+            backgroundColor: Color(0xFF222222),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
     } on PlatformException {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('PolygonScan tidak dapat dibuka.')),
+          const SnackBar(
+            content: Text('PolygonScan tidak dapat dibuka.'),
+            backgroundColor: Color(0xFF222222),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
     }
@@ -60,21 +91,22 @@ class BlockchainCertificatePage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF161A22),
+        backgroundColor: _bgCard,
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
-          side: const BorderSide(color: Color(0xFF2A3344), width: 1),
+          side: const BorderSide(color: _borderLight, width: 1),
         ),
         title: const Row(
           children: [
-            Icon(Icons.verified_rounded, color: Color(0xFF10B981), size: 24),
+            Icon(Icons.verified_rounded, color: _verifiedGreen, size: 24),
             SizedBox(width: 8),
             Text(
               'Audit On-Chain Lolos',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: _textPrimary,
               ),
             ),
           ],
@@ -87,44 +119,44 @@ class BlockchainCertificatePage extends StatelessWidget {
               'Instrumen ini terverifikasi 100% ASLI di jaringan Polygon PoS dan tercatat permanen di smart contract resmi.',
               style: TextStyle(
                 fontSize: 12,
-                color: Color(0xFFBAC5D5),
-                height: 1.4,
+                color: _textSecondary,
+                height: 1.45,
               ),
             ),
             const SizedBox(height: 14),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFF0F1115),
+                color: _bgSection,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFF232A38)),
+                border: Border.all(color: _borderLight),
               ),
               child: Column(
                 children: [
                   _buildAuditRow(
                     'Status',
                     'Success (12 Confirmations)',
-                    const Color(0xFF10B981),
+                    _verifiedGreen,
                   ),
-                  const Divider(color: Color(0xFF232A38), height: 14),
-                  _buildAuditRow('Block Height', '#58,491,204', Colors.white),
-                  const Divider(color: Color(0xFF232A38), height: 14),
+                  const Divider(color: _borderLight, height: 14),
+                  _buildAuditRow('Block Height', '#58,491,204', _textPrimary),
+                  const Divider(color: _borderLight, height: 14),
                   _buildAuditRow(
                     'Serial Number',
                     certificate.serialNumber,
-                    const Color(0xFFFFD580),
+                    _primaryOrange,
                   ),
-                  const Divider(color: Color(0xFF232A38), height: 14),
+                  const Divider(color: _borderLight, height: 14),
                   _buildAuditRow(
                     'Token ID',
                     certificate.tokenId,
-                    const Color(0xFFFF5500),
+                    _primaryOrange,
                   ),
-                  const Divider(color: Color(0xFF232A38), height: 14),
+                  const Divider(color: _borderLight, height: 14),
                   _buildAuditRow(
                     'Gas Fee',
                     '0.0038 POL (~Rp 45)',
-                    const Color(0xFF8CE3FF),
+                    _textSecondary,
                   ),
                 ],
               ),
@@ -135,9 +167,10 @@ class BlockchainCertificatePage extends StatelessWidget {
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF10B981),
+              backgroundColor: _primaryOrange,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -158,7 +191,7 @@ class BlockchainCertificatePage extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 11, color: Color(0xFF8E9BAE)),
+          style: const TextStyle(fontSize: 11, color: _textSecondary),
         ),
         Text(
           value,
@@ -201,42 +234,53 @@ class BlockchainCertificatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formattedDate = _formatDateTime(certificate.mintDate);
+    final isPreviewMode = isPreview || !certificate.isClaimed;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1115),
+      backgroundColor: _bgPrimary,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF161A22),
+        backgroundColor: _bgPrimary,
         elevation: 0,
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
+            color: _textPrimary,
             size: 18,
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Column(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Sertifikat Keaslian NFT',
-              style: TextStyle(
-                fontSize: 15,
+              isPreviewMode
+                  ? 'Pratinjau Sertifikat Digital'
+                  : 'Sertifikat Keaslian NFT',
+              style: const TextStyle(
+                fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: Colors.white,
+                color: _textPrimary,
               ),
             ),
             Text(
-              'Polygon PoS • ERC-721 Verified',
-              style: TextStyle(fontSize: 10, color: Color(0xFF9E86FF)),
+              isPreviewMode
+                  ? 'Polygon PoS • ERC-721 Showroom Preview'
+                  : 'Polygon PoS • ERC-721 Verified',
+              style: const TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w600,
+                color: _primaryOrange,
+              ),
             ),
           ],
         ),
         actions: [
           IconButton(
+            tooltip: 'Salin Ringkasan Sertifikat',
             icon: const Icon(
               Icons.share_outlined,
-              color: Colors.white,
+              color: _textPrimary,
               size: 20,
             ),
             onPressed: () {
@@ -248,6 +292,10 @@ class BlockchainCertificatePage extends StatelessWidget {
             },
           ),
         ],
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Divider(height: 1.0, color: _borderLight),
+        ),
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -255,12 +303,18 @@ class BlockchainCertificatePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. KARTU MEWAH SERTIFIKAT (HOLOGRAPHIC NFT BADGE)
-            _buildLuxuryNftCard(context, formattedDate),
+            // Banner Keterangan Jika Berada di Mode Pratinjau
+            if (isPreviewMode) ...[
+              _buildPreviewNoticeBanner(),
+              const SizedBox(height: 14),
+            ],
 
-            const SizedBox(height: 20),
+            // 1. KARTU MEWAH SERTIFIKAT (TEMA PUTIH & ORANGE)
+            _buildLuxuryNftCard(context, formattedDate, isPreviewMode),
 
-            // 2. TOMBOL AKSI CEPAT (Verifikasi In-App & Salin Ringkasan)
+            const SizedBox(height: 18),
+
+            // 2. TOMBOL AKSI CEPAT (Verifikasi Keaslian & Salin Data)
             Row(
               children: [
                 Expanded(
@@ -268,15 +322,13 @@ class BlockchainCertificatePage extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: () => _showVerificationSuccessDialog(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(
-                        0xFF10B981,
-                      ), // Emerald verified green
+                      backgroundColor: _primaryOrange,
                       foregroundColor: Colors.white,
+                      elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      elevation: 0,
                     ),
                     icon: const Icon(Icons.verified_rounded, size: 16),
                     label: const Text(
@@ -300,17 +352,22 @@ class BlockchainCertificatePage extends StatelessWidget {
                       );
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFFFFD580),
+                      backgroundColor: Colors.white,
+                      foregroundColor: _primaryOrange,
                       side: const BorderSide(
-                        color: Color(0xFFE5A93C),
-                        width: 1.1,
+                        color: _primaryOrange,
+                        width: 1.2,
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    icon: const Icon(Icons.copy_rounded, size: 15),
+                    icon: const Icon(
+                      Icons.copy_rounded,
+                      size: 15,
+                      color: _primaryOrange,
+                    ),
                     label: const Text(
                       'Salin Data',
                       style: TextStyle(
@@ -323,29 +380,38 @@ class BlockchainCertificatePage extends StatelessWidget {
               ],
             ),
 
-            const SizedBox(height: 22),
+            const SizedBox(height: 20),
 
-            // 3. TABEL DETAIL ON-CHAIN (LEDGER DATA)
+            // 3. TABEL DETAIL ON-CHAIN (LEDGER DATA TEMA PUTIH & ORANGE)
             _buildOnChainLedgerSection(context, formattedDate),
 
             const SizedBox(height: 12),
 
+            // Tombol PolygonScan (Desain Putih dengan Border Orange)
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () => _openPolygonScan(context),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFFA77DFF),
-                  side: const BorderSide(color: Color(0xFF8247E5)),
+                  backgroundColor: Colors.white,
+                  foregroundColor: _primaryOrange,
+                  side: const BorderSide(color: _primaryOrange, width: 1.2),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                icon: const Icon(Icons.open_in_new_rounded, size: 16),
+                icon: const Icon(
+                  Icons.open_in_new_rounded,
+                  size: 16,
+                  color: _primaryOrange,
+                ),
                 label: const Text(
                   'Buka Alamat Kontrak di PolygonScan',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
@@ -357,59 +423,108 @@ class BlockchainCertificatePage extends StatelessWidget {
 
             const SizedBox(height: 18),
 
-            // 5. QR CODE VERIFIKASI FISIK & KEPEMILIKAN
+            // 5. QR CODE VERIFIKASI FISIK & LABEL TAG
             _buildPhysicalVerificationQr(context),
 
-            const SizedBox(height: 28),
+            const SizedBox(height: 24),
           ],
         ),
       ),
     );
   }
 
-  /// Kartu NFT Hologram Mewah
-  Widget _buildLuxuryNftCard(BuildContext context, String formattedDate) {
+  /// Banner informasi pratinjau sertifikat digital
+  Widget _buildPreviewNoticeBanner() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: _orangeLight,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _orangeBorder),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.workspace_premium_rounded, color: _primaryOrange, size: 20),
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Pratinjau Sertifikat Resmi JNOVAMUSIC',
+                  style: TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF944508),
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'Sertifikat digital NFT ERC-721 ini akan di-minting secara resmi di blockchain Polygon dan diterbitkan atas nama Anda saat instrumen ini telah selesai diproses.',
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    color: Color(0xFF7A3906),
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Kartu Sertifikat Mewah (Tema Putih & Orange)
+  Widget _buildLuxuryNftCard(
+    BuildContext context,
+    String formattedDate,
+    bool isPreviewMode,
+  ) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF231C38), Color(0xFF171322), Color(0xFF0F0C18)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: _bgCard,
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFE5A93C).withValues(alpha: 0.6),
-          width: 1.5,
+          color: const Color(0xFFFF8A3D),
+          width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFE5A93C).withValues(alpha: 0.15),
-            blurRadius: 20,
-            spreadRadius: 1,
+            color: _primaryOrange.withValues(alpha: 0.08),
+            blurRadius: 16,
+            spreadRadius: 0,
             offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Banner Atas: Logo Jnova & Tag Verified
+          // Banner Atas: Logo Jnova, Token ID, & Tag Status Kepemilikan
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Logo JNOVAMUSIC
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
+                        horizontal: 8,
                         vertical: 3.5,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFF5500),
+                        color: _primaryOrange,
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: const Text(
@@ -423,16 +538,17 @@ class BlockchainCertificatePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 6),
+                    // Badge Token ID
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 7,
                         vertical: 3.5,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2E244D),
+                        color: _orangeLight,
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
-                          color: const Color(0xFF9E86FF),
+                          color: _orangeBorder,
                           width: 0.8,
                         ),
                       ),
@@ -441,8 +557,8 @@ class BlockchainCertificatePage extends StatelessWidget {
                         children: [
                           const Icon(
                             Icons.token_rounded,
-                            size: 10,
-                            color: Color(0xFF9E86FF),
+                            size: 11,
+                            color: _primaryOrange,
                           ),
                           const SizedBox(width: 3),
                           Text(
@@ -450,7 +566,7 @@ class BlockchainCertificatePage extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 9.5,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFFC7B9FF),
+                              color: _primaryOrange,
                             ),
                           ),
                         ],
@@ -459,21 +575,18 @@ class BlockchainCertificatePage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(width: 6),
+                // Badge Status Kepemilikan (Warna Orange Muda)
                 Flexible(
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 7,
+                      horizontal: 8,
                       vertical: 3.5,
                     ),
                     decoration: BoxDecoration(
-                      color: certificate.isClaimed
-                          ? const Color(0xFF064E3B)
-                          : const Color(0xFF2E2214),
+                      color: _orangeLight,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: certificate.isClaimed
-                            ? const Color(0xFF10B981)
-                            : const Color(0xFFE5A93C),
+                        color: _orangeBorder,
                         width: 0.8,
                       ),
                     ),
@@ -483,24 +596,24 @@ class BlockchainCertificatePage extends StatelessWidget {
                         Icon(
                           certificate.isClaimed
                               ? Icons.verified_user_rounded
-                              : Icons.storefront_rounded,
-                          size: 11,
-                          color: certificate.isClaimed
-                              ? const Color(0xFF34D399)
-                              : const Color(0xFFFFB057),
+                              : (isPreviewMode
+                                  ? Icons.visibility_rounded
+                                  : Icons.storefront_rounded),
+                          size: 12,
+                          color: _primaryOrange,
                         ),
                         const SizedBox(width: 4),
                         Flexible(
                           child: Text(
-                            certificate.isClaimed
-                                ? 'MILIK PEMBELI'
-                                : 'STOK SHOWROOM',
-                            style: TextStyle(
+                            isPreviewMode
+                                ? 'PRATINJAU SERTIFIKAT'
+                                : (certificate.isClaimed
+                                    ? 'MILIK PEMBELI'
+                                    : 'STOK SHOWROOM'),
+                            style: const TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w900,
-                              color: certificate.isClaimed
-                                  ? const Color(0xFF34D399)
-                                  : const Color(0xFFFFB057),
+                              color: _primaryOrange,
                             ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -514,34 +627,35 @@ class BlockchainCertificatePage extends StatelessWidget {
             ),
           ),
 
-          const Divider(color: Color(0xFF2C2442), height: 1),
+          const Divider(color: _borderLight, height: 1),
 
-          // Foto Produk & Info Utama
+          // Foto Produk Proporsional & Info Utama
           Padding(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-               
+                // Wadah Foto Produk Bersih dengan Background Putih
                 Container(
                   width: 90,
                   height: 90,
+                  padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: const Color(0xFFE5A93C),
+                      color: _borderLight,
                       width: 1,
                     ),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(11),
+                    borderRadius: BorderRadius.circular(10),
                     child: _buildProductImage(certificate.product.image),
                   ),
                 ),
                 const SizedBox(width: 14),
 
-                // Info Produk
+                // Info Produk yang Jelas & Terbaca
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -549,9 +663,9 @@ class BlockchainCertificatePage extends StatelessWidget {
                       Text(
                         certificate.product.brand.toUpperCase(),
                         style: const TextStyle(
-                          fontSize: 11,
+                          fontSize: 10.5,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFFE5A93C),
+                          color: _primaryOrange,
                           letterSpacing: 0.8,
                         ),
                       ),
@@ -559,9 +673,9 @@ class BlockchainCertificatePage extends StatelessWidget {
                       Text(
                         certificate.product.name,
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.5,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color: _textPrimary,
                           height: 1.25,
                         ),
                       ),
@@ -569,26 +683,28 @@ class BlockchainCertificatePage extends StatelessWidget {
                       Text(
                         formatCurrency(certificate.product.price),
                         style: const TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.5,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFFFF7A33),
+                          color: _primaryOrange,
                         ),
                       ),
                       const SizedBox(height: 6),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 6,
-                          vertical: 2,
+                          vertical: 2.5,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(4),
+                          color: _bgSection,
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: _borderLight),
                         ),
                         child: Text(
                           'Kategori: ${certificate.product.category}',
                           style: const TextStyle(
                             fontSize: 9.5,
-                            color: Color(0xFFD1CADB),
+                            fontWeight: FontWeight.w600,
+                            color: _textSecondary,
                           ),
                         ),
                       ),
@@ -599,14 +715,14 @@ class BlockchainCertificatePage extends StatelessWidget {
             ),
           ),
 
-          // Detail Bar: Serial Number & Pemilik
+          // Section Rapi: Nomor Seri Resmi & Pemilik Terdaftar
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             margin: const EdgeInsets.fromLTRB(14, 0, 14, 14),
             decoration: BoxDecoration(
-              color: const Color(0xFF13101C),
+              color: _bgSection,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFF28203D), width: 1),
+              border: Border.all(color: _borderLight, width: 1),
             ),
             child: Column(
               children: [
@@ -614,7 +730,11 @@ class BlockchainCertificatePage extends StatelessWidget {
                   children: [
                     const Text(
                       'Nomor Seri Resmi:',
-                      style: TextStyle(fontSize: 10, color: Color(0xFF8E839E)),
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: _textSecondary,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -627,8 +747,9 @@ class BlockchainCertificatePage extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFFFFD580),
-                                letterSpacing: 0.4,
+                                color: _textPrimary,
+                                fontFamily: 'monospace',
+                                letterSpacing: 0.3,
                               ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
@@ -644,7 +765,7 @@ class BlockchainCertificatePage extends StatelessWidget {
                             child: const Icon(
                               Icons.copy_rounded,
                               size: 13,
-                              color: Color(0xFFE5A93C),
+                              color: _primaryOrange,
                             ),
                           ),
                         ],
@@ -652,12 +773,16 @@ class BlockchainCertificatePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const Divider(color: _borderLight, height: 16),
                 Row(
                   children: [
                     const Text(
                       'Pemilik Terdaftar:',
-                      style: TextStyle(fontSize: 10, color: Color(0xFF8E839E)),
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: _textSecondary,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -665,11 +790,9 @@ class BlockchainCertificatePage extends StatelessWidget {
                         certificate.ownerName,
                         textAlign: TextAlign.end,
                         style: TextStyle(
-                          fontSize: 10.5,
+                          fontSize: 11,
                           fontWeight: FontWeight.w700,
-                          color: certificate.isClaimed
-                              ? Colors.white
-                              : const Color(0xFFFFB057),
+                          color: _textPrimary,
                           fontStyle: certificate.isClaimed
                               ? FontStyle.normal
                               : FontStyle.italic,
@@ -691,10 +814,10 @@ class BlockchainCertificatePage extends StatelessWidget {
   Widget _buildProductImage(String imagePath) {
     final isNetworkImage =
         imagePath.startsWith('https://') || imagePath.startsWith('http://');
-    final fallback = const Icon(
+    const fallback = Icon(
       Icons.music_note_rounded,
       size: 40,
-      color: Color(0xFFFF5500),
+      color: _primaryOrange,
     );
 
     return isNetworkImage
@@ -710,7 +833,7 @@ class BlockchainCertificatePage extends StatelessWidget {
           );
   }
 
-  /// Bagian Data Buku Besar On-Chain (Polygon Network)
+  /// Bagian Data Buku Besar On-Chain (Card Putih & Bersih)
   Widget _buildOnChainLedgerSection(
     BuildContext context,
     String formattedDate,
@@ -718,9 +841,16 @@ class BlockchainCertificatePage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF161A22),
+        color: _bgCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF232A38), width: 1),
+        border: Border.all(color: _borderLight, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -730,35 +860,38 @@ class BlockchainCertificatePage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF8247E5).withValues(alpha: 0.2),
+                  color: _orangeLight,
                   borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: _orangeBorder, width: 0.8),
                 ),
                 child: const Icon(
                   Icons.link_rounded,
                   size: 16,
-                  color: Color(0xFFA77DFF),
+                  color: _primaryOrange,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Informasi On-Chain Blockchain',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 13.5,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
+                      color: _textPrimary,
                     ),
                   ),
                   Text(
                     'Tercatat permanen dan tidak dapat dipalsukan',
-                    style: TextStyle(fontSize: 9.5, color: Color(0xFF8692A6)),
+                    style: TextStyle(fontSize: 10, color: _textSecondary),
                   ),
                 ],
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          const Divider(color: _borderLight, height: 1),
           const SizedBox(height: 14),
 
           _buildLedgerRow(
@@ -842,13 +975,13 @@ class BlockchainCertificatePage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 14, color: const Color(0xFF6B7A90)),
+          Icon(icon, size: 14, color: _primaryOrange),
           const SizedBox(width: 8),
           SizedBox(
-            width: 120,
+            width: 125,
             child: Text(
               label,
-              style: const TextStyle(fontSize: 10.5, color: Color(0xFF8E9BAE)),
+              style: const TextStyle(fontSize: 10.5, color: _textSecondary),
             ),
           ),
           const SizedBox(width: 6),
@@ -862,21 +995,19 @@ class BlockchainCertificatePage extends StatelessWidget {
                       fontSize: 10.5,
                       fontWeight: FontWeight.w600,
                       fontFamily: isMonospace ? 'monospace' : null,
-                      color: isMonospace
-                          ? const Color(0xFF8CE3FF)
-                          : Colors.white,
+                      color: _textPrimary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (copyable) ...[
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 6),
                   GestureDetector(
                     onTap: () => _copyToClipboard(context, value, label),
                     child: const Icon(
                       Icons.copy_rounded,
                       size: 13,
-                      color: Color(0xFFFF5500),
+                      color: _primaryOrange,
                     ),
                   ),
                 ],
@@ -893,9 +1024,16 @@ class BlockchainCertificatePage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF161A22),
+        color: _bgCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF232A38), width: 1),
+        border: Border.all(color: _borderLight, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -905,15 +1043,15 @@ class BlockchainCertificatePage extends StatelessWidget {
               Icon(
                 Icons.build_circle_outlined,
                 size: 16,
-                color: Color(0xFFFF9E3D),
+                color: _primaryOrange,
               ),
               SizedBox(width: 8),
               Text(
                 'Laporan Audit & Kalibrasi Luthier',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.5,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
+                  color: _textPrimary,
                 ),
               ),
             ],
@@ -922,9 +1060,9 @@ class BlockchainCertificatePage extends StatelessWidget {
           Text(
             'Auditor: ${certificate.inspectorName}',
             style: const TextStyle(
-              fontSize: 11,
+              fontSize: 11.5,
               fontWeight: FontWeight.w700,
-              color: Color(0xFFFF9E3D),
+              color: _primaryOrange,
             ),
           ),
           const SizedBox(height: 4),
@@ -932,25 +1070,25 @@ class BlockchainCertificatePage extends StatelessWidget {
             certificate.inspectionNotes,
             style: const TextStyle(
               fontSize: 11,
-              color: Color(0xFFBAC5D5),
-              height: 1.4,
+              color: Color(0xFF555555),
+              height: 1.45,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
             decoration: BoxDecoration(
-              color: const Color(0xFF0F261E),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: const Color(0xFF10B981), width: 0.8),
+              color: _verifiedGreenBg,
+              borderRadius: BorderRadius.circular(7),
+              border: Border.all(color: _verifiedGreenBorder, width: 0.8),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const Icon(
                   Icons.check_circle_rounded,
-                  size: 12,
-                  color: Color(0xFF34D399),
+                  size: 13,
+                  color: _verifiedGreen,
                 ),
                 const SizedBox(width: 6),
                 Flexible(
@@ -959,9 +1097,9 @@ class BlockchainCertificatePage extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     style: const TextStyle(
-                      fontSize: 9.5,
+                      fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF34D399),
+                      color: _verifiedGreen,
                     ),
                   ),
                 ),
@@ -979,35 +1117,42 @@ class BlockchainCertificatePage extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFF161A22),
+        color: _bgCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF232A38), width: 1),
+        border: Border.all(color: _borderLight, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
           const Text(
             'QR Code Verifikasi Fisik & Label Tag',
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 13.5,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: _textPrimary,
             ),
           ),
           const SizedBox(height: 4),
           const Text(
-            'Pindai QR ini saat unboxing di toko JNOVA atau saat jual kembali untuk memverifikasi keaslian instrumen.',
+            'Pindai QR ini saat unboxing di showroom JNOVA atau saat jual kembali untuk memverifikasi keaslian instrumen.',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10, color: Color(0xFF8692A6)),
+            style: TextStyle(fontSize: 10.5, color: _textSecondary, height: 1.35),
           ),
           const SizedBox(height: 16),
 
-          // QR Code Widget
+          // QR Code Widget dengan Frame Orange Rapi
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFFE5A93C), width: 2),
+              border: Border.all(color: _primaryOrange, width: 1.8),
             ),
             child: QrCodeWidget(
               data: certificate.qrVerificationData,
@@ -1019,9 +1164,9 @@ class BlockchainCertificatePage extends StatelessWidget {
           Text(
             'ID Sertifikat: ${certificate.id}',
             style: const TextStyle(
-              fontSize: 10.5,
+              fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: Color(0xFFFFD580),
+              color: _primaryOrange,
               fontFamily: 'monospace',
             ),
           ),

@@ -190,7 +190,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => BlockchainCertificatePage(certificate: cert),
+          builder: (context) => BlockchainCertificatePage(
+            certificate: cert,
+            isPreview: !cert.isClaimed,
+          ),
         ),
       );
     } else {
@@ -282,10 +285,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF1D172E), Color(0xFF13101C)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+              color: Color(0xFFFFF7F2),
+              border: Border(
+                bottom: BorderSide(color: Color(0xFFFFD1B3), width: 1.0),
               ),
             ),
             child: Row(
@@ -293,17 +295,17 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF8247E5).withValues(alpha: 0.25),
+                    color: const Color(0xFFFFF2EB),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: const Color(0xFF9E86FF),
+                      color: const Color(0xFFFFD1B3),
                       width: 0.8,
                     ),
                   ),
                   child: const Icon(
                     Icons.security_rounded,
                     size: 20,
-                    color: Color(0xFFD6C7FF),
+                    color: Color(0xFFFF6B00),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -316,7 +318,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color: Color(0xFF944508),
                         ),
                       ),
                       SizedBox(height: 2),
@@ -324,7 +326,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         'Daftar sertifikat keaslian dan kepemilikan digital resmi instrumen musik Anda di blockchain Polygon.',
                         style: TextStyle(
                           fontSize: 9.5,
-                          color: Color(0xFFBFB5D1),
+                          color: Color(0xFF7A3906),
                           height: 1.3,
                         ),
                       ),
@@ -508,8 +510,11 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: const BoxDecoration(
-              color: Color(0xFF1E1A29),
+              color: Color(0xFFFFF9F5),
               borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+              border: Border(
+                bottom: BorderSide(color: Color(0xFFFFE0CC), width: 1.0),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -519,8 +524,8 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                   children: [
                     const Icon(
                       Icons.token_rounded,
-                      size: 12,
-                      color: Color(0xFF9E86FF),
+                      size: 13,
+                      color: Color(0xFFFF6B00),
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -528,7 +533,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                       style: const TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFFD6C7FF),
+                        color: Color(0xFFFF6B00),
                       ),
                     ),
                   ],
@@ -537,14 +542,20 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                 Flexible(
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
+                      horizontal: 8,
+                      vertical: 2.5,
                     ),
                     decoration: BoxDecoration(
                       color: cert.isClaimed
-                          ? const Color(0xFF0F3B2E)
-                          : const Color(0xFF382310),
-                      borderRadius: BorderRadius.circular(4),
+                          ? const Color(0xFFECFDF5)
+                          : const Color(0xFFFFF2EB),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: cert.isClaimed
+                            ? const Color(0xFFA7F3D0)
+                            : const Color(0xFFFFD1B3),
+                        width: 0.8,
+                      ),
                     ),
                     child: Text(
                       cert.isClaimed ? 'TERVERIFIKASI' : 'STOK SHOWROOM',
@@ -554,8 +565,8 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         fontSize: 8.5,
                         fontWeight: FontWeight.w900,
                         color: cert.isClaimed
-                            ? const Color(0xFF34D399)
-                            : const Color(0xFFFFB057),
+                            ? const Color(0xFF059669)
+                            : const Color(0xFFFF6B00),
                       ),
                     ),
                   ),
@@ -656,8 +667,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      BlockchainCertificatePage(certificate: cert),
+                  builder: (context) => BlockchainCertificatePage(
+                    certificate: cert,
+                    isPreview: !cert.isClaimed,
+                  ),
                 ),
               );
             },
