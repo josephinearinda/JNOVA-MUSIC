@@ -392,16 +392,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Stack(
             children: [
               IconButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Tidak ada notifikasi baru untuk pesananmu.',
-                      ),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                },
+                onPressed: () => Navigator.pushNamed(context, '/notifications'),
                 icon: const Icon(
                   Icons.notifications_outlined,
                   size: 22,
