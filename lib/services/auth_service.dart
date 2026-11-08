@@ -1,4 +1,5 @@
 import '../data/repositories/auth_repository.dart';
+import 'ai_chat_service.dart';
 import 'cart_service.dart';
 import 'favorite_service.dart';
 import 'membership_service.dart';
@@ -100,5 +101,6 @@ class AuthService {
     OrderService.instance.resetOrders();
     FavoriteService.instance.resetFavorites();
     CartService.instance.resetCart();
+    AIChatService.instance.clearMemory();
   }
 }

@@ -38,11 +38,12 @@ class AppDatabase {
   }
 
   Future<Database> _initDatabase() async {
-    if (!kIsWeb && (Platform.isWindows || Platform.isLinux)) {
-      if (databaseFactory != databaseFactoryFfi) {
-        sqfliteFfiInit();
-        databaseFactory = databaseFactoryFfi;
-      }
+    if (!kIsWeb &&
+        (Platform.isWindows ||
+            Platform.isLinux ||
+            Platform.environment.containsKey('FLUTTER_TEST'))) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
     }
 
     final String path;
@@ -104,6 +105,32 @@ class AppDatabase {
     await db.execute('''
       CREATE INDEX IF NOT EXISTS idx_user_feedback_email
       ON user_feedback(user_email)
+    ''');
+
+    // Pastikan tabel ai_chat_messages tersedia untuk menyimpan riwayat obrolan Jnova AI
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS ai_chat_messages (
+        id TEXT PRIMARY KEY,
+        user_email TEXT NOT NULL,
+        is_user INTEGER NOT NULL,
+        text TEXT NOT NULL,
+        time TEXT NOT NULL,
+        recommended_product_id TEXT,
+        custom_product_name TEXT,
+        custom_product_price TEXT,
+        product_badge TEXT,
+        product_original_price TEXT,
+        product_points TEXT,
+        product_description TEXT,
+        chips_json TEXT,
+        selected_chip TEXT,
+        error_code TEXT,
+        created_at INTEGER NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_ai_chat_email_time
+      ON ai_chat_messages(user_email, created_at)
     ''');
 
     // Bersihkan cached_orders lama yang rusak / items kosong / tanpa user_email
@@ -531,6 +558,40 @@ class AppDatabase {
 
   String _productKey(String brand, String name) =>
       '${brand.trim().toLowerCase()}|${name.trim().toLowerCase()}';
+
+  // ===========================================================================
+  // AI CHAT MESSAGES PERSISTENCE
+  // ===========================================================================
+
+  Future<List<Map<String, dynamic>>> getAiChatMessages(String userEmail) async {
+    final db = await database;
+    final cleanEmail = userEmail.toLowerCase().trim();
+    return db.query(
+      'ai_chat_messages',
+      where: 'user_email = ?',
+      whereArgs: [cleanEmail],
+      orderBy: 'created_at ASC',
+    );
+  }
+
+  Future<void> saveAiChatMessage(Map<String, dynamic> row) async {
+    final db = await database;
+    await db.insert(
+      'ai_chat_messages',
+      row,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> clearAiChatMessages(String userEmail) async {
+    final db = await database;
+    final cleanEmail = userEmail.toLowerCase().trim();
+    await db.delete(
+      'ai_chat_messages',
+      where: 'user_email = ?',
+      whereArgs: [cleanEmail],
+    );
+  }
 
   Future<void> close() async {
     if (_database != null) {

@@ -375,7 +375,7 @@ class NotificationService {
 
     try {
       // Selalu batalkan alarm sebelumnya dengan ID yang sama agar jadwal TIDAK PERNAH terduplikasi
-      await _plugin.cancel(dailyGameReminderNotificationId);
+      await _plugin.cancel(id: dailyGameReminderNotificationId);
 
       final scheduledDate = _nextInstanceOf1130AM();
 
@@ -405,7 +405,7 @@ class NotificationService {
             channelName,
             channelDescription: channelDescription,
             icon: '@mipmap/ic_launcher',
-            largeIcon: const DrawableResourceAndroidIcon('@mipmap/ic_launcher'),
+            largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
             importance: Importance.max,
             priority: Priority.max,
             ticker: '💗 Yuk, tambahkan poinmu!',
@@ -436,7 +436,7 @@ class NotificationService {
       debugPrint(
         '[NotificationService] Pengingat harian game berhasil dijadwalkan pukul 11:30 AM (Next: $scheduledDate, mode: $scheduleMode).',
       );
-    } catch (error, stackTrace) {
+    } catch (error) {
       debugPrint('[NotificationService] Gagal menjadwalkan pengingat game: $error');
     }
   }
@@ -444,7 +444,7 @@ class NotificationService {
   /// Membatalkan jadwal pengingat harian game
   Future<void> cancelDailyGameReminder() async {
     try {
-      await _plugin.cancel(dailyGameReminderNotificationId);
+      await _plugin.cancel(id: dailyGameReminderNotificationId);
       debugPrint('[NotificationService] Pengingat harian game dibatalkan.');
     } catch (_) {}
   }
@@ -543,7 +543,7 @@ class NotificationService {
             channelName,
             channelDescription: channelDescription,
             icon: '@mipmap/ic_launcher',
-            largeIcon: const DrawableResourceAndroidIcon('@mipmap/ic_launcher'),
+            largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
             importance: Importance.max,
             priority: Priority.max,
             ticker: title,

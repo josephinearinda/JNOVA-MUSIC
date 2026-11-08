@@ -48,6 +48,15 @@ class GeminiService {
     _history.clear();
   }
 
+  List<Map<String, String>> get history => List.unmodifiable(_history);
+
+  /// Sinkronisasi riwayat multi-turn dari database lokal
+  void setHistory(List<Map<String, String>> history) {
+    _history.clear();
+    final start = history.length > 8 ? history.length - 8 : 0;
+    _history.addAll(history.sublist(start));
+  }
+
   /// Membangun konteks produk katalog JNOVAMUSIC untuk diinjeksikan ke System Instruction
   String _buildSystemPrompt() {
     final buffer = StringBuffer();

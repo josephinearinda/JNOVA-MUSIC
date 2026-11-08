@@ -1,73 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_colors.dart';
+import '../models/ai_chat_message.dart';
 import '../models/product.dart';
+import '../services/ai_chat_service.dart';
 import '../services/gemini_service.dart';
 import '../widgets/app_bottom_nav.dart';
 
-/// Model pesan dalam obrolan Jnova AI
-class AIChatMessage {
-  final String id;
-  final bool isUser;
-  final String text;
-  final String time;
-  final Product? recommendedProduct;
-  final String? customProductName;
-  final String? customProductPrice;
-  final String? productBadge;
-  final String? productOriginalPrice;
-  final String? productPoints;
-  final String? productDescription;
-  final List<String>? chips;
-  final String? selectedChip;
-  final String? errorCode;
-
-  const AIChatMessage({
-    required this.id,
-    required this.isUser,
-    required this.text,
-    required this.time,
-    this.recommendedProduct,
-    this.customProductName,
-    this.customProductPrice,
-    this.productBadge,
-    this.productOriginalPrice,
-    this.productPoints,
-    this.productDescription,
-    this.chips,
-    this.selectedChip,
-    this.errorCode,
-  });
-
-  AIChatMessage copyWith({
-    String? selectedChip,
-    Product? recommendedProduct,
-    String? customProductName,
-    String? customProductPrice,
-    String? productBadge,
-    String? productOriginalPrice,
-    String? productPoints,
-    String? productDescription,
-    String? errorCode,
-  }) {
-    return AIChatMessage(
-      id: id,
-      isUser: isUser,
-      text: text,
-      time: time,
-      recommendedProduct: recommendedProduct ?? this.recommendedProduct,
-      customProductName: customProductName ?? this.customProductName,
-      customProductPrice: customProductPrice ?? this.customProductPrice,
-      productBadge: productBadge ?? this.productBadge,
-      productOriginalPrice: productOriginalPrice ?? this.productOriginalPrice,
-      productPoints: productPoints ?? this.productPoints,
-      productDescription: productDescription ?? this.productDescription,
-      chips: chips,
-      selectedChip: selectedChip ?? this.selectedChip,
-      errorCode: errorCode ?? this.errorCode,
-    );
-  }
-}
+export '../models/ai_chat_message.dart';
 
 /// Halaman AI ASSISTANT JNOVAMUSIC sesuai desain Figma (figma_slice_13_593x762.png)
 class AIChatPage extends StatefulWidget {
@@ -85,51 +25,24 @@ class _AIChatPageState extends State<AIChatPage> {
   bool _isAITyping = false;
   String _typingNote = 'Jnova menganalisis paket pemula & pick...';
 
-  late List<AIChatMessage> _messages;
-
-  Product get _yamahaF310Product {
-    return Product.allCatalog.firstWhere(
-      (p) => p.id == 'p6',
-      orElse: () => Product.allCatalog.first,
-    );
-  }
+  List<AIChatMessage> _messages = [];
 
   @override
   void initState() {
     super.initState();
-    _initializeDefaultChat();
+    if (AIChatService.instance.messages.isNotEmpty) {
+      _messages = List.from(AIChatService.instance.messages);
+    }
+    _loadChatHistory();
   }
 
-  void _initializeDefaultChat() {
-    _messages = [
-      const AIChatMessage(
-        id: 'm1',
-        isUser: false,
-        text: 'Halo! Ada yang bisa kubantu hari ini?\n\nAku siap membantumu menemukan alat musik yang sesuai dengan kebutuhan, gaya bermain, dan budget-mu.',
-        time: '14:20',
-      ),
-      const AIChatMessage(
-        id: 'm2',
-        isUser: true,
-        text: 'Aku mau cari gitar untuk pemula dengan budget Rp2.000.000.',
-        time: '14:21',
-      ),
-      AIChatMessage(
-        id: 'm3',
-        isUser: false,
-        text: 'Tentu! Untuk pemula dengan budget Rp2.000.000, kita bisa mencari gitar yang nyaman dimainkan dan sesuai dengan preferensi suaramu.\n\nKamu lebih tertarik dengan gitar akustik atau gitar elektrik?',
-        time: '14:21',
-        chips: const ['Gitar Akustik', 'Gitar Elektrik'],
-        selectedChip: 'Gitar Akustik',
-        recommendedProduct: _yamahaF310Product,
-        customProductName: 'Yamaha F310 Natural',
-        customProductPrice: 'Rp1.850.000',
-        productBadge: 'REKOMENDASI TERBAIK PEMULA',
-        productOriginalPrice: 'Rp2.000.000',
-        productPoints: '+93 Poin Member',
-        productDescription: 'Action senar rendah bersahabat untuk pemula, kayu spruce terpilih, dan intonasi presisi standar studio Yamaha.',
-      ),
-    ];
+  Future<void> _loadChatHistory() async {
+    final loaded = await AIChatService.instance.loadMessages();
+    if (!mounted) return;
+    setState(() {
+      _messages = List.from(loaded);
+    });
+    _scrollToBottom();
   }
 
   @override
@@ -161,55 +74,70 @@ class _AIChatPageState extends State<AIChatPage> {
     });
   }
 
-  Future<void> _handleChipSelected(String chipText) async {
+  Future<void> _handleChipSelected(String chipText, {String? messageId}) async {
     if (_isAITyping) return;
+
+    if (messageId != null) {
+      final msgIdx = _messages.indexWhere((m) => m.id == messageId);
+      if (msgIdx != -1) {
+        final updated = _messages[msgIdx].copyWith(selectedChip: chipText);
+        setState(() {
+          _messages[msgIdx] = updated;
+        });
+        AIChatService.instance.updateMessage(updated);
+      }
+    }
 
     final queryText = chipText == 'Gitar Elektrik'
         ? 'Saya lebih tertarik dengan gitar elektrik.'
         : 'Saya lebih tertarik dengan gitar akustik.';
 
+    final userMsg = AIChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      isUser: true,
+      text: queryText,
+      time: _formatCurrentTime(),
+    );
+
     setState(() {
-      _messages.add(
-        AIChatMessage(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          isUser: true,
-          text: queryText,
-          time: _formatCurrentTime(),
-        ),
-      );
+      _messages.add(userMsg);
       _isAITyping = true;
       _typingNote = 'Jnova AI mencari rekomendasi $chipText...';
     });
     _scrollToBottom();
 
+    await AIChatService.instance.addMessage(userMsg);
+
     final response = await GeminiService.instance.sendMessage(queryText);
     if (!mounted) return;
 
+    final aiMsg = AIChatMessage(
+      id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
+      isUser: false,
+      text: response.text,
+      time: _formatCurrentTime(),
+      recommendedProduct: response.isSuccess
+          ? response.recommendedProduct
+          : null,
+      productBadge: response.isSuccess ? response.badge : null,
+      productOriginalPrice:
+          response.isSuccess && response.recommendedProduct != null
+          ? 'Rp${((response.recommendedProduct!.price * 1.15) / 1000).round() * 1000}'
+          : null,
+      productPoints: response.isSuccess ? response.pointsLabel : null,
+      productDescription: response.isSuccess
+          ? response.recommendedProduct?.description
+          : null,
+      errorCode: response.errorCode,
+    );
+
     setState(() {
       _isAITyping = false;
-      _messages.add(
-        AIChatMessage(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          isUser: false,
-          text: response.text,
-          time: _formatCurrentTime(),
-          recommendedProduct: response.isSuccess
-              ? response.recommendedProduct
-              : null,
-          productBadge: response.isSuccess ? response.badge : null,
-          productOriginalPrice:
-              response.isSuccess && response.recommendedProduct != null
-              ? 'Rp${((response.recommendedProduct!.price * 1.15) / 1000).round() * 1000}'
-              : null,
-          productPoints: response.isSuccess ? response.pointsLabel : null,
-          productDescription: response.isSuccess
-              ? response.recommendedProduct?.description
-              : null,
-          errorCode: response.errorCode,
-        ),
-      );
+      _messages.add(aiMsg);
     });
     _scrollToBottom();
+
+    await AIChatService.instance.addMessage(aiMsg);
   }
 
   String _formatCurrentTime() {
@@ -225,45 +153,49 @@ class _AIChatPageState extends State<AIChatPage> {
     if (query.isEmpty) return;
 
     final nowTime = _formatCurrentTime();
+    final userMsg = AIChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      isUser: true,
+      text: query,
+      time: nowTime,
+    );
+
     setState(() {
-      _messages.add(
-        AIChatMessage(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          isUser: true,
-          text: query,
-          time: nowTime,
-        ),
-      );
+      _messages.add(userMsg);
       _inputController.clear();
       _isAITyping = true;
       _typingNote = 'Jnova AI sedang memproses...';
     });
     _scrollToBottom();
 
+    await AIChatService.instance.addMessage(userMsg);
+
     final response = await GeminiService.instance.sendMessage(query);
     if (!mounted) return;
 
+    final aiMsg = AIChatMessage(
+      id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
+      isUser: false,
+      text: response.text,
+      time: _formatCurrentTime(),
+      recommendedProduct: response.isSuccess
+          ? response.recommendedProduct
+          : null,
+      productBadge: response.isSuccess ? response.badge : null,
+      productPoints: response.isSuccess ? response.pointsLabel : null,
+      productDescription: response.isSuccess
+          ? response.recommendedProduct?.description
+          : null,
+      errorCode: response.errorCode,
+    );
+
     setState(() {
       _isAITyping = false;
-      _messages.add(
-        AIChatMessage(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          isUser: false,
-          text: response.text,
-          time: _formatCurrentTime(),
-          recommendedProduct: response.isSuccess
-              ? response.recommendedProduct
-              : null,
-          productBadge: response.isSuccess ? response.badge : null,
-          productPoints: response.isSuccess ? response.pointsLabel : null,
-          productDescription: response.isSuccess
-              ? response.recommendedProduct?.description
-              : null,
-          errorCode: response.errorCode,
-        ),
-      );
+      _messages.add(aiMsg);
     });
     _scrollToBottom();
+
+    await AIChatService.instance.addMessage(aiMsg);
   }
 
   Future<void> _retryLastUserMessage() async {
@@ -420,12 +352,17 @@ class _AIChatPageState extends State<AIChatPage> {
             ),
           ),
           ElevatedButton.icon(
-            onPressed: () {
+            onPressed: () async {
               GeminiService.instance.resetQuotaAndChat();
-              setState(() {
-                _initializeDefaultChat();
-              });
+              await AIChatService.instance.resetChat();
+              final resetMessages =
+                  await AIChatService.instance.loadMessages(forceReload: true);
+              if (!ctx.mounted) return;
               Navigator.pop(ctx);
+              if (!mounted) return;
+              setState(() {
+                _messages = List.from(resetMessages);
+              });
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -757,7 +694,8 @@ class _AIChatPageState extends State<AIChatPage> {
                   return Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: InkWell(
-                      onTap: () => _handleChipSelected(chipText),
+                      onTap: () =>
+                          _handleChipSelected(chipText, messageId: msg.id),
                       borderRadius: BorderRadius.circular(16),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
