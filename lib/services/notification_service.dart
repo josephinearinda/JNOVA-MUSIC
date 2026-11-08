@@ -325,15 +325,16 @@ class NotificationService {
   }
 
   Future<void> showTestNotification({
-    String title = 'Pembaruan JNOVAMUSIC',
+    String title = '🎮 Ayo Main Game JNova Rhythm!',
     String message =
-        'Notifikasi otomatis popup/banner berhasil ditampilkan di perangkat!',
+        'Kumpulkan skor tertinggi dan raih bonus poin member hari ini!',
   }) {
     return _show(
-      category: NotificationCategory.promo,
+      category: NotificationCategory.game,
       title: title,
       message: message,
-      eventKey: 'test_notification_${DateTime.now().millisecondsSinceEpoch}',
+      eventKey: 'test_game_notification_${DateTime.now().millisecondsSinceEpoch}',
+      payload: 'route:/game-home',
       bypassPreferences: true,
     );
   }

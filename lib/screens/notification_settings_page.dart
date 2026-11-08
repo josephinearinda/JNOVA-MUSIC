@@ -556,15 +556,15 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       child: Row(
         children: [
           Container(
-            width: 34,
-            height: 34,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: const Color(0xFFFFEDDF),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
-              Icons.graphic_eq_rounded,
-              size: 18,
+              Icons.sports_esports_rounded,
+              size: 20,
               color: AppColors.primaryOrange,
             ),
           ),
@@ -574,7 +574,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'AUDIO ALERT LIVE',
+                  'NOTIFIKASI GAME & POPUP',
                   style: TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w800,
@@ -584,7 +584,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                 ),
                 SizedBox(height: 2),
                 Text(
-                  'Pemberitahuan real-time untuk stok gear & promo studio musik.',
+                  'Pemberitahuan pengingat bermain game musik & bonus poin harian.',
                   style: TextStyle(fontSize: 10, color: Color(0xFF6E6560)),
                 ),
               ],
@@ -601,7 +601,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Notifikasi popup berhasil dikirim!'),
+                        content: Text(
+                          'Notifikasi popup game berhasil dikirim! Ketuk untuk bermain.',
+                        ),
                         backgroundColor: Color(0xFF2E2E2E),
                         duration: Duration(seconds: 2),
                         behavior: SnackBarBehavior.floating,
@@ -618,7 +620,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Text(
-                    'Uji Popup',
+                    'Uji Pop Up Game',
                     style: TextStyle(
                       fontSize: 9.5,
                       fontWeight: FontWeight.w700,
