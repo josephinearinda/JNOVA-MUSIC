@@ -420,6 +420,41 @@ class SecureStorageService {
     } catch (_) {}
   }
 
+  // Gemini API Key kustom yang dapat diinput langsung oleh pengguna untuk Gemini Vision
+  static const String _keyCustomGeminiApiKey = 'custom_gemini_vision_api_key';
+
+  Future<String?> getCustomGeminiApiKey() async {
+    if (_memoryFallback.containsKey(_keyCustomGeminiApiKey)) {
+      final val = _memoryFallback[_keyCustomGeminiApiKey];
+      return val?.isNotEmpty == true ? val : null;
+    }
+    try {
+      final v = await _storage.read(key: _keyCustomGeminiApiKey);
+      if (v != null && v.isNotEmpty) {
+        _memoryFallback[_keyCustomGeminiApiKey] = v;
+        return v;
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> saveCustomGeminiApiKey(String? key) async {
+    final clean = key?.trim() ?? '';
+    if (clean.isEmpty) {
+      _memoryFallback.remove(_keyCustomGeminiApiKey);
+      try {
+        await _storage.delete(key: _keyCustomGeminiApiKey);
+      } catch (_) {}
+    } else {
+      _memoryFallback[_keyCustomGeminiApiKey] = clean;
+      try {
+        await _storage.write(key: _keyCustomGeminiApiKey, value: clean);
+      } catch (_) {}
+    }
+  }
+
   // Remove Gemini keys saved by older app versions.
   static const String _keyGeminiApiKey = 'gemini_api_key';
 

@@ -38,6 +38,7 @@ import 'screens/membership_settings_page.dart';
 import 'screens/point_history_page.dart';
 import 'screens/suggestion_review_page.dart';
 import 'screens/ai_chat_page.dart';
+import 'screens/ai_scanner_page.dart';
 import 'screens/select_pickup_store_page.dart';
 import 'screens/my_certificates_screen.dart';
 import 'screens/blockchain_certificate_page.dart';
@@ -258,6 +259,7 @@ class MyApp extends StatelessWidget {
         '/point-history': (context) => const PointHistoryPage(),
         '/suggestion-review': (context) => const SuggestionReviewPage(),
         '/ai-chat': (context) => const AIChatPage(),
+        '/ai-scanner': (context) => const AIScannerPage(),
         '/blockchain-certificates': (context) => const MyCertificatesScreen(),
         '/blockchain-certificate-detail': (context) {
           final cert =

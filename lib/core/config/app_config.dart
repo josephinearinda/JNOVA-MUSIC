@@ -60,6 +60,21 @@ class AppConfig {
 
   static bool get isAiBackendConfigured => isSupabaseConfigured;
 
+  // Google Gemini Configuration
+  static String get geminiApiKey {
+    if (!dotenv.isInitialized) return '';
+    return _cleanEnvVal(dotenv.env['GEMINI_API_KEY']);
+  }
+
+  static String get geminiModel {
+    if (!dotenv.isInitialized) return 'gemini-1.5-flash';
+    final m = _cleanEnvVal(dotenv.env['GEMINI_MODEL']);
+    return m.isNotEmpty ? m : 'gemini-1.5-flash';
+  }
+
+  static bool get isGeminiDirectConfigured =>
+      geminiApiKey.isNotEmpty && !geminiApiKey.contains('your-gemini');
+
   /// Helper untuk membersihkan tanda kutip dan spasi dari nilai env
   static String _cleanEnvVal(String? val) {
     if (val == null) return '';
