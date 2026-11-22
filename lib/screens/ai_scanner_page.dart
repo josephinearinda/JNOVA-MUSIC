@@ -3,7 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../core/constants/app_colors.dart';
+<<<<<<< HEAD
 import '../core/storage/secure_storage_service.dart';
+=======
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
 import '../core/utils/currency_formatter.dart';
 import '../models/ai_scan_result.dart';
 import '../models/product.dart';
@@ -11,7 +14,11 @@ import '../screens/product_detail_screen.dart';
 import '../services/gemini_vision_service.dart';
 
 /// Halaman Fitur AI Object Scanner JNOVA MUSIC
+<<<<<<< HEAD
 /// Terintegrasi dengan Gemini Vision Multimodal & Mesin Cerdas JNOVA
+=======
+/// Terintegrasi langsung dengan Groq Vision (Llama 3.2 Vision) & Google Gemini Multimodal.
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
 class AIScannerPage extends StatefulWidget {
   const AIScannerPage({super.key});
 
@@ -22,8 +29,12 @@ class AIScannerPage extends StatefulWidget {
 class _AIScannerPageState extends State<AIScannerPage>
     with SingleTickerProviderStateMixin {
   final ImagePicker _picker = ImagePicker();
+<<<<<<< HEAD
   final GeminiVisionService _visionService = GeminiVisionService.instance;
   final SecureStorageService _storage = SecureStorageService.instance;
+=======
+  final GroqVisionService _visionService = GroqVisionService.instance;
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
 
   XFile? _selectedImage;
   Uint8List? _imageBytes;
@@ -59,9 +70,15 @@ class _AIScannerPageState extends State<AIScannerPage>
     try {
       final picked = await _picker.pickImage(
         source: source,
+<<<<<<< HEAD
         maxWidth: 1440,
         maxHeight: 1440,
         imageQuality: 88,
+=======
+        maxWidth: 720,
+        maxHeight: 720,
+        imageQuality: 75,
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
       );
       if (picked == null) return;
 
@@ -79,6 +96,7 @@ class _AIScannerPageState extends State<AIScannerPage>
     }
   }
 
+<<<<<<< HEAD
   // Pilih preset bawaan untuk kemudahan testing (terutama pada Android Emulator)
   Future<void> _loadPresetSample({
     required String assetPath,
@@ -109,6 +127,8 @@ class _AIScannerPageState extends State<AIScannerPage>
     }
   }
 
+=======
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
   // ================= PROSES SCAN DENGAN AI =================
 
   Future<void> _startScan() async {
@@ -122,6 +142,24 @@ class _AIScannerPageState extends State<AIScannerPage>
       return;
     }
 
+<<<<<<< HEAD
+=======
+    // Pastikan sistem AI online aktif
+    final hasKey = await _visionService.hasActiveOnlineKey();
+    if (!hasKey) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Layanan AI Vision sedang dalam pemeliharaan. Silakan coba sesaat lagi.',
+          ),
+          backgroundColor: AppColors.primaryOrange,
+        ),
+      );
+      return;
+    }
+
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
     setState(() {
       _isScanning = true;
       _errorMessage = null;
@@ -144,8 +182,12 @@ class _AIScannerPageState extends State<AIScannerPage>
       if (!mounted) return;
       setState(() {
         _isScanning = false;
+<<<<<<< HEAD
         _errorMessage =
             'Proses scan AI mengalami kendala: ${e.toString().replaceAll('Exception:', '').trim()}';
+=======
+        _errorMessage = e.toString().replaceAll('Exception:', '').trim();
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
       });
       _scanAnimController.stop();
     }
@@ -162,6 +204,7 @@ class _AIScannerPageState extends State<AIScannerPage>
     _scanAnimController.stop();
   }
 
+<<<<<<< HEAD
   // ================= PENGATURAN API KEY GEMINI =================
 
   void _showApiKeyDialog() async {
@@ -287,6 +330,8 @@ class _AIScannerPageState extends State<AIScannerPage>
     );
   }
 
+=======
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
   // ================= BUILD UI UTAMA =================
 
   @override
@@ -306,26 +351,41 @@ class _AIScannerPageState extends State<AIScannerPage>
 
               const SizedBox(height: 16),
 
+<<<<<<< HEAD
               // 2. Chip Preset Pengujian Cepat
               _buildPresetTestingBar(),
 
               const SizedBox(height: 16),
 
               // 3. Area Gambar / Preview / Kamera
+=======
+              // 2. Area Gambar / Preview / Kamera
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
               _buildImageSection(),
 
               const SizedBox(height: 16),
 
+<<<<<<< HEAD
               // 4. Tombol Aksi Utama (Scan dengan AI / Ganti Gambar)
               _buildActionButtons(),
 
               // 5. Pesan Error Jika Ada
+=======
+              // 3. Tombol Aksi Utama (Scan dengan AI / Ganti Gambar)
+              _buildActionButtons(),
+
+              // 4. Pesan Error Jika Ada
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
               if (_errorMessage != null) ...[
                 const SizedBox(height: 14),
                 _buildErrorCard(),
               ],
 
+<<<<<<< HEAD
               // 6. Kartu Hasil Scan
+=======
+              // 5. Kartu Hasil Scan Lengkap & Detail (Semua Objek)
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
               if (_scanResult != null) ...[
                 const SizedBox(height: 20),
                 _buildResultCard(_scanResult!),
@@ -350,6 +410,7 @@ class _AIScannerPageState extends State<AIScannerPage>
         icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF1E1E1E)),
         onPressed: () => Navigator.pop(context),
       ),
+<<<<<<< HEAD
       title: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -377,14 +438,45 @@ class _AIScannerPageState extends State<AIScannerPage>
           tooltip: 'Status & Pengaturan AI',
           icon: const Icon(Icons.info_outline_rounded, color: AppColors.primaryOrange),
           onPressed: _showApiKeyDialog,
+=======
+      title: const Text(
+        'AI Object Scanner',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w800,
+          color: Color(0xFF1E1E1E),
+          letterSpacing: -0.2,
+        ),
+      ),
+      actions: [
+        IconButton(
+          tooltip: 'Info AI Vision',
+          icon: const Icon(
+            Icons.info_outline_rounded,
+            color: AppColors.primaryOrange,
+          ),
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'AI Vision pintar siap mengenali objek secara otomatis.',
+                ),
+              ),
+            );
+          },
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
         ),
       ],
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1.0),
+<<<<<<< HEAD
         child: Container(
           color: const Color(0xFFEEEEEE),
           height: 1.0,
         ),
+=======
+        child: Container(color: const Color(0xFFEEEEEE), height: 1.0),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
       ),
     );
   }
@@ -432,7 +524,11 @@ class _AIScannerPageState extends State<AIScannerPage>
                 ),
                 SizedBox(height: 3),
                 Text(
+<<<<<<< HEAD
                   'Ambil foto atau unggah gambar instrumen musik maupun barang sehari-hari. AI akan mengenali nama, kategori, fungsi, dan karakteristik visualnya.',
+=======
+                  'Ambil foto atau unggah gambar objek apa saja. AI akan mengenali nama, kategori, fungsi, dan karakteristik visualnya secara akurat.',
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                   style: TextStyle(
                     fontSize: 11,
                     color: Color(0xFF6E6E6E),
@@ -447,6 +543,7 @@ class _AIScannerPageState extends State<AIScannerPage>
     );
   }
 
+<<<<<<< HEAD
   Widget _buildPresetTestingBar() {
     final presets = [
       {'label': 'Gitar Akustik', 'icon': '🎸', 'asset': 'assets/images/prod_yamaha_acoustic.png'},
@@ -514,16 +611,24 @@ class _AIScannerPageState extends State<AIScannerPage>
   Widget _buildImageSection() {
     if (_imageBytes == null) {
       // Tampilan Belum Ada Gambar
+=======
+  Widget _buildImageSection() {
+    if (_imageBytes == null) {
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
       return Container(
         width: double.infinity,
         height: 240,
         decoration: BoxDecoration(
           color: const Color(0xFFFAFAFA),
           borderRadius: BorderRadius.circular(16),
+<<<<<<< HEAD
           border: Border.all(
             color: const Color(0xFFE0E0E0),
             width: 1.5,
           ),
+=======
+          border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -558,7 +663,11 @@ class _AIScannerPageState extends State<AIScannerPage>
             ),
             const SizedBox(height: 4),
             const Text(
+<<<<<<< HEAD
               'Buka kamera atau unggah gambar dari galeri Anda',
+=======
+              'Buka kamera atau unggah gambar benda apa saja dari galeri Anda',
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
               style: TextStyle(fontSize: 11, color: Color(0xFF888888)),
             ),
             const SizedBox(height: 16),
@@ -567,6 +676,7 @@ class _AIScannerPageState extends State<AIScannerPage>
               children: [
                 ElevatedButton.icon(
                   onPressed: () => _pickImage(ImageSource.camera),
+<<<<<<< HEAD
                   icon: const Icon(Icons.camera_alt_rounded, size: 16, color: Colors.white),
                   label: const Text('Kamera', style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w700)),
                   style: ElevatedButton.styleFrom(
@@ -574,17 +684,70 @@ class _AIScannerPageState extends State<AIScannerPage>
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+=======
+                  icon: const Icon(
+                    Icons.camera_alt_rounded,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                  label: const Text(
+                    'Kamera',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryOrange,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                   ),
                 ),
                 const SizedBox(width: 10),
                 OutlinedButton.icon(
                   onPressed: () => _pickImage(ImageSource.gallery),
+<<<<<<< HEAD
                   icon: const Icon(Icons.photo_library_rounded, size: 16, color: AppColors.primaryOrange),
                   label: const Text('Galeri', style: TextStyle(fontSize: 12, color: AppColors.primaryOrange, fontWeight: FontWeight.w700)),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.primaryOrange, width: 1.2),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+=======
+                  icon: const Icon(
+                    Icons.photo_library_rounded,
+                    size: 16,
+                    color: AppColors.primaryOrange,
+                  ),
+                  label: const Text(
+                    'Galeri',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.primaryOrange,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(
+                      color: AppColors.primaryOrange,
+                      width: 1.2,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                   ),
                 ),
               ],
@@ -602,7 +765,13 @@ class _AIScannerPageState extends State<AIScannerPage>
         color: Colors.black,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
+<<<<<<< HEAD
           color: _isScanning ? AppColors.primaryOrange : const Color(0xFFE0E0E0),
+=======
+          color: _isScanning
+              ? AppColors.primaryOrange
+              : const Color(0xFFE0E0E0),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
           width: _isScanning ? 2.0 : 1.0,
         ),
         boxShadow: [
@@ -620,15 +789,22 @@ class _AIScannerPageState extends State<AIScannerPage>
           children: [
             // Gambar Utama
             Positioned.fill(
+<<<<<<< HEAD
               child: Image.memory(
                 _imageBytes!,
                 fit: BoxFit.contain,
               ),
+=======
+              child: Image.memory(_imageBytes!, fit: BoxFit.contain),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
             ),
 
             // Efek Animasi Laser / Scanner Radar saat sedang menganalisis
             if (_isScanning) ...[
+<<<<<<< HEAD
               // Efek scan line vertikal
+=======
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
               AnimatedBuilder(
                 animation: _scanAnimation,
                 builder: (context, child) {
@@ -658,6 +834,7 @@ class _AIScannerPageState extends State<AIScannerPage>
                 },
               ),
 
+<<<<<<< HEAD
               // Overlay semi-transparan status
               Positioned(
                 bottom: 16,
@@ -667,6 +844,22 @@ class _AIScannerPageState extends State<AIScannerPage>
                     color: Colors.black.withValues(alpha: 0.75),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: AppColors.primaryOrange.withValues(alpha: 0.6)),
+=======
+              // Overlay status proses
+              Positioned(
+                bottom: 16,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppColors.primaryOrange.withValues(alpha: 0.6),
+                    ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                   ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
@@ -681,7 +874,11 @@ class _AIScannerPageState extends State<AIScannerPage>
                       ),
                       SizedBox(width: 10),
                       Text(
+<<<<<<< HEAD
                         'AI Vision menganalisis objek...',
+=======
+                        'Mengambil data AI Vision dari internet...',
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 11.5,
@@ -700,7 +897,14 @@ class _AIScannerPageState extends State<AIScannerPage>
                 top: 12,
                 right: 12,
                 child: Container(
+<<<<<<< HEAD
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+=======
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                   decoration: BoxDecoration(
                     color: const Color(0xFF059669),
                     borderRadius: BorderRadius.circular(14),
@@ -714,7 +918,15 @@ class _AIScannerPageState extends State<AIScannerPage>
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+<<<<<<< HEAD
                       Icon(Icons.check_circle_rounded, color: Colors.white, size: 13),
+=======
+                      Icon(
+                        Icons.check_circle_rounded,
+                        color: Colors.white,
+                        size: 13,
+                      ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                       SizedBox(width: 4),
                       Text(
                         'Teridentifikasi',
@@ -749,9 +961,19 @@ class _AIScannerPageState extends State<AIScannerPage>
             onPressed: _isScanning ? null : _startScan,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryOrange,
+<<<<<<< HEAD
               disabledBackgroundColor: AppColors.primaryOrange.withValues(alpha: 0.6),
               elevation: 2,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+=======
+              disabledBackgroundColor: AppColors.primaryOrange.withValues(
+                alpha: 0.6,
+              ),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
             ),
             child: _isScanning
                 ? const Row(
@@ -767,7 +989,11 @@ class _AIScannerPageState extends State<AIScannerPage>
                       ),
                       SizedBox(width: 10),
                       Text(
+<<<<<<< HEAD
                         'Sedang Menganalisis...',
+=======
+                        'Sedang Menganalisis via Internet...',
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -801,8 +1027,19 @@ class _AIScannerPageState extends State<AIScannerPage>
           children: [
             Expanded(
               child: OutlinedButton.icon(
+<<<<<<< HEAD
                 onPressed: _isScanning ? null : () => _pickImage(ImageSource.camera),
                 icon: const Icon(Icons.camera_alt_outlined, size: 15, color: Color(0xFF4A4A4A)),
+=======
+                onPressed: _isScanning
+                    ? null
+                    : () => _pickImage(ImageSource.camera),
+                icon: const Icon(
+                  Icons.camera_alt_outlined,
+                  size: 15,
+                  color: Color(0xFF4A4A4A),
+                ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                 label: const Text(
                   'Foto Ulang',
                   style: TextStyle(
@@ -813,7 +1050,13 @@ class _AIScannerPageState extends State<AIScannerPage>
                 ),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Color(0xFFD6D6D6)),
+<<<<<<< HEAD
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+=======
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                   padding: const EdgeInsets.symmetric(vertical: 9),
                 ),
               ),
@@ -821,8 +1064,19 @@ class _AIScannerPageState extends State<AIScannerPage>
             const SizedBox(width: 8),
             Expanded(
               child: OutlinedButton.icon(
+<<<<<<< HEAD
                 onPressed: _isScanning ? null : () => _pickImage(ImageSource.gallery),
                 icon: const Icon(Icons.photo_library_outlined, size: 15, color: Color(0xFF4A4A4A)),
+=======
+                onPressed: _isScanning
+                    ? null
+                    : () => _pickImage(ImageSource.gallery),
+                icon: const Icon(
+                  Icons.photo_library_outlined,
+                  size: 15,
+                  color: Color(0xFF4A4A4A),
+                ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                 label: const Text(
                   'Pilih Lainnya',
                   style: TextStyle(
@@ -833,7 +1087,13 @@ class _AIScannerPageState extends State<AIScannerPage>
                 ),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Color(0xFFD6D6D6)),
+<<<<<<< HEAD
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+=======
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                   padding: const EdgeInsets.symmetric(vertical: 9),
                 ),
               ),
@@ -845,7 +1105,13 @@ class _AIScannerPageState extends State<AIScannerPage>
               icon: const Icon(Icons.refresh_rounded, color: Color(0xFF888888)),
               style: IconButton.styleFrom(
                 backgroundColor: const Color(0xFFF5F5F5),
+<<<<<<< HEAD
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+=======
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
               ),
             ),
           ],
@@ -857,6 +1123,7 @@ class _AIScannerPageState extends State<AIScannerPage>
   Widget _buildErrorCard() {
     return Container(
       width: double.infinity,
+<<<<<<< HEAD
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: const Color(0xFFFEF2F2),
@@ -875,6 +1142,60 @@ class _AIScannerPageState extends State<AIScannerPage>
                 fontSize: 11.5,
                 color: Color(0xFFB91C1C),
                 height: 1.35,
+=======
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF7ED),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFFFEDD5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(
+                Icons.error_outline_rounded,
+                color: Color(0xFFEA580C),
+                size: 20,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  _errorMessage!,
+                  style: const TextStyle(
+                    fontSize: 11.5,
+                    color: Color(0xFF9A3412),
+                    height: 1.4,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _startScan,
+              icon: const Icon(Icons.refresh_rounded, size: 16, color: Colors.white),
+              label: const Text(
+                'Coba Scan Lagi',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryOrange,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
               ),
             ),
           ),
@@ -883,7 +1204,11 @@ class _AIScannerPageState extends State<AIScannerPage>
     );
   }
 
+<<<<<<< HEAD
   // ================= KARTU HASIL IDENTIFIKASI =================
+=======
+  // ================= KARTU HASIL IDENTIFIKASI LENGKAP =================
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
 
   Widget _buildResultCard(AIScanResult result) {
     return Container(
@@ -904,12 +1229,23 @@ class _AIScannerPageState extends State<AIScannerPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+<<<<<<< HEAD
           // Header: Status Kepercayaan & Sumber
+=======
+          // Header: Status Kepercayaan & Sumber AI
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
+<<<<<<< HEAD
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+=======
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFF0E5),
                   borderRadius: BorderRadius.circular(20),
@@ -918,7 +1254,15 @@ class _AIScannerPageState extends State<AIScannerPage>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+<<<<<<< HEAD
                     const Icon(Icons.verified_rounded, size: 12, color: AppColors.primaryOrange),
+=======
+                    const Icon(
+                      Icons.verified_rounded,
+                      size: 12,
+                      color: AppColors.primaryOrange,
+                    ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                     const SizedBox(width: 4),
                     Text(
                       result.confidence,
@@ -931,12 +1275,26 @@ class _AIScannerPageState extends State<AIScannerPage>
                   ],
                 ),
               ),
+<<<<<<< HEAD
               Text(
                 result.source ?? 'AI Vision',
                 style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF9E9E9E),
+=======
+              Expanded(
+                child: Text(
+                  result.source ?? 'AI Vision (Internet Online)',
+                  textAlign: TextAlign.end,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF888888),
+                  ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                 ),
               ),
             ],
@@ -955,6 +1313,7 @@ class _AIScannerPageState extends State<AIScannerPage>
             ),
           ),
 
+<<<<<<< HEAD
           const SizedBox(height: 4),
 
           // Kategori Badge
@@ -963,13 +1322,28 @@ class _AIScannerPageState extends State<AIScannerPage>
             decoration: BoxDecoration(
               color: const Color(0xFFF5F5F5),
               borderRadius: BorderRadius.circular(6),
+=======
+          const SizedBox(height: 6),
+
+          // Kategori Badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF5F5F7),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: const Color(0xFFE8E8EC)),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
             ),
             child: Text(
               result.category,
               style: const TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
+<<<<<<< HEAD
                 color: Color(0xFF555555),
+=======
+                color: Color(0xFF444444),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
               ),
             ),
           ),
@@ -981,7 +1355,11 @@ class _AIScannerPageState extends State<AIScannerPage>
 
           const SizedBox(height: 14),
 
+<<<<<<< HEAD
           // Deskripsi
+=======
+          // 1. Deskripsi Objek Lengkap
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
           _buildInfoSection(
             icon: Icons.description_outlined,
             title: 'Deskripsi Objek',
@@ -990,21 +1368,32 @@ class _AIScannerPageState extends State<AIScannerPage>
 
           const SizedBox(height: 14),
 
+<<<<<<< HEAD
           // Fungsi & Kegunaan
           _buildInfoSection(
             icon: Icons.build_circle_outlined,
+=======
+          // 2. Fungsi & Kegunaan Utama
+          _buildInfoSection(
+            icon: Icons.lightbulb_outline_rounded,
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
             title: 'Fungsi & Kegunaan',
             content: result.function,
           ),
 
           const SizedBox(height: 14),
 
+<<<<<<< HEAD
           // Karakteristik & Ciri Utama
+=======
+          // 3. Karakteristik & Ciri Utama
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
           if (result.characteristics.isNotEmpty) ...[
             _buildCharacteristicsSection(result.characteristics),
             const SizedBox(height: 14),
           ],
 
+<<<<<<< HEAD
           // Informasi Tambahan
           _buildInfoSection(
             icon: Icons.lightbulb_outline_rounded,
@@ -1043,6 +1432,51 @@ class _AIScannerPageState extends State<AIScannerPage>
               ),
             ),
           ),
+=======
+          // 4. Informasi Tambahan & Tips
+          _buildInfoSection(
+            icon: Icons.info_outline_rounded,
+            title: 'Informasi Tambahan & Tips',
+            content: result.additionalInfo,
+          ),
+
+          // 5. Rekomendasi Produk Katalog jika relevan
+          if (result.matchedProduct != null) ...[
+            const SizedBox(height: 16),
+            _buildCatalogProductRecommendation(result.matchedProduct!),
+          ] else ...[
+            const SizedBox(height: 14),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFFE5E7EB)),
+              ),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.auto_awesome_rounded,
+                    size: 15,
+                    color: AppColors.primaryOrange,
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Objek berhasil dianalisis secara langsung dari internet dengan AI Vision Multimodal.',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: Color(0xFF6B7280),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
         ],
       ),
     );
@@ -1089,7 +1523,15 @@ class _AIScannerPageState extends State<AIScannerPage>
       children: [
         const Row(
           children: [
+<<<<<<< HEAD
             Icon(Icons.check_circle_outline_rounded, size: 14, color: AppColors.primaryOrange),
+=======
+            Icon(
+              Icons.check_circle_outline_rounded,
+              size: 14,
+              color: AppColors.primaryOrange,
+            ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
             SizedBox(width: 6),
             Text(
               'Ciri & Karakteristik Utama',
@@ -1110,7 +1552,15 @@ class _AIScannerPageState extends State<AIScannerPage>
               children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 5.0, right: 8.0),
+<<<<<<< HEAD
                   child: Icon(Icons.circle, size: 5, color: AppColors.primaryOrange),
+=======
+                  child: Icon(
+                    Icons.circle,
+                    size: 5,
+                    color: AppColors.primaryOrange,
+                  ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                 ),
                 Expanded(
                   child: Text(
@@ -1143,7 +1593,15 @@ class _AIScannerPageState extends State<AIScannerPage>
         children: [
           const Row(
             children: [
+<<<<<<< HEAD
               Icon(Icons.storefront_rounded, size: 14, color: AppColors.primaryOrange),
+=======
+              Icon(
+                Icons.storefront_rounded,
+                size: 14,
+                color: AppColors.primaryOrange,
+              ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
               SizedBox(width: 6),
               Text(
                 'Tersedia di Katalog JNOVA MUSIC',
@@ -1212,19 +1670,42 @@ class _AIScannerPageState extends State<AIScannerPage>
                   Navigator.push(
                     context,
                     MaterialPageRoute(
+<<<<<<< HEAD
                       builder: (context) => ProductDetailScreen(product: product),
+=======
+                      builder: (context) =>
+                          ProductDetailScreen(product: product),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryOrange,
                   elevation: 0,
+<<<<<<< HEAD
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 child: const Text(
                   'Lihat',
                   style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700),
+=======
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Lihat',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+>>>>>>> 8971535 (fitur ai JNOVA MUSIC)
                 ),
               ),
             ],

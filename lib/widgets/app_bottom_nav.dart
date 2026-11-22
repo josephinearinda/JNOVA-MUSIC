@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../core/constants/app_colors.dart';
 
 /// Komponen Bottom Navigation Bar resmi JNOVAMUSIC sesuai desain Figma
@@ -6,11 +7,7 @@ class AppBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int>? onTap;
 
-  const AppBottomNav({
-    super.key,
-    this.currentIndex = 0,
-    this.onTap,
-  });
+  const AppBottomNav({super.key, this.currentIndex = 0, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -36,34 +33,46 @@ class AppBottomNav extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(
+                context: context,
                 index: 0,
                 icon: Icons.storefront_outlined,
                 activeIcon: Icons.storefront_rounded,
                 label: 'Beranda',
               ),
               _buildNavItem(
+                context: context,
                 index: 1,
                 icon: Icons.grid_view_rounded,
                 activeIcon: Icons.grid_view_rounded,
                 label: 'Kategori',
               ),
               _buildNavItem(
+                context: context,
                 index: 2,
                 icon: Icons.military_tech_outlined,
                 activeIcon: Icons.military_tech_rounded,
                 label: 'Membership',
               ),
               _buildNavItem(
+                context: context,
                 index: 3,
                 icon: Icons.receipt_long_outlined,
                 activeIcon: Icons.receipt_long_rounded,
                 label: 'Pesanan',
               ),
               _buildNavItem(
+                context: context,
                 index: 4,
                 icon: Icons.person_outline_rounded,
                 activeIcon: Icons.person_rounded,
                 label: 'Profil',
+              ),
+              _buildNavItem(
+                context: context,
+                index: 5,
+                icon: Icons.document_scanner_outlined,
+                activeIcon: Icons.document_scanner_rounded,
+                label: 'AI Scan',
               ),
             ],
           ),
@@ -73,28 +82,33 @@ class AppBottomNav extends StatelessWidget {
   }
 
   Widget _buildNavItem({
+    required BuildContext context,
     required int index,
     required IconData icon,
     required IconData activeIcon,
     required String label,
   }) {
     final bool isActive = index == currentIndex;
-    final Color color = isActive ? AppColors.primaryOrange : const Color(0xFF6E6560);
+    final Color color = isActive
+        ? AppColors.primaryOrange
+        : const Color(0xFF6E6560);
 
     return Expanded(
       child: InkWell(
-        onTap: () => onTap?.call(index),
+        onTap: () {
+          if (index == 5) {
+            Navigator.pushNamed(context, '/ai-scanner');
+          } else {
+            onTap?.call(index);
+          }
+        },
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                isActive ? activeIcon : icon,
-                size: 21,
-                color: color,
-              ),
+              Icon(isActive ? activeIcon : icon, size: 21, color: color),
               const SizedBox(height: 3),
               FittedBox(
                 fit: BoxFit.scaleDown,
