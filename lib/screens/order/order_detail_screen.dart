@@ -71,7 +71,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Hubungi Bantuan CS"
                 ),
               ),
             ),
@@ -124,11 +124,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors
+          .transparent, // Warna latar kotak atau kartu untuk "PKP-8841-JNV"
       builder: (ctx) => Container(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color:
+              Colors.white, // Warna latar kotak atau kartu untuk "PKP-8841-JNV"
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(
@@ -138,7 +140,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: const Color(0xFFD4D0C8),
+                color: const Color(
+                  0xFFD4D0C8,
+                ), // Warna latar kotak atau kartu untuk "PKP-8841-JNV"
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -151,7 +155,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "QR Code Pengambilan Toko"
                   ),
                 ),
                 IconButton(
@@ -171,7 +175,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 1.5,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna teks pada "${store.name} • ${activeOrder.order..."
               ),
             ),
             const SizedBox(height: 4),
@@ -180,29 +184,36 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               style: const TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF7E756F),
+                color: Color(
+                  0xFF7E756F,
+                ), // Warna teks pada "${store.name} • ${activeOrder.order..."
               ),
             ),
             const SizedBox(height: 14),
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF9F7),
+                color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "${store.name} • ${activeOrder.order..."
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFEBE8E3)),
+                border: Border.all(
+                  color: const Color(0xFFEBE8E3), // Warna ikon ikon untuk "${store.name} • ${activeOrder.order..."
+                ),
               ),
               child: const Row(
                 children: [
                   Icon(
                     Icons.info_outline,
                     size: 15,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "${store.name} • ${activeOrder.order..."
                   ),
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'Tunjukkan QR Code ini kepada kasir atau luthier desk di store JNOVAMUSIC untuk verifikasi instrumen & unboxing bersama.',
-                      style: TextStyle(fontSize: 10, color: Color(0xFF5A524D)),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFF5A524D), // Warna teks pada "${store.name} • ${activeOrder.order..."
+                      ),
                     ),
                   ),
                 ],
@@ -224,7 +235,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryOrange,
+                  backgroundColor: AppColors.primaryOrange, // Warna latar pesan pemberitahuan pada bagian komponen ini
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -257,7 +268,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
     if (activeOrder == null) {
       return Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.white, // Warna latar kotak untuk "/home"
         body: SafeArea(
           child: Column(
             children: [
@@ -284,7 +295,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "/profile"
       body: SafeArea(
         child: Column(
           children: [
@@ -319,7 +330,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     // Kartu Sertifikat Keaslian Blockchain Resmi
                     if (activeOrder.hasBlockchainCertificate) ...[
                       const SizedBox(height: 14),
-                      _buildBlockchainCertificateOrderCard(context, activeOrder),
+                      _buildBlockchainCertificateOrderCard(
+                        context,
+                        activeOrder,
+                      ),
                     ],
 
                     const SizedBox(height: 14),
@@ -361,9 +375,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "/profile"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/profile"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -382,7 +401,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               SizedBox(height: 1),
               Text(
                 'Pantau pembelian alat musikmu di sini.',
-                style: TextStyle(fontSize: 10.5, color: Color(0xFF7E756F)),
+                style: TextStyle(
+                  fontSize: 10.5,
+                  color: Color(
+                    0xFF7E756F,
+                  ), // Warna teks pada "Pantau pembelian alat musikmu di sini."
+                ),
               ),
             ],
           ),
@@ -396,7 +420,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 icon: const Icon(
                   Icons.notifications_outlined,
                   size: 22,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "/notifications"
                 ),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
@@ -409,7 +433,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   height: 7,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFFEA580C),
+                    color: Color(
+                      0xFFEA580C,
+                    ), // Warna latar kotak atau kartu untuk "/notifications"
                   ),
                 ),
               ),
@@ -427,12 +453,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               height: 32,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFFB45309),
+                color: Color(0xFFB45309), // Warna ikon ikon untuk "/profile"
               ),
               child: const Icon(
                 Icons.person_rounded,
                 size: 19,
-                color: Colors.white,
+                color: Colors.white, // Warna ikon ikon untuk "/profile"
               ),
             ),
           ),
@@ -467,8 +493,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: activeOrder.isCompleted
-                      ? const Color(0xFFDCFCE7)
-                      : const Color(0xFFFFEFE5),
+                      ? const Color(0xFFDCFCE7) // Warna latar kotak atau kartu pada bagian komponen ini
+                      : const Color(0xFFFFEFE5), // Warna latar kotak atau kartu pada bagian komponen ini
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -480,8 +506,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           : Icons.storefront_rounded,
                       size: 12,
                       color: activeOrder.isCompleted
-                          ? const Color(0xFF15803D)
-                          : const Color(0xFFC2410C),
+                          ? const Color(
+                              0xFF15803D,
+                            ) // Warna ikon ikon untuk "PESANAN SELESAI"
+                          : const Color(
+                              0xFFC2410C,
+                            ), // Warna visual pada bagian komponen ini
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -492,8 +522,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         fontSize: 8.5,
                         fontWeight: FontWeight.w800,
                         color: activeOrder.isCompleted
-                            ? const Color(0xFF15803D)
-                            : const Color(0xFFC2410C),
+                            ? const Color(
+                                0xFF15803D,
+                              ) // Warna teks pada "PICKUP DI TOKO RESMI"
+                            : const Color(
+                                0xFFC2410C,
+                              ), // Warna visual pada bagian komponen ini
                         letterSpacing: 0.2,
                       ),
                     ),
@@ -525,7 +559,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFFC2410C),
+                    color: Color(
+                      0xFFC2410C,
+                    ), // Warna teks pada bagian komponen ini
                   ),
                 ),
               ),
@@ -539,7 +575,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               const Icon(
                 Icons.access_time_rounded,
                 size: 13,
-                color: Color(0xFF7E756F),
+                color: Color(
+                  0xFF7E756F,
+                ), // Warna ikon ikon untuk "18 Mei 2025, 14:32 WIB"
               ),
               const SizedBox(width: 4),
               Text(
@@ -548,7 +586,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     : '18 Mei 2025, 14:32 WIB',
                 style: const TextStyle(
                   fontSize: 10.5,
-                  color: Color(0xFF7E756F),
+                  color: Color(
+                    0xFF7E756F,
+                  ), // Warna teks pada "18 Mei 2025, 14:32 WIB"
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -569,16 +609,23 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF8F3),
+        color: const Color(
+          0xFFFFF8F3,
+        ), // Warna border atau garis tepi bagian komponen ini
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFFFD8BF), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFFFD8BF,
+          ), // Warna border atau garis tepi bagian komponen ini
+          width: 1.0,
+        ),
       ),
       child: Row(
         children: [
           const Icon(
             Icons.storefront_rounded,
             size: 20,
-            color: AppColors.primaryOrange,
+            color: AppColors.primaryOrange, // Warna ikon ikon untuk "Metode: Ambil di Toko Resmi (Store..."
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -590,13 +637,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Metode: Ambil di Toko Resmi (Store..."
                   ),
                 ),
                 SizedBox(height: 2),
                 Text(
                   'Ambil langsung di gerai resmi pilihan & cek fisik bersama Luthier',
-                  style: TextStyle(fontSize: 9.5, color: Color(0xFF7E756F)),
+                  style: TextStyle(
+                    fontSize: 9.5,
+                    color: Color(0xFF7E756F), // Warna teks pada "Ambil langsung di gerai resmi pilih..."
+                  ),
                 ),
               ],
             ),
@@ -604,7 +654,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              color: Color(0xFFFFEFE5),
+              color: Color(0xFFFFEFE5), // Warna teks pada "GRATIS"
               borderRadius: BorderRadius.all(Radius.circular(6)),
             ),
             child: Text(
@@ -612,7 +662,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               style: TextStyle(
                 fontSize: 9.5,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFFC2410C),
+                color: Color(0xFFC2410C), // Warna teks pada "GRATIS"
               ),
             ),
           ),
@@ -628,12 +678,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: isCompleted ? const Color(0xFFF0FDF4) : const Color(0xFFFFF7ED),
+        color: isCompleted
+            ? const Color(0xFFF0FDF4) // Warna border atau garis tepi kartu
+            : const Color(0xFFFFF7ED), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isCompleted
-              ? const Color(0xFF86EFAC)
-              : const Color(0xFFFFD8BF),
+              ? const Color(0xFF86EFAC) // Warna border atau garis tepi kartu
+              : const Color(0xFFFFD8BF), // Warna border atau garis tepi kartu
           width: 1.2,
         ),
       ),
@@ -644,8 +696,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: isCompleted
-                  ? const Color(0xFFDCFCE7)
-                  : const Color(0xFFFFEDDF),
+                  ? const Color(0xFFDCFCE7) // Warna ikon ikon pada kartu
+                  : const Color(0xFFFFEDDF), // Warna ikon ikon pada kartu
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
@@ -654,8 +706,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   : Icons.pending_actions_rounded,
               size: 22,
               color: isCompleted
-                  ? const Color(0xFF15803D)
-                  : AppColors.primaryOrange,
+                  ? const Color(
+                      0xFF15803D,
+                    ) // Warna ikon ikon untuk "Pesanan Selesai"
+                  : AppColors.primaryOrange, // Warna visual pada kartu
             ),
           ),
           const SizedBox(width: 12),
@@ -671,8 +725,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
                     color: isCompleted
-                        ? const Color(0xFF15803D)
-                        : const Color(0xFF9A3412),
+                        ? const Color(0xFF15803D) // Warna teks pada "Menunggu Pengambilan & Pembayaran"
+                        : const Color(0xFF9A3412), // Warna teks pada "Menunggu Pengambilan & Pembayaran"
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -683,8 +737,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   style: TextStyle(
                     fontSize: 10,
                     color: isCompleted
-                        ? const Color(0xFF166534)
-                        : const Color(0xFF7C2D12),
+                        ? const Color(0xFF166534) // Warna teks pada "Menunggu Pengambilan & Pembayaran"
+                        : const Color(0xFF7C2D12), // Warna teks pada "Menunggu Pengambilan & Pembayaran"
                     height: 1.35,
                   ),
                 ),
@@ -709,9 +763,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "PKP-8841-JNV"
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "PKP-8841-JNV"
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -725,7 +786,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Icon(
                       Icons.storefront_rounded,
                       size: 15,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna ikon ikon untuk "Informasi Toko Pengambilan"
                     ),
                     SizedBox(width: 6),
                     Flexible(
@@ -736,7 +797,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna teks pada "Informasi Toko Pengambilan"
                         ),
                       ),
                     ),
@@ -747,7 +808,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEFE5),
+                  color: const Color(
+                    0xFFFFEFE5,
+                  ), // Warna latar kotak atau kartu untuk "Siap Diambil"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
@@ -755,7 +818,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFFC2410C),
+                    color: Color(0xFFC2410C), // Warna teks pada "Siap Diambil"
                   ),
                 ),
               ),
@@ -767,7 +830,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             style: TextStyle(
               fontSize: 8.5,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF8E837D),
+              color: Color(0xFF8E837D), // Warna teks pada "CABANG TOKO RESMI"
             ),
           ),
           const SizedBox(height: 2),
@@ -784,7 +847,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             store.address,
             style: const TextStyle(
               fontSize: 10,
-              color: Color(0xFF6E6560),
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "${store.distance} • Buka: ${store.o..."
               height: 1.3,
             ),
           ),
@@ -794,12 +859,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               const Icon(
                 Icons.location_on_outlined,
                 size: 12,
-                color: Color(0xFF8E837D),
+                color: Color(0xFF8E837D), // Warna ikon ikon untuk "${store.distance} • Buka: ${store.o..."
               ),
               const SizedBox(width: 3),
               Text(
                 '${store.distance} • Buka: ${store.operatingHours}',
-                style: const TextStyle(fontSize: 9.5, color: Color(0xFF7E756F)),
+                style: const TextStyle(
+                  fontSize: 9.5,
+                  color: Color(
+                    0xFF7E756F,
+                  ), // Warna teks pada "${store.distance} • Buka: ${store.o..."
+                ),
               ),
             ],
           ),
@@ -809,7 +879,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             style: TextStyle(
               fontSize: 8.5,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF8E837D),
+              color: Color(0xFF8E837D), // Warna teks pada "Kode Pengambilan"
             ),
           ),
           const SizedBox(height: 2),
@@ -821,7 +891,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFFC2410C),
+                  color: Color(
+                    0xFFC2410C,
+                  ), // Warna teks pada "Kode: $pickupCode"
                 ),
               ),
               InkWell(
@@ -840,9 +912,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.white, // Warna border atau garis tepi untuk "Kode pengambilan disalin ke clipboard!"
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: const Color(0xFFD4D0C8)),
+                    border: Border.all(
+                      color: const Color(0xFFD4D0C8), // Warna ikon ikon untuk "Kode pengambilan disalin ke clipboard!"
+                    ),
                   ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
@@ -850,7 +924,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       Icon(
                         Icons.copy_rounded,
                         size: 10,
-                        color: Color(0xFF7E756F),
+                        color: Color(
+                          0xFF7E756F,
+                        ), // Warna ikon ikon untuk "Salin"
                       ),
                       SizedBox(width: 2),
                       Text(
@@ -858,7 +934,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         style: TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF7E756F),
+                          color: Color(0xFF7E756F), // Warna teks pada "Salin"
                         ),
                       ),
                     ],
@@ -878,7 +954,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   child: Container(
                     height: 34,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFECEAE6),
+                      color: const Color(
+                        0xFFECEAE6,
+                      ), // Warna latar kotak atau kartu pada kartu
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Row(
@@ -887,7 +965,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         Icon(
                           Icons.qr_code_2_rounded,
                           size: 14,
-                          color: Color(0xFF2E2825),
+                          color: Color(
+                            0xFF2E2825,
+                          ), // Warna ikon ikon untuk "Tampilkan QR Code"
                         ),
                         SizedBox(width: 5),
                         Text(
@@ -895,7 +975,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           style: TextStyle(
                             fontSize: 10.5,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF2E2825),
+                            color: Color(
+                              0xFF2E2825,
+                            ), // Warna teks pada "Tampilkan QR Code"
                           ),
                         ),
                       ],
@@ -928,7 +1010,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   child: Container(
                     height: 34,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFECEAE6),
+                      color: const Color(0xFFECEAE6), // Warna ikon ikon untuk "Membuka rute ke ${store.name}..."
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Row(
@@ -937,7 +1019,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         Icon(
                           Icons.directions_rounded,
                           size: 14,
-                          color: Color(0xFF2E2825),
+                          color: Color(
+                            0xFF2E2825,
+                          ), // Warna ikon ikon untuk "Petunjuk Arah"
                         ),
                         SizedBox(width: 5),
                         Text(
@@ -945,7 +1029,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           style: TextStyle(
                             fontSize: 10.5,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF2E2825),
+                            color: Color(
+                              0xFF2E2825,
+                            ), // Warna teks pada "Petunjuk Arah"
                           ),
                         ),
                       ],
@@ -959,7 +1045,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFFEDEBE7),
+              color: const Color(
+                0xFFEDEBE7,
+              ), // Warna latar kotak atau kartu untuk "Petunjuk Arah"
               borderRadius: BorderRadius.circular(6),
             ),
             child: const Row(
@@ -967,13 +1055,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 Icon(
                   Icons.verified_outlined,
                   size: 11,
-                  color: Color(0xFF5A524D),
+                  color: Color(0xFF5A524D), // Warna ikon ikon untuk "Termasuk inspeksi intonasi gratis,..."
                 ),
                 SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     'Termasuk inspeksi intonasi gratis, cek fisik di Luthier Desk, & unboxing resmi.',
-                    style: TextStyle(fontSize: 8.5, color: Color(0xFF5A524D)),
+                    style: TextStyle(
+                      fontSize: 8.5,
+                      color: Color(0xFF5A524D), // Warna teks pada "Termasuk inspeksi intonasi gratis,..."
+                    ),
                   ),
                 ),
               ],
@@ -992,9 +1083,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi bagian produk
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "Produk yang Dipesan"
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1011,12 +1109,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 7,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEDEAE6),
+                  color: const Color(0xFFEDEAE6), // Warna latar kotak atau kartu untuk "$totalUnits Unit (${items.length} B..."
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -1024,7 +1119,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   style: const TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF5A524D),
+                    color: Color(0xFF5A524D), // Warna teks pada "$totalUnits Unit (${items.length} B..."
                   ),
                 ),
               ),
@@ -1039,7 +1134,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 if (index > 0)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: Divider(color: Color(0xFFEBE8E3), height: 1),
+                    child: Divider(
+                      color: Color(
+                        0xFFEBE8E3,
+                      ), // Warna garis pemisah pada bagian produk
+                      height: 1,
+                    ),
                   ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1049,19 +1149,20 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       child: Container(
                         width: 58,
                         height: 58,
-                        color: Colors.white,
+                        color: Colors
+                            .white, // Warna area atau kotak pada bagian produk
                         child: Stack(
                           children: [
                             Center(
                               child: Image.asset(
                                 item.product.image,
                                 fit: BoxFit.contain,
-                                errorBuilder:
-                                    (context, error, stackTrace) => const Icon(
-                                  Icons.image_not_supported_rounded,
-                                  size: 20,
-                                  color: AppColors.placeholder,
-                                ),
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(
+                                      Icons.image_not_supported_rounded,
+                                      size: 20,
+                                      color: AppColors.placeholder, // Warna ikon ikon pada bagian produk
+                                    ),
                               ),
                             ),
                             Positioned(
@@ -1073,8 +1174,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   vertical: 1,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF333333)
-                                      .withValues(alpha: 0.85),
+                                  color:
+                                      const Color(
+                                            0xFF333333,
+                                          ) // Warna teks pada "ORIGINAL"
+                                          .withValues(alpha: 0.85),
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                                 child: const Text(
@@ -1103,7 +1207,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             style: const TextStyle(
                               fontSize: 11.5,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimaryDark,
+                              color: AppColors.textPrimaryDark, // Warna teks pada bagian produk
                             ),
                           ),
                           const SizedBox(height: 1),
@@ -1115,7 +1219,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontSize: 9.5,
-                              color: Color(0xFF7E756F),
+                              color: Color(
+                                0xFF7E756F,
+                              ), // Warna teks pada bagian produk
                             ),
                           ),
                           const SizedBox(height: 3),
@@ -1127,7 +1233,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   vertical: 1,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFEDEAE6),
+                                  color: const Color(0xFFEDEAE6), // Warna latar kotak atau kartu untuk "${item.quantity} Unit"
                                   borderRadius: BorderRadius.circular(3),
                                 ),
                                 child: Text(
@@ -1135,7 +1241,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   style: const TextStyle(
                                     fontSize: 9,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xFF5A524D),
+                                    color: Color(0xFF5A524D), // Warna teks pada "${item.quantity} Unit"
                                   ),
                                 ),
                               ),
@@ -1147,7 +1253,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   maxLines: 1,
                                   style: const TextStyle(
                                     fontSize: 9.5,
-                                    color: Color(0xFF7E756F),
+                                    color: Color(0xFF7E756F), // Warna teks pada "@ ${formatRupiah(item.product.price)}"
                                   ),
                                 ),
                               ),
@@ -1162,7 +1268,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
-                                  color: Color(0xFF6E6560),
+                                  color: Color(
+                                    0xFF6E6560,
+                                  ), // Warna teks pada "Total Item"
                                 ),
                               ),
                               Flexible(
@@ -1173,7 +1281,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                   style: const TextStyle(
                                     fontSize: 11.5,
                                     fontWeight: FontWeight.w800,
-                                    color: Color(0xFFC2410C),
+                                    color: Color(
+                                      0xFFC2410C,
+                                    ), // Warna teks pada "Total Item"
                                   ),
                                 ),
                               ),
@@ -1191,7 +1301,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
             decoration: BoxDecoration(
-              color: const Color(0xFFEDEBE7),
+              color: const Color(0xFFEDEBE7), // Warna ikon ikon untuk "Termasuk Free Hard Packaging Kayu,..."
               borderRadius: BorderRadius.circular(6),
             ),
             child: const Row(
@@ -1199,13 +1309,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 Icon(
                   Icons.verified_outlined,
                   size: 12,
-                  color: Color(0xFFC2410C),
+                  color: Color(0xFFC2410C), // Warna ikon ikon untuk "Termasuk Free Hard Packaging Kayu,..."
                 ),
                 SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     'Termasuk Free Hard Packaging Kayu, Deluxe Gigbag & Lembar QC Luthier Resmi.',
-                    style: TextStyle(fontSize: 8.5, color: Color(0xFF5A524D)),
+                    style: TextStyle(
+                      fontSize: 8.5,
+                      color: Color(0xFF5A524D), // Warna teks pada "Termasuk Free Hard Packaging Kayu,..."
+                    ),
                   ),
                 ),
               ],
@@ -1228,9 +1341,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "Rincian Pembayaran"
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "Rincian Pembayaran"
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1251,7 +1371,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF7E756F),
+                  color: Color(0xFF7E756F), // Warna teks pada "QRIS Instant"
                 ),
               ),
             ],
@@ -1266,7 +1386,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             _buildDetailRow(
               'Diskon Membership',
               '- ${formatRupiah(activeOrder.discount)}',
-              valueColor: const Color(0xFFC2410C),
+              valueColor: const Color(0xFFC2410C), // Warna visual pada kartu
               showInfoIcon: true,
             ),
           ],
@@ -1274,13 +1394,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           _buildDetailRow(
             'Biaya Ambil di Toko',
             'Gratis (Rp 0)',
-            valueColor: const Color(0xFF16A34A),
+            valueColor: const Color(0xFF16A34A), // Warna visual pada kartu
           ),
           const SizedBox(height: 5),
           _buildDetailRow(
             'Asuransi & Setup Khusus Toko',
             'Rp 0 (Promo Gratis)',
-            valueColor: const Color(0xFFC2410C),
+            valueColor: const Color(0xFFC2410C), // Warna visual pada kartu
           ),
           const SizedBox(height: 5),
           _buildDetailRow(
@@ -1289,7 +1409,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           ),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Divider(color: Color(0xFFEBE8E3), height: 1),
+            child: Divider(
+              color: Color(0xFFEBE8E3), // Warna garis pemisah pada kartu
+              height: 1,
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1302,12 +1425,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     style: TextStyle(
                       fontSize: 10.5,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna teks pada "TOTAL PEMBAYARAN"
                     ),
                   ),
                   Text(
                     'Termasuk PPN 11%',
-                    style: TextStyle(fontSize: 8.5, color: Color(0xFF8E837D)),
+                    style: TextStyle(
+                      fontSize: 8.5,
+                      color: Color(
+                        0xFF8E837D,
+                      ), // Warna teks pada "Termasuk PPN 11%"
+                    ),
                   ),
                 ],
               ),
@@ -1316,7 +1444,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 style: const TextStyle(
                   fontSize: 14.5,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFFC2410C),
+                  color: Color(
+                    0xFFC2410C,
+                  ), // Warna teks pada "Termasuk PPN 11%"
                 ),
               ),
             ],
@@ -1327,15 +1457,24 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F4F0),
+              color: const Color(
+                0xFFF5F4F0,
+              ), // Warna border atau garis tepi untuk "Metode"
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFEBE8E3)),
+              border: Border.all(
+                color: const Color(
+                  0xFFEBE8E3,
+                ), // Warna border atau garis tepi untuk "Metode"
+              ),
             ),
             child: Row(
               children: [
                 const Text(
                   'Metode',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF7E756F), // Warna teks pada "Metode"
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -1345,7 +1484,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       const Icon(
                         Icons.point_of_sale_rounded,
                         size: 13,
-                        color: Color(0xFF8E837D),
+                        color: Color(0xFF8E837D), // Warna ikon ikon untuk "${activeOrder.paymentMethod} • Luna..."
                       ),
                       const SizedBox(width: 4),
                       Flexible(
@@ -1358,7 +1497,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           style: const TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimaryDark,
+                            color: AppColors.textPrimaryDark, // Warna teks pada "${activeOrder.paymentMethod} • Baya..."
                           ),
                         ),
                       ),
@@ -1391,7 +1530,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   label,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: const TextStyle(fontSize: 10, color: Color(0xFF6E6560)),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Color(
+                      0xFF6E6560,
+                    ), // Warna teks pada bagian komponen ini
+                  ),
                 ),
               ),
               if (showInfoIcon) ...[
@@ -1399,7 +1543,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 const Icon(
                   Icons.help_outline_rounded,
                   size: 11,
-                  color: Color(0xFF8E837D),
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna ikon ikon pada bagian komponen ini
                 ),
               ],
             ],
@@ -1415,7 +1561,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w700,
-              color: valueColor ?? AppColors.textPrimaryDark,
+              color:
+                  valueColor ??
+                  AppColors
+                      .textPrimaryDark, // Warna teks pada bagian komponen ini
             ),
           ),
         ),
@@ -1434,9 +1583,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               width: double.infinity,
               height: 44,
               decoration: BoxDecoration(
-                color: const Color(0xFFDCFCE7),
+                color: const Color(
+                  0xFFDCFCE7,
+                ), // Warna border atau garis tepi tombol
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFF86EFAC)),
+                border: Border.all(
+                  color: const Color(
+                    0xFF86EFAC,
+                  ), // Warna border atau garis tepi tombol
+                ),
               ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1444,13 +1599,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   Icon(
                     Icons.check_circle_rounded,
                     size: 18,
-                    color: Color(0xFF15803D),
+                    color: Color(
+                      0xFF15803D,
+                    ), // Warna ikon ikon untuk "Pesanan Telah Selesai"
                   ),
                   SizedBox(width: 8),
                   Text(
                     'Pesanan Telah Selesai',
                     style: TextStyle(
-                      color: Color(0xFF15803D),
+                      color: Color(
+                        0xFF15803D,
+                      ), // Warna teks pada "Pesanan Telah Selesai"
                       fontSize: 12.5,
                       fontWeight: FontWeight.w800,
                     ),
@@ -1465,7 +1624,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               child: ElevatedButton(
                 onPressed: () => _confirmOrderCompletion(context, activeOrder),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF16A34A),
+                  backgroundColor: const Color(
+                    0xFF16A34A,
+                  ), // Warna latar tombol pada tombol
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -1477,13 +1638,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Icon(
                       Icons.check_circle_outline_rounded,
                       size: 18,
-                      color: Colors.white,
+                      color: Colors
+                          .white, // Warna ikon ikon untuk "Pesanan Selesai"
                     ),
                     SizedBox(width: 8),
                     Text(
                       'Pesanan Selesai',
                       style: TextStyle(
-                        color: Colors.white,
+                        color:
+                            Colors.white, // Warna teks pada "Pesanan Selesai"
                         fontSize: 12.5,
                         fontWeight: FontWeight.w800,
                       ),
@@ -1504,7 +1667,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   child: Container(
                     height: 38,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFECEAE6),
+                      color: const Color(
+                        0xFFECEAE6,
+                      ), // Warna latar kotak atau kartu pada tombol
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Row(
@@ -1513,7 +1678,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         Icon(
                           Icons.headset_mic_outlined,
                           size: 14,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Bantuan CS"
                         ),
                         SizedBox(width: 6),
                         Text(
@@ -1521,7 +1686,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimaryDark,
+                            color: AppColors.textPrimaryDark, // Warna teks pada "Bantuan CS"
                           ),
                         ),
                       ],
@@ -1538,7 +1703,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   child: Container(
                     height: 38,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFECEAE6),
+                      color: const Color(
+                        0xFFECEAE6,
+                      ), // Warna latar kotak atau kartu untuk "/all-products"
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Row(
@@ -1547,7 +1714,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         Icon(
                           Icons.refresh_rounded,
                           size: 15,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Beli Lagi"
                         ),
                         SizedBox(width: 6),
                         Text(
@@ -1580,13 +1747,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Colors.white, // Warna ikon ikon untuk "Toko JNOVAMUSIC"
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
             Icon(
               Icons.help_outline_rounded,
-              color: AppColors.primaryOrange,
+              color: AppColors
+                  .primaryOrange, // Warna ikon ikon untuk "Konfirmasi Selesai"
               size: 24,
             ),
             SizedBox(width: 8),
@@ -1600,7 +1769,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           'Pastikan Anda telah mengambil barang dan menyelesaikan pembayaran di kasir $branchName.\n\nAnda akan mendapatkan +$pointsEarned Poin Membership JNOVAMUSIC.',
           style: const TextStyle(
             fontSize: 12,
-            color: Color(0xFF5A524D),
+            color: Color(0xFF5A524D), // Warna teks pada "Belum"
             height: 1.4,
           ),
         ),
@@ -1609,13 +1778,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             onPressed: () => Navigator.pop(ctx, false),
             child: const Text(
               'Belum',
-              style: TextStyle(color: Color(0xFF7E756F)),
+              style: TextStyle(
+                color: Color(0xFF7E756F), // Warna teks pada "Belum"
+              ),
             ),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF16A34A),
+              backgroundColor: const Color(
+                0xFF16A34A,
+              ), // Warna latar tombol pada tombol
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -1624,7 +1797,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             child: const Text(
               'Ya, Sudah Selesai',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.white, // Warna teks pada "Ya, Sudah Selesai"
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -1642,7 +1815,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             content: Text(
               'Pesanan berhasil diselesaikan! +$pointsEarned Poin ditambahkan ke Membership Anda.',
             ),
-            backgroundColor: const Color(0xFF15803D),
+            backgroundColor: const Color(
+              0xFF15803D,
+            ), // Warna latar pesan pemberitahuan pada tombol
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -1664,13 +1839,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               width: 90,
               height: 90,
               decoration: const BoxDecoration(
-                color: Color(0xFFFFF7ED),
+                color: Color(
+                  0xFFFFF7ED,
+                ), // Warna ikon ikon untuk "Belum Ada Pesanan"
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.receipt_long_outlined,
                 size: 44,
-                color: AppColors.primaryOrange,
+                color: AppColors
+                    .primaryOrange, // Warna ikon ikon untuk "Belum Ada Pesanan"
               ),
             ),
             const SizedBox(height: 20),
@@ -1688,7 +1866,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 11,
-                color: Color(0xFF7E756F),
+                color: Color(0xFF7E756F), // Warna teks pada "/all-products"
                 height: 1.4,
               ),
             ),
@@ -1700,7 +1878,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   Navigator.pushReplacementNamed(context, '/all-products');
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryOrange,
+                  backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian komponen ini
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   shape: RoundedRectangleBorder(
@@ -1713,7 +1891,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Icon(
                       Icons.storefront_rounded,
                       size: 16,
-                      color: Colors.white,
+                      color:
+                          Colors.white, // Warna ikon ikon untuk "Mulai Belanja"
                     ),
                     SizedBox(width: 8),
                     Text(
@@ -1721,7 +1900,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: Colors.white, // Warna teks pada "Mulai Belanja"
                       ),
                     ),
                   ],
@@ -1745,20 +1924,28 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white, // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: const Color(0xFFFFD1B3),
+          color: const Color(0xFFFFD1B3), // Warna border atau garis tepi kartu
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFFF6B00).withValues(alpha: 0.06),
+            color:
+                const Color(
+                      0xFFFF6B00,
+                    ) // Warna latar kotak atau kartu pada kartu
+                    .withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Colors.black.withValues(
+              // Warna bayangan pada kartu
+
+              alpha: 0.03,
+            ),
             blurRadius: 6,
             offset: const Offset(0, 1),
           ),
@@ -1773,14 +1960,21 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF2EB),
+                  color: const Color(
+                    0xFFFFF2EB,
+                  ), // Warna border atau garis tepi kartu
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFFFFD1B3), width: 0.8),
+                  border: Border.all(
+                    color: const Color(
+                      0xFFFFD1B3,
+                    ), // Warna ikon ikon pada kartu
+                    width: 0.8,
+                  ),
                 ),
                 child: const Icon(
                   Icons.verified_rounded,
                   size: 18,
-                  color: Color(0xFFFF6B00),
+                  color: Color(0xFFFF6B00), // Warna ikon ikon untuk "Sertifikat Keaslian Blockchain Terbit"
                 ),
               ),
               const SizedBox(width: 10),
@@ -1793,12 +1987,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF222222),
+                        color: Color(0xFF222222), // Warna teks pada "Sertifikat Keaslian Blockchain Terbit"
                       ),
                     ),
                     Text(
                       'Smart Contract ERC-721 di Jaringan Polygon',
-                      style: TextStyle(fontSize: 9.5, color: Color(0xFF777777)),
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        color: Color(0xFF777777), // Warna teks pada "Smart Contract ERC-721 di Jaringan..."
+                      ),
                     ),
                   ],
                 ),
@@ -1806,16 +2003,23 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFECFDF5),
+                  color: const Color(
+                    0xFFECFDF5,
+                  ), // Warna border atau garis tepi untuk "ON-CHAIN"
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: const Color(0xFFA7F3D0), width: 0.8),
+                  border: Border.all(
+                    color: const Color(
+                      0xFFA7F3D0,
+                    ), // Warna teks pada "ON-CHAIN"
+                    width: 0.8,
+                  ),
                 ),
                 child: const Text(
                   'ON-CHAIN',
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF059669),
+                    color: Color(0xFF059669), // Warna teks pada "ON-CHAIN"
                   ),
                 ),
               ),
@@ -1826,7 +2030,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             'Pesanan ini mencakup ${eligibleItems.length} instrumen dengan Sertifikat Keaslian Digital resmi yang tercatat di blockchain Polygon.',
             style: const TextStyle(
               fontSize: 10.5,
-              color: Color(0xFF555555),
+              color: Color(0xFF555555), // Warna teks pada "ON-CHAIN"
               height: 1.4,
             ),
           ),
@@ -1842,10 +2046,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
                   final cert = BlockchainCertificateService.instance
                       .getCertificateForProduct(
-                    firstItem.product,
-                    orderNumber: order.orderNumber,
-                    ownerName: buyerName,
-                  );
+                        firstItem.product,
+                        orderNumber: order.orderNumber,
+                        ownerName: buyerName,
+                      );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -1858,8 +2062,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF6B00),
-                foregroundColor: Colors.white,
+                backgroundColor: const Color(
+                  0xFFFF6B00,
+                ), // Warna latar tombol pada kartu
+                foregroundColor: Colors
+                    .white, // Warna ikon ikon untuk "/blockchain-certificates"
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),

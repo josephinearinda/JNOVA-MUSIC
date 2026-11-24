@@ -157,7 +157,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     final products = _getFilteredProducts();
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "/login"
       body: SafeArea(
         child: Column(
           children: [
@@ -213,11 +213,14 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                             },
                             onAddToCart: () {
                               if (_stockService.isOutOfStock(product.id)) {
-                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Maaf, stok produk ini sedang habis.'),
-                                    backgroundColor: AppColors.textPrimaryDark,
+                                    content: Text(
+                                      'Maaf, stok produk ini sedang habis.',
+                                    ),
+                                    backgroundColor: AppColors.textPrimaryDark, // Warna latar pesan pemberitahuan pada bagian komponen ini
                                     duration: Duration(seconds: 2),
                                   ),
                                 );
@@ -232,11 +235,11 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                     '${product.name} berhasil ditambahkan ke keranjang.',
                                     style: const TextStyle(fontSize: 12),
                                   ),
-                                  backgroundColor: AppColors.textPrimaryDark,
+                                  backgroundColor: AppColors.textPrimaryDark, // Warna teks pada "${product.name} berhasil ditambahka..."
                                   duration: const Duration(seconds: 2),
                                   action: SnackBarAction(
                                     label: 'Lihat',
-                                    textColor: AppColors.primaryOrange,
+                                    textColor: AppColors.primaryOrange, // Warna teks pada "Lihat"
                                     onPressed: _handleOpenCart,
                                   ),
                                 ),
@@ -278,9 +281,14 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "/profile"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/profile"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -294,7 +302,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
               child: Icon(
                 Icons.arrow_back_rounded,
                 size: 22,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "Semua Produk"
               ),
             ),
           ),
@@ -319,7 +328,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                 Text(
                   'Temukan alat musik yang cocok...',
                   style: TextStyle(
-                    color: AppColors.textMuted,
+                    color: AppColors.textMuted, // Warna teks pada "Temukan alat musik yang cocok..."
                     fontSize: 11,
                     fontWeight: FontWeight.w400,
                   ),
@@ -340,7 +349,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                   const Icon(
                     Icons.shopping_bag_outlined,
                     size: 23,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna ikon ikon pada bagian komponen ini
                   ),
                   if (cartCount > 0)
                     Positioned(
@@ -349,7 +358,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(3.5),
                         decoration: const BoxDecoration(
-                          color: AppColors.primaryOrange,
+                          color: AppColors.primaryOrange, // Warna latar kotak atau kartu untuk "$cartCount"
                           shape: BoxShape.circle,
                         ),
                         constraints: const BoxConstraints(
@@ -360,7 +369,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                           '$cartCount',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: Colors.white, // Warna teks pada "$cartCount"
                             fontSize: 9,
                             fontWeight: FontWeight.w800,
                             height: 1.0,
@@ -390,7 +399,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
               child: const Icon(
                 Icons.person_rounded,
                 size: 20,
-                color: Colors.white,
+                color: Colors.white, // Warna ikon ikon untuk "/profile"
               ),
             ),
           ),
@@ -403,7 +412,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Material(
-        color: Colors.transparent,
+        color:
+            Colors.transparent, // Warna latar kotak atau kartu untuk "/profile"
         child: InkWell(
           onTap: _handleOpenSearch,
           borderRadius: BorderRadius.circular(12),
@@ -411,23 +421,30 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
             height: 42,
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             decoration: BoxDecoration(
-              color: const Color(0xFFF6F5F3),
+              color: const Color(
+                0xFFF6F5F3,
+              ), // Warna border atau garis tepi untuk "/profile"
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFECEAE6), width: 1.0),
+              border: Border.all(
+                color: const Color(
+                  0xFFECEAE6,
+                ), // Warna border atau garis tepi untuk "/profile"
+                width: 1.0,
+              ),
             ),
             child: const Row(
               children: [
                 Icon(
                   Icons.search_rounded,
                   size: 20,
-                  color: AppColors.placeholder,
+                  color: AppColors.placeholder, // Warna ikon ikon untuk "Cari nama alat musik atau merek..."
                 ),
                 SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'Cari nama alat musik atau merek...',
                     style: TextStyle(
-                      color: AppColors.placeholder,
+                      color: AppColors.placeholder, // Warna teks pada "Cari nama alat musik atau merek..."
                       fontSize: 12.5,
                       fontWeight: FontWeight.w400,
                     ),
@@ -465,20 +482,30 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? AppColors.primaryOrange
-                      : const Color(0xFFF7F6F4),
+                      ? AppColors
+                            .primaryOrange // Warna border atau garis tepi bagian kategori
+                      : const Color(
+                          0xFFF7F6F4,
+                        ), // Warna border atau garis tepi bagian kategori
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
-                        ? AppColors.primaryOrange
-                        : const Color(0xFFEBE8E3),
+                        ? AppColors
+                              .primaryOrange // Warna border atau garis tepi bagian kategori
+                        : const Color(
+                            0xFFEBE8E3,
+                          ), // Warna border atau garis tepi bagian kategori
                     width: 1.0,
                   ),
                 ),
                 child: Text(
                   category,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : const Color(0xFF6E6560),
+                    color: isSelected
+                        ? Colors.white
+                        : const Color(
+                            0xFF6E6560,
+                          ), // Warna teks pada bagian kategori
                     fontSize: 12,
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                   ),
@@ -503,7 +530,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
               'Menampilkan $count Produk',
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                color: AppColors.textSecondaryBrown,
+                color: AppColors.textSecondaryBrown, // Warna teks pada "Menampilkan $count Produk"
                 fontSize: 11.5,
                 fontWeight: FontWeight.w600,
               ),
@@ -523,7 +550,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       Icon(
                         Icons.tune_rounded,
                         size: 14,
-                        color: AppColors.textSecondaryBrown,
+                        color: AppColors.textSecondaryBrown, // Warna ikon ikon untuk "Filter"
                       ),
                       SizedBox(width: 4),
                       Text(
@@ -546,7 +573,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                     _selectedSort = val;
                   });
                 },
-                color: Colors.white,
+                color: Colors.white, // Warna visual pada bagian komponen ini
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -555,7 +582,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                     Text(
                       _selectedSort,
                       style: const TextStyle(
-                        color: AppColors.textSecondaryBrown,
+                        color: AppColors.textSecondaryBrown, // Warna ikon ikon untuk "Terpopuler"
                         fontSize: 11.5,
                         fontWeight: FontWeight.w600,
                       ),
@@ -563,7 +590,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                     const Icon(
                       Icons.keyboard_arrow_down_rounded,
                       size: 16,
-                      color: AppColors.textSecondaryBrown,
+                      color: AppColors.textSecondaryBrown, // Warna ikon ikon untuk "Terpopuler"
                     ),
                   ],
                 ),
@@ -605,7 +632,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   void _showFilterBottomSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Colors.white, // Warna latar kotak atau kartu pada bagian komponen ini
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
       ),
@@ -626,7 +654,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Filter Produk"
                         ),
                       ),
                       IconButton(
@@ -654,14 +682,15 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                           c,
                           style: TextStyle(
                             color: isSelected
-                                ? Colors.white
-                                : AppColors.textPrimaryDark,
+                                ? Colors
+                                      .white // Warna teks pada bagian komponen ini
+                                : AppColors.textPrimaryDark, // Warna teks pada bagian komponen ini
                             fontSize: 11.5,
                           ),
                         ),
                         selected: isSelected,
                         selectedColor: AppColors.primaryOrange,
-                        backgroundColor: const Color(0xFFF6F5F3),
+                        backgroundColor: const Color(0xFFF6F5F3), // Warna latar kotak atau kartu pada bagian komponen ini
                         onSelected: (val) {
                           setModalState(() {
                             _selectedCategory = c;
@@ -686,7 +715,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       child: const Text(
                         'Terapkan Filter',
                         style: TextStyle(
-                          color: Colors.white,
+                          color:
+                              Colors.white, // Warna teks pada "Terapkan Filter"
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
                         ),

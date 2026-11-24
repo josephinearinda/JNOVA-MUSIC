@@ -215,7 +215,8 @@ class _AIChatPageState extends State<AIChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -278,14 +279,12 @@ class _AIChatPageState extends State<AIChatPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
             Icon(
               Icons.bolt_rounded,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "Reset Kuota & Obrolan AI"
               size: 24,
             ),
             SizedBox(width: 8),
@@ -294,7 +293,7 @@ class _AIChatPageState extends State<AIChatPage> {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna teks pada "Reset Kuota & Obrolan AI"
               ),
             ),
           ],
@@ -304,20 +303,21 @@ class _AIChatPageState extends State<AIChatPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFECFDF5),
+                color: const Color(0xFFECFDF5), // Warna latar hijau kotak status "Respon Cepat & Tanpa Batas"
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFA7F3D0)),
+                border: Border.all(
+                  color: const Color(
+                    0xFFA7F3D0,
+                  ), // Warna border hijau kotak status "Respon Cepat & Tanpa Batas"
+                ),
               ),
               child: const Row(
                 children: [
                   Icon(
                     Icons.check_circle_rounded,
-                    color: Color(0xFF059669),
+                    color: Color(0xFF059669), // Warna ikon ceklis status "Respon Cepat & Tanpa Batas"
                     size: 16,
                   ),
                   SizedBox(width: 6),
@@ -326,7 +326,9 @@ class _AIChatPageState extends State<AIChatPage> {
                     style: TextStyle(
                       fontSize: 10.5,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF059669),
+                      color: Color(
+                        0xFF059669,
+                      ), // Warna teks pada "Status: Respon Cepat & Tanpa Batas"
                     ),
                   ),
                 ],
@@ -337,7 +339,7 @@ class _AIChatPageState extends State<AIChatPage> {
               'Fitur ini akan menyetel ulang batas kuota dan membersihkan riwayat percakapan agar Jnova AI dapat langsung menjawab setiap pertanyaan tanpa hambatan limit.',
               style: TextStyle(
                 fontSize: 11.5,
-                color: Color(0xFF5A524D),
+                color: Color(0xFF5A524D), // Warna teks pada "Batal"
                 height: 1.4,
               ),
             ),
@@ -348,15 +350,18 @@ class _AIChatPageState extends State<AIChatPage> {
             onPressed: () => Navigator.pop(ctx),
             child: const Text(
               'Batal',
-              style: TextStyle(color: Color(0xFF7E756F)),
+              style: TextStyle(
+                color: Color(0xFF7E756F), // Warna ikon ikon untuk "Batal"
+              ),
             ),
           ),
           ElevatedButton.icon(
             onPressed: () async {
               GeminiService.instance.resetQuotaAndChat();
               await AIChatService.instance.resetChat();
-              final resetMessages =
-                  await AIChatService.instance.loadMessages(forceReload: true);
+              final resetMessages = await AIChatService.instance.loadMessages(
+                forceReload: true,
+              );
               if (!ctx.mounted) return;
               Navigator.pop(ctx);
               if (!mounted) return;
@@ -369,15 +374,19 @@ class _AIChatPageState extends State<AIChatPage> {
                   content: Text(
                     '✅ Kuota dan sesi obrolan Jnova AI berhasil direset! AI siap menjawab langsung.',
                   ),
-                  backgroundColor: Color(0xFF222222),
+                  backgroundColor: Color(
+                    0xFF222222,
+                  ), // Warna latar pesan pemberitahuan pada bagian komponen ini
                   behavior: SnackBarBehavior.floating,
                   duration: Duration(seconds: 3),
                 ),
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryOrange,
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors
+                  .primaryOrange, // Warna latar tombol pada bagian komponen ini
+              foregroundColor:
+                  Colors.white, // Warna ikon ikon untuk "Reset Sekarang"
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -398,9 +407,15 @@ class _AIChatPageState extends State<AIChatPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "Reset Sekarang"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "Reset Sekarang"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -416,16 +431,20 @@ class _AIChatPageState extends State<AIChatPage> {
                   height: 32,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFFF5F3EF),
+                    color: const Color(
+                      0xFFF5F3EF,
+                    ), // Warna border atau garis tepi bagian komponen ini
                     border: Border.all(
-                      color: const Color(0xFFEBE8E3),
+                      color: const Color(
+                        0xFFEBE8E3,
+                      ), // Warna ikon ikon pada bagian komponen ini
                       width: 1.0,
                     ),
                   ),
                   child: const Icon(
                     Icons.arrow_back_rounded,
                     size: 17,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna ikon ikon pada bagian komponen ini
                   ),
                 ),
               ),
@@ -434,13 +453,16 @@ class _AIChatPageState extends State<AIChatPage> {
                 width: 32,
                 height: 32,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFFFEDDF),
+                  color: Color(
+                    0xFFFFEDDF,
+                  ), // Warna ikon ikon pada bagian komponen ini
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.auto_awesome_rounded,
                   size: 16,
-                  color: AppColors.primaryOrange,
+                  color: AppColors
+                      .primaryOrange, // Warna ikon ikon untuk "Jnova AI"
                 ),
               ),
               const SizedBox(width: 8),
@@ -464,7 +486,9 @@ class _AIChatPageState extends State<AIChatPage> {
                           vertical: 1,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFEDDF),
+                          color: const Color(
+                            0xFFFFEDDF,
+                          ), // Warna latar kotak atau kartu untuk "+BETA"
                           borderRadius: BorderRadius.circular(3),
                         ),
                         child: const Text(
@@ -481,7 +505,12 @@ class _AIChatPageState extends State<AIChatPage> {
                   ),
                   const Text(
                     'Asisten musik pribadi',
-                    style: TextStyle(fontSize: 9.5, color: Color(0xFF8E837D)),
+                    style: TextStyle(
+                      fontSize: 9.5,
+                      color: Color(
+                        0xFF8E837D,
+                      ), // Warna teks pada "Asisten musik pribadi"
+                    ),
                   ),
                 ],
               ),
@@ -494,13 +523,21 @@ class _AIChatPageState extends State<AIChatPage> {
                 onTap: _showResetQuotaDialog,
                 borderRadius: BorderRadius.circular(16),
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4.5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4.5,
+                  ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF2EB),
+                    color: const Color(
+                      0xFFFFF2EB,
+                    ), // Warna border atau garis tepi bagian komponen ini
                     borderRadius: BorderRadius.circular(16),
-                    border:
-                        Border.all(color: const Color(0xFFFFD1B3), width: 0.9),
+                    border: Border.all(
+                      color: const Color(
+                        0xFFFFD1B3,
+                      ), // Warna border atau garis tepi bagian komponen ini
+                      width: 0.9,
+                    ),
                   ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
@@ -508,7 +545,7 @@ class _AIChatPageState extends State<AIChatPage> {
                       Icon(
                         Icons.bolt_rounded,
                         size: 14,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna ikon ikon untuk "Reset Kuota"
                       ),
                       SizedBox(width: 3),
                       Text(
@@ -529,7 +566,9 @@ class _AIChatPageState extends State<AIChatPage> {
                 onPressed: _showResetQuotaDialog,
                 icon: const Icon(
                   Icons.history_rounded,
-                  color: Color(0xFF6E6560),
+                  color: Color(
+                    0xFF6E6560,
+                  ), // Warna ikon ikon untuk "Sesi & Reset Kuota"
                   size: 20,
                 ),
                 padding: EdgeInsets.zero,
@@ -543,12 +582,14 @@ class _AIChatPageState extends State<AIChatPage> {
                   width: 28,
                   height: 28,
                   decoration: const BoxDecoration(
-                    color: Color(0xFF8D4315),
+                    color: Color(
+                      0xFF8D4315,
+                    ), // Warna ikon ikon untuk "/profile"
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.person_rounded,
-                    color: Colors.white,
+                    color: Colors.white, // Warna ikon ikon untuk "/profile"
                     size: 16,
                   ),
                 ),
@@ -566,7 +607,9 @@ class _AIChatPageState extends State<AIChatPage> {
         margin: const EdgeInsets.only(bottom: 14),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: const Color(0xFFEDEBE7),
+          color: const Color(
+            0xFFEDEBE7,
+          ), // Warna latar kotak atau kartu untuk "Hari ini, 14:20 WIB"
           borderRadius: BorderRadius.circular(12),
         ),
         child: const Text(
@@ -574,7 +617,7 @@ class _AIChatPageState extends State<AIChatPage> {
           style: TextStyle(
             fontSize: 9.5,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF7E756F),
+            color: Color(0xFF7E756F), // Warna teks pada "Hari ini, 14:20 WIB"
           ),
         ),
       ),
@@ -591,7 +634,10 @@ class _AIChatPageState extends State<AIChatPage> {
           children: [
             Text(
               '${msg.time} ✓✓',
-              style: const TextStyle(fontSize: 8.5, color: Color(0xFFB0AAA4)),
+              style: const TextStyle(
+                fontSize: 8.5,
+                color: Color(0xFFB0AAA4), // Warna teks pada "${msg.time} ✓✓"
+              ),
             ),
             const SizedBox(width: 6),
             Flexible(
@@ -601,7 +647,7 @@ class _AIChatPageState extends State<AIChatPage> {
                   vertical: 10,
                 ),
                 decoration: const BoxDecoration(
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna latar kotak atau kartu untuk "${msg.time} ✓✓"
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(14),
                     topRight: Radius.circular(14),
@@ -614,7 +660,7 @@ class _AIChatPageState extends State<AIChatPage> {
                   style: const TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: Colors.white, // Warna teks pada "${msg.time} ✓✓"
                     height: 1.35,
                   ),
                 ),
@@ -638,7 +684,7 @@ class _AIChatPageState extends State<AIChatPage> {
                 width: 28,
                 height: 28,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFFFEDDF),
+                  color: Color(0xFFFFEDDF), // Warna ikon ikon pada pesan chat
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -655,7 +701,9 @@ class _AIChatPageState extends State<AIChatPage> {
                     vertical: 10,
                   ),
                   decoration: const BoxDecoration(
-                    color: Color(0xFFF5F4F0),
+                    color: Color(
+                      0xFFF5F4F0,
+                    ), // Warna latar kotak atau kartu pada pesan chat
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(3),
                       topRight: Radius.circular(14),
@@ -667,7 +715,8 @@ class _AIChatPageState extends State<AIChatPage> {
                     msg.text,
                     style: const TextStyle(
                       fontSize: 11.5,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors
+                          .textPrimaryDark, // Warna teks pada pesan chat
                       height: 1.4,
                     ),
                   ),
@@ -679,7 +728,10 @@ class _AIChatPageState extends State<AIChatPage> {
             padding: const EdgeInsets.only(left: 36, top: 2),
             child: Text(
               msg.time,
-              style: const TextStyle(fontSize: 8.5, color: Color(0xFF8E837D)),
+              style: const TextStyle(
+                fontSize: 8.5,
+                color: Color(0xFF8E837D), // Warna teks pada pesan chat
+              ),
             ),
           ),
 
@@ -704,13 +756,18 @@ class _AIChatPageState extends State<AIChatPage> {
                         ),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? const Color(0xFFFFEDDF)
-                              : const Color(0xFFFAF9F7),
+                              ? const Color(0xFFFFEDDF) // Warna latar kotak atau kartu pada pesan chat
+                              : const Color(
+                                  0xFFFAF9F7,
+                                ), // Warna border atau garis tepi pesan chat
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: isSelected
-                                ? AppColors.primaryOrange
-                                : const Color(0xFFEBE8E3),
+                                ? AppColors
+                                      .primaryOrange // Warna border atau garis tepi pesan chat
+                                : const Color(
+                                    0xFFEBE8E3,
+                                  ), // Warna border atau garis tepi pesan chat
                           ),
                         ),
                         child: Row(
@@ -720,7 +777,7 @@ class _AIChatPageState extends State<AIChatPage> {
                               const Icon(
                                 Icons.check,
                                 size: 12,
-                                color: AppColors.primaryOrange,
+                                color: AppColors.primaryOrange, // Warna ikon ikon pada pesan chat
                               ),
                               const SizedBox(width: 4),
                             ],
@@ -732,8 +789,11 @@ class _AIChatPageState extends State<AIChatPage> {
                                     ? FontWeight.w800
                                     : FontWeight.w600,
                                 color: isSelected
-                                    ? AppColors.primaryOrange
-                                    : const Color(0xFF6E6560),
+                                    ? AppColors
+                                          .primaryOrange // Warna teks pada pesan chat
+                                    : const Color(
+                                        0xFF6E6560,
+                                      ), // Warna visual pada pesan chat
                               ),
                             ),
                           ],
@@ -781,10 +841,14 @@ class _AIChatPageState extends State<AIChatPage> {
                     vertical: 7,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF2EB),
+                    color: const Color(
+                      0xFFFFF2EB,
+                    ), // Warna border atau garis tepi untuk "limit"
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: const Color(0xFFFFD1B3),
+                      color: const Color(
+                        0xFFFFD1B3,
+                      ), // Warna border atau garis tepi untuk "limit"
                       width: 1.0,
                     ),
                   ),
@@ -794,7 +858,7 @@ class _AIChatPageState extends State<AIChatPage> {
                       Icon(
                         Icons.bolt_rounded,
                         size: 14,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna ikon ikon untuk "⚡ Jawab Langsung (Reset Kuota)"
                       ),
                       SizedBox(width: 6),
                       Text(
@@ -802,7 +866,7 @@ class _AIChatPageState extends State<AIChatPage> {
                         style: TextStyle(
                           fontSize: 10.5,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primaryOrange,
+                          color: AppColors.primaryOrange, // Warna teks pada "⚡ Jawab Langsung (Reset Kuota)"
                         ),
                       ),
                     ],
@@ -834,12 +898,19 @@ class _AIChatPageState extends State<AIChatPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "Rp${product.price.toString().replac..."
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Rp${product.price.toString().replac..."
+          width: 1.0,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Colors.black.withValues(
+              // Warna border atau garis tepi untuk "Rp${product.price.toString().replac..."
+
+              alpha: 0.03,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -852,7 +923,7 @@ class _AIChatPageState extends State<AIChatPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEDDF),
+              color: const Color(0xFFFFEDDF), // Warna teks pada bagian produk
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
@@ -861,7 +932,7 @@ class _AIChatPageState extends State<AIChatPage> {
                 fontSize: 8,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0.3,
-                color: Color(0xFFC2410C),
+                color: Color(0xFFC2410C), // Warna teks pada bagian produk
               ),
             ),
           ),
@@ -875,7 +946,9 @@ class _AIChatPageState extends State<AIChatPage> {
                 width: 58,
                 height: 58,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF9F8F6),
+                  color: const Color(
+                    0xFFF9F8F6,
+                  ), // Warna latar kotak atau kartu pada bagian produk
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: ClipRRect(
@@ -886,7 +959,8 @@ class _AIChatPageState extends State<AIChatPage> {
                     errorBuilder: (context, error, stackTrace) => const Icon(
                       Icons.music_note_rounded,
                       size: 26,
-                      color: AppColors.primaryOrange,
+                      color: AppColors
+                          .primaryOrange, // Warna ikon ikon pada bagian produk
                     ),
                   ),
                 ),
@@ -905,7 +979,8 @@ class _AIChatPageState extends State<AIChatPage> {
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors
+                            .textPrimaryDark, // Warna teks pada bagian produk
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -916,7 +991,8 @@ class _AIChatPageState extends State<AIChatPage> {
                           style: const TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w900,
-                            color: AppColors.primaryOrange,
+                            color: AppColors
+                                .primaryOrange, // Warna teks pada bagian produk
                           ),
                         ),
                         if (originalPrice != null) ...[
@@ -925,7 +1001,9 @@ class _AIChatPageState extends State<AIChatPage> {
                             originalPrice,
                             style: const TextStyle(
                               fontSize: 9.5,
-                              color: Color(0xFFB0AAA4),
+                              color: Color(
+                                0xFFB0AAA4,
+                              ), // Warna teks pada bagian produk
                               decoration: TextDecoration.lineThrough,
                             ),
                           ),
@@ -939,7 +1017,9 @@ class _AIChatPageState extends State<AIChatPage> {
                         vertical: 1,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEDEBE7),
+                        color: const Color(
+                          0xFFEDEBE7,
+                        ), // Warna teks pada bagian produk
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: Text(
@@ -947,7 +1027,9 @@ class _AIChatPageState extends State<AIChatPage> {
                         style: const TextStyle(
                           fontSize: 8,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF5A524D),
+                          color: Color(
+                            0xFF5A524D,
+                          ), // Warna teks pada bagian produk
                         ),
                       ),
                     ),
@@ -965,7 +1047,7 @@ class _AIChatPageState extends State<AIChatPage> {
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontSize: 9.5,
-              color: Color(0xFF6E6560),
+              color: Color(0xFF6E6560), // Warna teks pada bagian produk
               height: 1.35,
             ),
           ),
@@ -979,7 +1061,7 @@ class _AIChatPageState extends State<AIChatPage> {
                   height: 32,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryOrange,
+                      backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian produk
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -1001,14 +1083,16 @@ class _AIChatPageState extends State<AIChatPage> {
                           style: TextStyle(
                             fontSize: 10.5,
                             fontWeight: FontWeight.w800,
-                            color: Colors.white,
+                            color: Colors
+                                .white, // Warna ikon ikon untuk "Lihat Produk"
                           ),
                         ),
                         SizedBox(width: 4),
                         Icon(
                           Icons.arrow_forward_rounded,
                           size: 13,
-                          color: Colors.white,
+                          color: Colors
+                              .white, // Warna ikon ikon untuk "Lihat Produk"
                         ),
                       ],
                     ),
@@ -1032,14 +1116,16 @@ class _AIChatPageState extends State<AIChatPage> {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF5F3EF),
+                    color: const Color(0xFFF5F3EF), // Warna ikon ikon untuk "${product.name} ditambahkan ke daft..."
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFFEBE8E3)),
+                    border: Border.all(
+                      color: const Color(0xFFEBE8E3), // Warna ikon ikon untuk "${product.name} ditambahkan ke daft..."
+                    ),
                   ),
                   child: const Icon(
                     Icons.bookmark_border_rounded,
                     size: 16,
-                    color: Color(0xFF6E6560),
+                    color: Color(0xFF6E6560), // Warna ikon ikon untuk "${product.name} ditambahkan ke daft..."
                   ),
                 ),
               ),
@@ -1060,7 +1146,7 @@ class _AIChatPageState extends State<AIChatPage> {
             style: const TextStyle(
               fontSize: 9.5,
               fontStyle: FontStyle.italic,
-              color: Color(0xFF8E837D),
+              color: Color(0xFF8E837D), // Warna teks pada bagian komponen ini
             ),
           ),
           const SizedBox(width: 4),
@@ -1070,7 +1156,7 @@ class _AIChatPageState extends State<AIChatPage> {
             child: CircularProgressIndicator(
               strokeWidth: 1.5,
               valueColor: AlwaysStoppedAnimation<Color>(
-                AppColors.primaryOrange,
+                AppColors.primaryOrange, // Warna latar kotak atau kartu pada bagian komponen ini
               ),
             ),
           ),
@@ -1083,8 +1169,14 @@ class _AIChatPageState extends State<AIChatPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
-        border: Border(top: BorderSide(color: Color(0xFFEFECE8), width: 1.0)),
+        color:
+            AppColors.white, // Warna border atau garis tepi bagian komponen ini
+        border: Border(
+          top: BorderSide(
+            color: Color(0xFFEFECE8), // Warna border atau garis tepi untuk "Rekomendasi instrumen terbaik untuk..."
+            width: 1.0,
+          ),
+        ),
       ),
       child: SafeArea(
         top: false,
@@ -1100,13 +1192,13 @@ class _AIChatPageState extends State<AIChatPage> {
                 width: 32,
                 height: 32,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFF5F3EF),
+                  color: Color(0xFFF5F3EF), // Warna ikon ikon untuk "Rekomendasi instrumen terbaik untuk..."
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.add_rounded,
                   size: 20,
-                  color: Color(0xFF6E6560),
+                  color: Color(0xFF6E6560), // Warna ikon ikon untuk "Rekomendasi instrumen terbaik untuk..."
                 ),
               ),
             ),
@@ -1117,9 +1209,11 @@ class _AIChatPageState extends State<AIChatPage> {
                 height: 38,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFAF9F7),
+                  color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Rekomendasi instrumen terbaik untuk..."
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: const Color(0xFFE8E5DF)),
+                  border: Border.all(
+                    color: const Color(0xFFE8E5DF), // Warna border atau garis tepi untuk "Rekomendasi instrumen terbaik untuk..."
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -1129,13 +1223,13 @@ class _AIChatPageState extends State<AIChatPage> {
                         onSubmitted: (_) => _sendMessage(),
                         style: const TextStyle(
                           fontSize: 11,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna teks pada "Tanyakan rekomendasi atau spesifika..."
                         ),
                         decoration: const InputDecoration(
                           hintText: 'Tanyakan rekomendasi atau spesifikasi...',
                           hintStyle: TextStyle(
                             fontSize: 10,
-                            color: Color(0xFF9E958F),
+                            color: Color(0xFF9E958F), // Warna teks pada "Tanyakan rekomendasi atau spesifika..."
                           ),
                           border: InputBorder.none,
                           isDense: true,
@@ -1157,7 +1251,7 @@ class _AIChatPageState extends State<AIChatPage> {
                       child: const Icon(
                         Icons.mic_none_rounded,
                         size: 17,
-                        color: Color(0xFF8E837D),
+                        color: Color(0xFF8E837D), // Warna ikon ikon untuk "Perekam suara AI siap mendengarkan."
                       ),
                     ),
                   ],
@@ -1173,7 +1267,7 @@ class _AIChatPageState extends State<AIChatPage> {
                 width: 34,
                 height: 34,
                 decoration: const BoxDecoration(
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna ikon ikon pada bagian komponen ini
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -1191,4 +1285,3 @@ class _AIChatPageState extends State<AIChatPage> {
 }
 
 typedef AIChatScreen = AIChatPage;
-

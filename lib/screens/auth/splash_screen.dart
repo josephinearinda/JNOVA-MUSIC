@@ -1,18 +1,15 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:jnova/core/constants/app_colors.dart';
 import 'package:jnova/services/notification_service.dart';
-
 
 class SplashScreen extends StatefulWidget {
   /// Callback opsional ketika durasi animasi selesai.
   /// Jika halaman berikutnya belum siap, Splash Screen tetap tampil.
   final VoidCallback? onAnimationFinished;
 
-  const SplashScreen({
-    super.key,
-    this.onAnimationFinished,
-  });
+  const SplashScreen({super.key, this.onAnimationFinished});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -76,15 +73,13 @@ class _SplashScreenState extends State<SplashScreen>
       parent: _controller,
       curve: const Interval(0.35, 0.75, curve: Curves.easeOut),
     );
-    _titleSlideAnimation = Tween<Offset>(
-      begin: const Offset(0.0, 0.20),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.35, 0.75, curve: Curves.easeOutCubic),
-      ),
-    );
+    _titleSlideAnimation =
+        Tween<Offset>(begin: const Offset(0.0, 0.20), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: const Interval(0.35, 0.75, curve: Curves.easeOutCubic),
+          ),
+        );
 
     // 4. Pill badge resmi: 0.50 -> 0.82
     _badgeFadeAnimation = CurvedAnimation(
@@ -129,7 +124,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Stack(
           children: [
@@ -146,9 +142,17 @@ class _SplashScreenState extends State<SplashScreen>
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          AppColors.orange.withValues(alpha: 0.12),
-                          AppColors.orange.withValues(alpha: 0.04),
-                          Colors.transparent,
+                          AppColors.orange.withValues(
+                            // Warna latar kotak atau kartu pada bagian komponen ini
+
+                            alpha: 0.12,
+                          ),
+                          AppColors.orange.withValues(
+                            // Warna latar kotak atau kartu pada bagian komponen ini
+
+                            alpha: 0.04,
+                          ),
+                          Colors.transparent, // Warna visual pada bagian komponen ini
                         ],
                         stops: const [0.0, 0.45, 1.0],
                       ),
@@ -244,7 +248,7 @@ class _SplashScreenState extends State<SplashScreen>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
           decoration: BoxDecoration(
-            color: AppColors.badgeBackground,
+            color: AppColors.badgeBackground, // Warna latar kotak atau kartu untuk "TOKO ALAT MUSIK & AUDIO STUDIO RESMI"
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
@@ -255,12 +259,12 @@ class _SplashScreenState extends State<SplashScreen>
                 Icons.verified,
                 color: AppColors.orange,
                 size: 15,
-              ),
+              ), // Warna ikon ikon untuk "TOKO ALAT MUSIK & AUDIO STUDIO RESMI"
               const SizedBox(width: 6),
               const Text(
                 'TOKO ALAT MUSIK & AUDIO STUDIO RESMI',
                 style: TextStyle(
-                  color: AppColors.darkGrey,
+                  color: AppColors.darkGrey, // Warna ikon ikon untuk "TOKO ALAT MUSIK & AUDIO STUDIO RESMI"
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.4,
@@ -305,7 +309,8 @@ class _SplashScreenState extends State<SplashScreen>
           final double dampening = (1.0 - t).clamp(0.0, 1.0);
           final double wave1 = math.sin(t * math.pi * 5.0) * 4.0 * dampening;
           final double wave2 = math.cos(t * math.pi * 5.0) * 5.0 * dampening;
-          final double wave3 = math.sin(t * math.pi * 5.0 + 1.0) * 4.0 * dampening;
+          final double wave3 =
+              math.sin(t * math.pi * 5.0 + 1.0) * 4.0 * dampening;
 
           final double hLeft = (8.0 + wave1).clamp(6.0, 16.0);
           final double hCenter = (22.0 - wave2).clamp(14.0, 24.0);
@@ -335,7 +340,7 @@ class _SplashScreenState extends State<SplashScreen>
       width: 5.5,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.orange,
+        color: AppColors.orange, // Warna latar kotak atau kartu untuk "v2.4.0 \u2022 Karya Musik Indonesia"
         borderRadius: BorderRadius.circular(3),
       ),
     );
@@ -349,7 +354,7 @@ class _SplashScreenState extends State<SplashScreen>
         'v2.4.0 \u2022 Karya Musik Indonesia',
         textAlign: TextAlign.center,
         style: TextStyle(
-          color: AppColors.textMuted,
+          color: AppColors.textMuted, // Warna teks pada "v2.4.0 \u2022 Karya Musik Indonesia"
           fontSize: 11,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.3,

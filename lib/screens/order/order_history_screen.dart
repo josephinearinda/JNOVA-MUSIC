@@ -48,8 +48,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   }
 
   void _showQrModal(BuildContext context, OrderModel order) {
-    final pickupCode =
-        order.pickupCode.isNotEmpty ? order.pickupCode : 'PKP-8841-JNV';
+    final pickupCode = order.pickupCode.isNotEmpty
+        ? order.pickupCode
+        : 'PKP-8841-JNV';
     final storeName = order.pickupStore?.name ?? 'Toko Resmi JNOVAMUSIC';
 
     showModalBottomSheet(
@@ -69,7 +70,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: const Color(0xFFD4D0C8),
+                color: const Color(0xFFD4D0C8), // Warna latar kotak atau kartu untuk "QR Code Pengambilan Toko"
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -85,7 +86,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "QR Code Pengambilan Toko"
                     ),
                   ),
                 ),
@@ -106,7 +107,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 1.5,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna teks pada "$storeName • ${order.orderNumber}"
               ),
             ),
             const SizedBox(height: 4),
@@ -117,29 +118,36 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               style: const TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF7E756F),
+                color: Color(
+                  0xFF7E756F,
+                ), // Warna teks pada "$storeName • ${order.orderNumber}"
               ),
             ),
             const SizedBox(height: 14),
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF9F7),
+                color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "$storeName • ${order.orderNumber}"
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFEBE8E3)),
+                border: Border.all(
+                  color: const Color(0xFFEBE8E3), // Warna ikon ikon untuk "$storeName • ${order.orderNumber}"
+                ),
               ),
               child: const Row(
                 children: [
                   Icon(
                     Icons.info_outline,
                     size: 15,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "$storeName • ${order.orderNumber}"
                   ),
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'Tunjukkan QR Code ini kepada kasir/luthier desk di store untuk verifikasi dan serah terima instrumen.',
-                      style: TextStyle(fontSize: 10, color: Color(0xFF5A524D)),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFF5A524D), // Warna teks pada "$storeName • ${order.orderNumber}"
+                      ),
                     ),
                   ),
                 ],
@@ -161,7 +169,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryOrange,
+                  backgroundColor: AppColors.primaryOrange, // Warna latar pesan pemberitahuan pada bagian komponen ini
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -192,7 +200,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     final completedCount = allOrders.where((o) => o.isCompleted).length;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFBFBFB),
+      backgroundColor: const Color(
+        0xFFFBFBFB,
+      ), // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -256,9 +266,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "/profile"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/profile"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -274,7 +289,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Pantau pembelian & jadwal pengambil..."
                   ),
                 ),
                 SizedBox(height: 2),
@@ -282,7 +297,10 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   'Pantau pembelian & jadwal pengambilan toko',
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: TextStyle(fontSize: 10.5, color: Color(0xFF7E756F)),
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    color: Color(0xFF7E756F), // Warna teks pada "Pantau pembelian & jadwal pengambil..."
+                  ),
                 ),
               ],
             ),
@@ -297,7 +315,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 icon: const Icon(
                   Icons.notifications_outlined,
                   size: 22,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "/notifications"
                 ),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
@@ -310,7 +328,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   height: 7,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFFEA580C),
+                    color: Color(
+                      0xFFEA580C,
+                    ), // Warna latar kotak atau kartu untuk "/notifications"
                   ),
                 ),
               ),
@@ -328,12 +348,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               height: 32,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFFB45309),
+                color: Color(0xFFB45309), // Warna ikon ikon untuk "/profile"
               ),
               child: const Icon(
                 Icons.person_rounded,
                 size: 19,
-                color: Colors.white,
+                color: Colors.white, // Warna ikon ikon untuk "/profile"
               ),
             ),
           ),
@@ -348,17 +368,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     required int completedCount,
   }) {
     return Container(
-      color: Colors.white,
+      color: Colors.white, // Warna area atau kotak untuk "Semua ($totalCount)"
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         child: Row(
           children: [
-            _buildFilterChip(
-              index: 0,
-              label: 'Semua ($totalCount)',
-            ),
+            _buildFilterChip(index: 0, label: 'Semua ($totalCount)'),
             const SizedBox(width: 8),
             _buildFilterChip(
               index: 1,
@@ -366,10 +383,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               hasBadge: activeCount > 0,
             ),
             const SizedBox(width: 8),
-            _buildFilterChip(
-              index: 2,
-              label: 'Selesai ($completedCount)',
-            ),
+            _buildFilterChip(index: 2, label: 'Selesai ($completedCount)'),
           ],
         ),
       ),
@@ -393,12 +407,21 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFFFEFE5) : const Color(0xFFF5F4F1),
+          color: isSelected
+              ? const Color(
+                  0xFFFFEFE5,
+                ) // Warna latar kotak atau kartu pada bagian komponen ini
+              : const Color(
+                  0xFFF5F4F1,
+                ), // Warna border atau garis tepi bagian komponen ini
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
-                ? AppColors.primaryOrange
-                : const Color(0xFFE5E2DC),
+                ? AppColors
+                      .primaryOrange // Warna border atau garis tepi bagian komponen ini
+                : const Color(
+                    0xFFE5E2DC,
+                  ), // Warna border atau garis tepi bagian komponen ini
             width: 1.0,
           ),
         ),
@@ -411,7 +434,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 height: 6,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna latar kotak atau kartu pada bagian komponen ini
                 ),
               ),
               const SizedBox(width: 5),
@@ -422,8 +445,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 fontSize: 10.5,
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 color: isSelected
-                    ? AppColors.primaryOrange
-                    : const Color(0xFF5A524D),
+                    ? AppColors
+                          .primaryOrange // Warna teks pada bagian komponen ini
+                    : const Color(
+                        0xFF5A524D,
+                      ), // Warna teks pada bagian komponen ini
               ),
             ),
           ],
@@ -443,13 +469,16 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               width: 80,
               height: 80,
               decoration: const BoxDecoration(
-                color: Color(0xFFFFF7ED),
+                color: Color(
+                  0xFFFFF7ED,
+                ), // Warna ikon ikon untuk "Belum Ada Pesanan"
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.receipt_long_outlined,
                 size: 38,
-                color: AppColors.primaryOrange,
+                color: AppColors
+                    .primaryOrange, // Warna ikon ikon untuk "Belum Ada Pesanan"
               ),
             ),
             const SizedBox(height: 16),
@@ -465,7 +494,13 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             const Text(
               'Pesanan yang Anda buat akan muncul di sini untuk memudahkan pemantauan dan pengambilan barang di toko.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 11, color: Color(0xFF7E756F), height: 1.4),
+              style: TextStyle(
+                fontSize: 11,
+                color: Color(
+                  0xFF7E756F,
+                ), // Warna ikon ikon untuk "/all-products"
+                height: 1.4,
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
@@ -473,17 +508,28 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 Navigator.pushReplacementNamed(context, '/all-products');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor: AppColors
+                    .primaryOrange, // Warna ikon ikon untuk "/all-products"
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
               ),
-              icon: const Icon(Icons.storefront_rounded, size: 16, color: Colors.white),
+              icon: const Icon(
+                Icons.storefront_rounded,
+                size: 16,
+                color: Colors.white, // Warna ikon ikon untuk "Mulai Belanja"
+              ),
               label: const Text(
                 'Mulai Belanja',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  color: Colors.white, // Warna teks pada "Mulai Belanja"
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],
@@ -513,24 +559,33 @@ class _OrderDashboardCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors
+            .white, // Warna border atau garis tepi untuk "JNOVAMUSIC Store"
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isCompleted
-              ? const Color(0xFFE5E7EB)
-              : const Color(0xFFFFD8BF),
+              ? const Color(
+                  0xFFE5E7EB,
+                ) // Warna border atau garis tepi untuk "JNOVAMUSIC Store"
+              : const Color(
+                  0xFFFFD8BF,
+                ), // Warna border atau garis tepi untuk "JNOVAMUSIC Store"
           width: 1.0,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Colors.black.withValues(
+              // Warna bayangan pada bagian komponen ini
+
+              alpha: 0.03,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Material(
-        color: Colors.transparent,
+        color: Colors.transparent, // Warna visual pada bagian komponen ini
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(14),
@@ -575,8 +630,8 @@ class _OrderDashboardCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: isCompleted
-                            ? const Color(0xFFDCFCE7)
-                            : const Color(0xFFFFEFE5),
+                            ? const Color(0xFFDCFCE7) // Warna latar kotak atau kartu pada bagian komponen ini
+                            : const Color(0xFFFFEFE5), // Warna latar kotak atau kartu pada bagian komponen ini
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Row(
@@ -588,8 +643,12 @@ class _OrderDashboardCard extends StatelessWidget {
                                 : Icons.storefront_rounded,
                             size: 11,
                             color: isCompleted
-                                ? const Color(0xFF15803D)
-                                : const Color(0xFFC2410C),
+                                ? const Color(
+                                    0xFF15803D,
+                                  ) // Warna ikon ikon untuk "Selesai"
+                                : const Color(
+                                    0xFFC2410C,
+                                  ), // Warna visual pada bagian komponen ini
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -598,8 +657,12 @@ class _OrderDashboardCard extends StatelessWidget {
                               fontSize: 9,
                               fontWeight: FontWeight.w800,
                               color: isCompleted
-                                  ? const Color(0xFF15803D)
-                                  : const Color(0xFFC2410C),
+                                  ? const Color(
+                                      0xFF15803D,
+                                    ) // Warna teks pada "Selesai"
+                                  : const Color(
+                                      0xFFC2410C,
+                                    ), // Warna visual pada bagian komponen ini
                             ),
                           ),
                         ],
@@ -619,13 +682,16 @@ class _OrderDashboardCard extends StatelessWidget {
                         maxLines: 1,
                         style: const TextStyle(
                           fontSize: 9.5,
-                          color: Color(0xFF8E837D),
+                          color: Color(0xFF8E837D), // Warna teks pada "•"
                         ),
                       ),
                     ),
                     const Text(
                       ' • ',
-                      style: TextStyle(fontSize: 9.5, color: Color(0xFF8E837D)),
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        color: Color(0xFF8E837D), // Warna teks pada "•"
+                      ),
                     ),
                     Flexible(
                       child: Text(
@@ -635,7 +701,7 @@ class _OrderDashboardCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 9.5,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF6E6560),
+                          color: Color(0xFF6E6560), // Warna teks pada "•"
                         ),
                       ),
                     ),
@@ -644,7 +710,12 @@ class _OrderDashboardCard extends StatelessWidget {
 
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.0),
-                  child: Divider(color: Color(0xFFF2F0ED), height: 1),
+                  child: Divider(
+                    color: Color(
+                      0xFFF2F0ED,
+                    ), // Warna garis pemisah pada bagian komponen ini
+                    height: 1,
+                  ),
                 ),
 
                 // Baris 3: Daftar Produk yang Dipesan
@@ -659,16 +730,18 @@ class _OrderDashboardCard extends StatelessWidget {
                           child: Container(
                             width: 42,
                             height: 42,
-                            color: const Color(0xFFF8F7F5),
+                            color: const Color(
+                              0xFFF8F7F5,
+                            ), // Warna area atau kotak pada bagian komponen ini
                             child: Image.asset(
                               item.product.image,
                               fit: BoxFit.contain,
-                              errorBuilder:
-                                  (context, error, stackTrace) => const Icon(
-                                Icons.image_not_supported_rounded,
-                                size: 18,
-                                color: AppColors.placeholder,
-                              ),
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(
+                                    Icons.image_not_supported_rounded,
+                                    size: 18,
+                                    color: AppColors.placeholder, // Warna ikon ikon pada bagian komponen ini
+                                  ),
                             ),
                           ),
                         ),
@@ -684,7 +757,7 @@ class _OrderDashboardCard extends StatelessWidget {
                                 style: const TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimaryDark,
+                                  color: AppColors.textPrimaryDark, // Warna teks pada "${item.quantity} Unit x ${formatRup..."
                                 ),
                               ),
                               const SizedBox(height: 1),
@@ -699,7 +772,7 @@ class _OrderDashboardCard extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         fontSize: 9.5,
-                                        color: Color(0xFF7E756F),
+                                        color: Color(0xFF7E756F), // Warna teks pada "${item.quantity} Unit x ${formatRup..."
                                       ),
                                     ),
                                   ),
@@ -709,7 +782,7 @@ class _OrderDashboardCard extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 10.5,
                                       fontWeight: FontWeight.w700,
-                                      color: Color(0xFF4A423E),
+                                      color: Color(0xFF4A423E), // Warna teks pada "${item.quantity} Unit x ${formatRup..."
                                     ),
                                   ),
                                 ],
@@ -729,7 +802,12 @@ class _OrderDashboardCard extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8.0),
                   decoration: const BoxDecoration(
                     border: Border(
-                      top: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+                      top: BorderSide(
+                        color: Color(
+                          0xFFF2F0ED,
+                        ), // Warna border atau garis tepi bagian komponen ini
+                        width: 1.0,
+                      ),
                     ),
                   ),
                   child: Row(
@@ -743,7 +821,9 @@ class _OrderDashboardCard extends StatelessWidget {
                             'Total ($totalUnits Unit)',
                             style: const TextStyle(
                               fontSize: 9.5,
-                              color: Color(0xFF7E756F),
+                              color: Color(
+                                0xFF7E756F,
+                              ), // Warna teks pada "Total ($totalUnits Unit)"
                             ),
                           ),
                           const SizedBox(height: 1),
@@ -752,7 +832,7 @@ class _OrderDashboardCard extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 12.5,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.primaryOrange,
+                              color: AppColors.primaryOrange, // Warna teks pada "Total ($totalUnits Unit)"
                             ),
                           ),
                         ],
@@ -766,7 +846,7 @@ class _OrderDashboardCard extends StatelessWidget {
                               onPressed: onShowQr,
                               style: OutlinedButton.styleFrom(
                                 side: const BorderSide(
-                                  color: Color(0xFFE0DDD7),
+                                  color: Color(0xFFE0DDD7), // Warna ikon ikon untuk "Total ($totalUnits Unit)"
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -780,14 +860,18 @@ class _OrderDashboardCard extends StatelessWidget {
                               icon: const Icon(
                                 Icons.qr_code_2_rounded,
                                 size: 14,
-                                color: Color(0xFF4A423E),
+                                color: Color(
+                                  0xFF4A423E,
+                                ), // Warna ikon ikon untuk "QR Code"
                               ),
                               label: const Text(
                                 'QR Code',
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w700,
-                                  color: Color(0xFF4A423E),
+                                  color: Color(
+                                    0xFF4A423E,
+                                  ), // Warna teks pada "QR Code"
                                 ),
                               ),
                             ),
@@ -797,11 +881,14 @@ class _OrderDashboardCard extends StatelessWidget {
                             onPressed: onTap,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: isCompleted
-                                  ? const Color(0xFFECEAE6)
-                                  : AppColors.primaryOrange,
+                                  ? const Color(
+                                      0xFFECEAE6,
+                                    ) // Warna visual pada bagian komponen ini
+                                  : AppColors.primaryOrange, // Warna visual pada bagian komponen ini
                               foregroundColor: isCompleted
-                                  ? AppColors.textPrimaryDark
-                                  : Colors.white,
+                                  ? AppColors
+                                        .textPrimaryDark // Warna visual pada bagian komponen ini
+                                  : Colors.white, // Warna visual pada bagian komponen ini
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -821,8 +908,9 @@ class _OrderDashboardCard extends StatelessWidget {
                                     fontSize: 10.5,
                                     fontWeight: FontWeight.w700,
                                     color: isCompleted
-                                        ? AppColors.textPrimaryDark
-                                        : Colors.white,
+                                        ? AppColors
+                                              .textPrimaryDark // Warna ikon ikon untuk "Lihat Detail"
+                                        : Colors.white, // Warna ikon ikon untuk "Lihat Detail"
                                   ),
                                 ),
                                 const SizedBox(width: 4),
@@ -830,7 +918,8 @@ class _OrderDashboardCard extends StatelessWidget {
                                   Icons.chevron_right_rounded,
                                   size: 14,
                                   color: isCompleted
-                                      ? AppColors.textPrimaryDark
+                                      ? AppColors
+                                            .textPrimaryDark // Warna ikon ikon untuk "Lihat Detail"
                                       : Colors.white,
                                 ),
                               ],

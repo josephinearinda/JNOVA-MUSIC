@@ -84,7 +84,7 @@ class _AIScannerPageState extends State<AIScannerPage>
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Silakan pilih atau ambil gambar terlebih dahulu.'),
-          backgroundColor: AppColors.primaryOrange,
+          backgroundColor: AppColors.primaryOrange, // Warna latar pesan pemberitahuan pada bagian komponen ini
         ),
       );
       return;
@@ -99,7 +99,7 @@ class _AIScannerPageState extends State<AIScannerPage>
           content: Text(
             'Layanan AI Vision sedang dalam pemeliharaan. Silakan coba sesaat lagi.',
           ),
-          backgroundColor: AppColors.primaryOrange,
+          backgroundColor: AppColors.primaryOrange, // Warna latar pesan pemberitahuan pada bagian komponen ini
         ),
       );
       return;
@@ -149,7 +149,8 @@ class _AIScannerPageState extends State<AIScannerPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Colors.white, // Warna latar kotak atau kartu pada bagian komponen ini
       appBar: _buildAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -195,11 +196,16 @@ class _AIScannerPageState extends State<AIScannerPage>
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Colors.white, // Warna ikon ikon untuk "AI Object Scanner"
       elevation: 0,
-      surfaceTintColor: Colors.transparent,
+      surfaceTintColor:
+          Colors.transparent, // Warna ikon ikon untuk "AI Object Scanner"
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF1E1E1E)),
+        icon: const Icon(
+          Icons.arrow_back_rounded,
+          color: Color(0xFF1E1E1E), // Warna ikon ikon untuk "AI Object Scanner"
+        ),
         onPressed: () => Navigator.pop(context),
       ),
       title: const Text(
@@ -207,7 +213,7 @@ class _AIScannerPageState extends State<AIScannerPage>
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w800,
-          color: Color(0xFF1E1E1E),
+          color: Color(0xFF1E1E1E), // Warna teks pada "AI Object Scanner"
           letterSpacing: -0.2,
         ),
       ),
@@ -216,7 +222,8 @@ class _AIScannerPageState extends State<AIScannerPage>
           tooltip: 'Info AI Vision',
           icon: const Icon(
             Icons.info_outline_rounded,
-            color: AppColors.primaryOrange,
+            color: AppColors
+                .primaryOrange, // Warna ikon ikon untuk "Info AI Vision"
           ),
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -231,7 +238,10 @@ class _AIScannerPageState extends State<AIScannerPage>
       ],
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1.0),
-        child: Container(color: const Color(0xFFEEEEEE), height: 1.0),
+        child: Container(
+          color: const Color(0xFFEEEEEE), // Warna latar kotak atau kartu untuk "AI Vision pintar siap mengenali obj..."
+          height: 1.0,
+        ),
       ),
     );
   }
@@ -242,12 +252,18 @@ class _AIScannerPageState extends State<AIScannerPage>
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFFFFF9F5), Color(0xFFFDEEE3)],
+          colors: [
+            Color(0xFFFFF9F5), // Warna latar kotak atau kartu untuk "AI Vision pintar siap mengenali obj..."
+            Color(0xFFFDEEE3), // Warna border atau garis tepi untuk "AI Vision pintar siap mengenali obj..."
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFFFE2CF), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFFFE2CF), // Warna border atau garis tepi untuk "AI Vision pintar siap mengenali obj..."
+          width: 1.0,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,12 +271,16 @@ class _AIScannerPageState extends State<AIScannerPage>
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primaryOrange.withValues(alpha: 0.12),
+              color: AppColors.primaryOrange.withValues(
+                // Warna latar kotak atau kartu untuk "AI Vision pintar siap mengenali obj..."
+
+                alpha: 0.12,
+              ),
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.camera_enhance_rounded,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "AI Vision pintar siap mengenali obj..."
               size: 20,
             ),
           ),
@@ -274,7 +294,9 @@ class _AIScannerPageState extends State<AIScannerPage>
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Identifikasi Pintar AI Vision"
                   ),
                 ),
                 SizedBox(height: 3),
@@ -282,7 +304,9 @@ class _AIScannerPageState extends State<AIScannerPage>
                   'Ambil foto atau unggah gambar objek apa saja. AI akan mengenali nama, kategori, fungsi, dan karakteristik visualnya secara akurat.',
                   style: TextStyle(
                     fontSize: 11,
-                    color: Color(0xFF6E6E6E),
+                    color: Color(
+                      0xFF6E6E6E,
+                    ), // Warna teks pada "Identifikasi Pintar AI Vision"
                     height: 1.35,
                   ),
                 ),
@@ -300,9 +324,16 @@ class _AIScannerPageState extends State<AIScannerPage>
         width: double.infinity,
         height: 240,
         decoration: BoxDecoration(
-          color: const Color(0xFFFAFAFA),
+          color: const Color(
+            0xFFFAFAFA,
+          ), // Warna border atau garis tepi bagian komponen ini
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE0E0E0), width: 1.5),
+          border: Border.all(
+            color: const Color(
+              0xFFE0E0E0,
+            ), // Warna border atau garis tepi bagian komponen ini
+            width: 1.5,
+          ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -310,11 +341,15 @@ class _AIScannerPageState extends State<AIScannerPage>
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.white, // Warna latar kotak atau kartu pada bagian komponen ini
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: Colors.black.withValues(
+                      // Warna latar kotak atau kartu pada bagian komponen ini
+
+                      alpha: 0.05,
+                    ),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
                   ),
@@ -323,7 +358,7 @@ class _AIScannerPageState extends State<AIScannerPage>
               child: const Icon(
                 Icons.add_a_photo_outlined,
                 size: 38,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Belum ada objek yang dipilih"
               ),
             ),
             const SizedBox(height: 14),
@@ -332,13 +367,20 @@ class _AIScannerPageState extends State<AIScannerPage>
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF333333),
+                color: Color(
+                  0xFF333333,
+                ), // Warna teks pada "Belum ada objek yang dipilih"
               ),
             ),
             const SizedBox(height: 4),
             const Text(
               'Buka kamera atau unggah gambar benda apa saja dari galeri Anda',
-              style: TextStyle(fontSize: 11, color: Color(0xFF888888)),
+              style: TextStyle(
+                fontSize: 11,
+                color: Color(
+                  0xFF888888,
+                ), // Warna teks pada "Buka kamera atau unggah gambar bend..."
+              ),
             ),
             const SizedBox(height: 16),
             Row(
@@ -349,18 +391,18 @@ class _AIScannerPageState extends State<AIScannerPage>
                   icon: const Icon(
                     Icons.camera_alt_rounded,
                     size: 16,
-                    color: Colors.white,
+                    color: Colors.white, // Warna ikon ikon untuk "Kamera"
                   ),
                   label: const Text(
                     'Kamera',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white,
+                      color: Colors.white, // Warna teks pada "Kamera"
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryOrange,
+                    backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian komponen ini
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -377,19 +419,21 @@ class _AIScannerPageState extends State<AIScannerPage>
                   icon: const Icon(
                     Icons.photo_library_rounded,
                     size: 16,
-                    color: AppColors.primaryOrange,
+                    color: AppColors
+                        .primaryOrange, // Warna ikon ikon untuk "Galeri"
                   ),
                   label: const Text(
                     'Galeri',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.primaryOrange,
+                      color:
+                          AppColors.primaryOrange, // Warna teks pada "Galeri"
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna border atau garis tepi untuk "Galeri"
                       width: 1.2,
                     ),
                     padding: const EdgeInsets.symmetric(
@@ -417,13 +461,20 @@ class _AIScannerPageState extends State<AIScannerPage>
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: _isScanning
-              ? AppColors.primaryOrange
-              : const Color(0xFFE0E0E0),
+              ? AppColors
+                    .primaryOrange // Warna border atau garis tepi bagian komponen ini
+              : const Color(
+                  0xFFE0E0E0,
+                ), // Warna border atau garis tepi bagian komponen ini
           width: _isScanning ? 2.0 : 1.0,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: Colors.black.withValues(
+              // Warna bayangan pada bagian komponen ini
+
+              alpha: 0.08,
+            ),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -451,15 +502,15 @@ class _AIScannerPageState extends State<AIScannerPage>
                     child: Container(
                       height: 4,
                       decoration: const BoxDecoration(
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna latar kotak atau kartu pada bagian komponen ini
                         boxShadow: [
                           BoxShadow(
-                            color: Color(0xFFFF5500),
+                            color: Color(0xFFFF5500), // Warna latar kotak atau kartu pada bagian komponen ini
                             blurRadius: 16,
                             spreadRadius: 4,
                           ),
                           BoxShadow(
-                            color: Colors.white,
+                            color: Colors.white, // Warna latar kotak atau kartu pada bagian komponen ini
                             blurRadius: 8,
                             spreadRadius: 1,
                           ),
@@ -479,10 +530,18 @@ class _AIScannerPageState extends State<AIScannerPage>
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.75),
+                    color: Colors.black.withValues(
+                      // Warna border atau garis tepi bagian komponen ini
+
+                      alpha: 0.75,
+                    ),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: AppColors.primaryOrange.withValues(alpha: 0.6),
+                      color: AppColors.primaryOrange.withValues(
+                        // Warna border atau garis tepi bagian komponen ini
+
+                        alpha: 0.6,
+                      ),
                     ),
                   ),
                   child: const Row(
@@ -493,14 +552,14 @@ class _AIScannerPageState extends State<AIScannerPage>
                         height: 14,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: AppColors.primaryOrange,
+                          color: AppColors.primaryOrange, // Warna teks pada "Mengambil data AI Vision dari inter..."
                         ),
                       ),
                       SizedBox(width: 10),
                       Text(
                         'Mengambil data AI Vision dari internet...',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.white, // Warna teks pada "Mengambil data AI Vision dari inter..."
                           fontSize: 11.5,
                           fontWeight: FontWeight.w700,
                         ),
@@ -522,11 +581,17 @@ class _AIScannerPageState extends State<AIScannerPage>
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF059669),
+                    color: const Color(
+                      0xFF059669,
+                    ), // Warna latar kotak atau kartu pada bagian komponen ini
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
+                        color: Colors.black.withValues(
+                          // Warna latar kotak atau kartu pada bagian komponen ini
+
+                          alpha: 0.2,
+                        ),
                         blurRadius: 6,
                       ),
                     ],
@@ -536,14 +601,16 @@ class _AIScannerPageState extends State<AIScannerPage>
                     children: [
                       Icon(
                         Icons.check_circle_rounded,
-                        color: Colors.white,
+                        color: Colors
+                            .white, // Warna ikon ikon untuk "Teridentifikasi"
                         size: 13,
                       ),
                       SizedBox(width: 4),
                       Text(
                         'Teridentifikasi',
                         style: TextStyle(
-                          color: Colors.white,
+                          color:
+                              Colors.white, // Warna teks pada "Teridentifikasi"
                           fontSize: 10.5,
                           fontWeight: FontWeight.w700,
                         ),
@@ -572,8 +639,11 @@ class _AIScannerPageState extends State<AIScannerPage>
           child: ElevatedButton(
             onPressed: _isScanning ? null : _startScan,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryOrange,
+              backgroundColor:
+                  AppColors.primaryOrange, // Warna visual pada tombol
               disabledBackgroundColor: AppColors.primaryOrange.withValues(
+                // Warna latar tombol pada tombol
+
                 alpha: 0.6,
               ),
               elevation: 2,
@@ -590,14 +660,14 @@ class _AIScannerPageState extends State<AIScannerPage>
                         height: 18,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: Colors.white,
+                          color: Colors.white, // Warna teks pada "Sedang Menganalisis via Internet..."
                         ),
                       ),
                       SizedBox(width: 10),
                       Text(
                         'Sedang Menganalisis via Internet...',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.white, // Warna teks pada "Sedang Menganalisis via Internet..."
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                         ),
@@ -607,12 +677,18 @@ class _AIScannerPageState extends State<AIScannerPage>
                 : const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.auto_awesome, color: Colors.white, size: 18),
+                      Icon(
+                        Icons.auto_awesome,
+                        color: Colors
+                            .white, // Warna ikon ikon untuk "Scan dengan AI"
+                        size: 18,
+                      ),
                       SizedBox(width: 8),
                       Text(
                         'Scan dengan AI',
                         style: TextStyle(
-                          color: Colors.white,
+                          color:
+                              Colors.white, // Warna teks pada "Scan dengan AI"
                           fontSize: 14,
                           fontWeight: FontWeight.w800,
                         ),
@@ -635,18 +711,24 @@ class _AIScannerPageState extends State<AIScannerPage>
                 icon: const Icon(
                   Icons.camera_alt_outlined,
                   size: 15,
-                  color: Color(0xFF4A4A4A),
+                  color: Color(
+                    0xFF4A4A4A,
+                  ), // Warna ikon ikon untuk "Foto Ulang"
                 ),
                 label: const Text(
                   'Foto Ulang',
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF4A4A4A),
+                    color: Color(0xFF4A4A4A), // Warna teks pada "Foto Ulang"
                   ),
                 ),
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Color(0xFFD6D6D6)),
+                  side: const BorderSide(
+                    color: Color(
+                      0xFFD6D6D6,
+                    ), // Warna border atau garis tepi untuk "Foto Ulang"
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -663,18 +745,24 @@ class _AIScannerPageState extends State<AIScannerPage>
                 icon: const Icon(
                   Icons.photo_library_outlined,
                   size: 15,
-                  color: Color(0xFF4A4A4A),
+                  color: Color(
+                    0xFF4A4A4A,
+                  ), // Warna ikon ikon untuk "Pilih Lainnya"
                 ),
                 label: const Text(
                   'Pilih Lainnya',
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF4A4A4A),
+                    color: Color(0xFF4A4A4A), // Warna teks pada "Pilih Lainnya"
                   ),
                 ),
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Color(0xFFD6D6D6)),
+                  side: const BorderSide(
+                    color: Color(
+                      0xFFD6D6D6,
+                    ), // Warna border atau garis tepi untuk "Pilih Lainnya"
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -686,9 +774,16 @@ class _AIScannerPageState extends State<AIScannerPage>
             IconButton(
               tooltip: 'Hapus Gambar',
               onPressed: _isScanning ? null : _resetScan,
-              icon: const Icon(Icons.refresh_rounded, color: Color(0xFF888888)),
+              icon: const Icon(
+                Icons.refresh_rounded,
+                color: Color(
+                  0xFF888888,
+                ), // Warna ikon ikon untuk "Hapus Gambar"
+              ),
               style: IconButton.styleFrom(
-                backgroundColor: const Color(0xFFF5F5F5),
+                backgroundColor: const Color(
+                  0xFFF5F5F5,
+                ), // Warna latar kotak untuk "Hapus Gambar"
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -705,9 +800,11 @@ class _AIScannerPageState extends State<AIScannerPage>
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF7ED),
+        color: const Color(0xFFFFF7ED), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFFEDD5)),
+        border: Border.all(
+          color: const Color(0xFFFFEDD5), // Warna border atau garis tepi kartu
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -717,7 +814,7 @@ class _AIScannerPageState extends State<AIScannerPage>
             children: [
               const Icon(
                 Icons.error_outline_rounded,
-                color: Color(0xFFEA580C),
+                color: Color(0xFFEA580C), // Warna ikon ikon pada kartu
                 size: 20,
               ),
               const SizedBox(width: 10),
@@ -726,7 +823,7 @@ class _AIScannerPageState extends State<AIScannerPage>
                   _errorMessage!,
                   style: const TextStyle(
                     fontSize: 11.5,
-                    color: Color(0xFF9A3412),
+                    color: Color(0xFF9A3412), // Warna teks pada kartu
                     height: 1.4,
                     fontWeight: FontWeight.w600,
                   ),
@@ -742,18 +839,19 @@ class _AIScannerPageState extends State<AIScannerPage>
               icon: const Icon(
                 Icons.refresh_rounded,
                 size: 16,
-                color: Colors.white,
+                color: Colors.white, // Warna ikon ikon untuk "Coba Scan Lagi"
               ),
               label: const Text(
                 'Coba Scan Lagi',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.white, // Warna teks pada "Coba Scan Lagi"
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor:
+                    AppColors.primaryOrange, // Warna visual pada kartu
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(
@@ -774,12 +872,19 @@ class _AIScannerPageState extends State<AIScannerPage>
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white, // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFE2CF), width: 1.2),
+        border: Border.all(
+          color: const Color(0xFFFFE2CF), // Warna border atau garis tepi kartu
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFFF5500).withValues(alpha: 0.06),
+            color:
+                const Color(
+                      0xFFFF5500,
+                    ) // Warna latar kotak atau kartu pada kartu
+                    .withValues(alpha: 0.06),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -798,9 +903,15 @@ class _AIScannerPageState extends State<AIScannerPage>
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF0E5),
+                  color: const Color(
+                    0xFFFFF0E5,
+                  ), // Warna border atau garis tepi kartu
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: const Color(0xFFFFD5B8)),
+                  border: Border.all(
+                    color: const Color(
+                      0xFFFFD5B8,
+                    ), // Warna border atau garis tepi kartu
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -808,7 +919,8 @@ class _AIScannerPageState extends State<AIScannerPage>
                     const Icon(
                       Icons.verified_rounded,
                       size: 12,
-                      color: AppColors.primaryOrange,
+                      color:
+                          AppColors.primaryOrange, // Warna ikon ikon pada kartu
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -816,7 +928,7 @@ class _AIScannerPageState extends State<AIScannerPage>
                       style: const TextStyle(
                         fontSize: 10.5,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna teks pada "AI Vision (Internet Online)"
                       ),
                     ),
                   ],
@@ -831,7 +943,9 @@ class _AIScannerPageState extends State<AIScannerPage>
                   style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF888888),
+                    color: Color(
+                      0xFF888888,
+                    ), // Warna teks pada "AI Vision (Internet Online)"
                   ),
                 ),
               ),
@@ -846,7 +960,7 @@ class _AIScannerPageState extends State<AIScannerPage>
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF1E1E1E),
+              color: Color(0xFF1E1E1E), // Warna teks pada kartu
               letterSpacing: -0.3,
             ),
           ),
@@ -857,16 +971,20 @@ class _AIScannerPageState extends State<AIScannerPage>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F7),
+              color: const Color(
+                0xFFF5F5F7,
+              ), // Warna border atau garis tepi kartu
               borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: const Color(0xFFE8E8EC)),
+              border: Border.all(
+                color: const Color(0xFFE8E8EC), // Warna teks pada kartu
+              ),
             ),
             child: Text(
               result.category,
               style: const TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF444444),
+                color: Color(0xFF444444), // Warna teks pada kartu
               ),
             ),
           ),
@@ -874,7 +992,12 @@ class _AIScannerPageState extends State<AIScannerPage>
           const SizedBox(height: 14),
 
           // Divider halus
-          Container(height: 1, color: const Color(0xFFF0F0F0)),
+          Container(
+            height: 1,
+            color: const Color(
+              0xFFF0F0F0,
+            ), // Warna area atau kotak untuk "Deskripsi Objek"
+          ),
 
           const SizedBox(height: 14),
 
@@ -919,16 +1042,18 @@ class _AIScannerPageState extends State<AIScannerPage>
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
-                color: const Color(0xFFF9FAFB),
+                color: const Color(0xFFF9FAFB), // Warna border atau garis tepi untuk "Informasi Tambahan & Tips"
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFFE5E7EB)),
+                border: Border.all(
+                  color: const Color(0xFFE5E7EB), // Warna border atau garis tepi untuk "Informasi Tambahan & Tips"
+                ),
               ),
               child: const Row(
                 children: [
                   Icon(
                     Icons.auto_awesome_rounded,
                     size: 15,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "Informasi Tambahan & Tips"
                   ),
                   SizedBox(width: 8),
                   Expanded(
@@ -936,7 +1061,9 @@ class _AIScannerPageState extends State<AIScannerPage>
                       'Objek berhasil dianalisis secara langsung dari internet dengan AI Vision Multimodal.',
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: Color(0xFF6B7280),
+                        color: Color(
+                          0xFF6B7280,
+                        ), // Warna teks pada "Informasi Tambahan & Tips"
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -960,14 +1087,19 @@ class _AIScannerPageState extends State<AIScannerPage>
       children: [
         Row(
           children: [
-            Icon(icon, size: 14, color: AppColors.primaryOrange),
+            Icon(
+              icon,
+              size: 14,
+              color: AppColors
+                  .primaryOrange, // Warna ikon ikon pada bagian komponen ini
+            ),
             const SizedBox(width: 6),
             Text(
               title,
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF222222),
+                color: Color(0xFF222222), // Warna teks pada bagian komponen ini
               ),
             ),
           ],
@@ -977,7 +1109,7 @@ class _AIScannerPageState extends State<AIScannerPage>
           content,
           style: const TextStyle(
             fontSize: 11.5,
-            color: Color(0xFF4E4E4E),
+            color: Color(0xFF4E4E4E), // Warna teks pada bagian komponen ini
             height: 1.45,
           ),
         ),
@@ -994,7 +1126,7 @@ class _AIScannerPageState extends State<AIScannerPage>
             Icon(
               Icons.check_circle_outline_rounded,
               size: 14,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "Ciri & Karakteristik Utama"
             ),
             SizedBox(width: 6),
             Text(
@@ -1002,7 +1134,9 @@ class _AIScannerPageState extends State<AIScannerPage>
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF222222),
+                color: Color(
+                  0xFF222222,
+                ), // Warna teks pada "Ciri & Karakteristik Utama"
               ),
             ),
           ],
@@ -1019,7 +1153,7 @@ class _AIScannerPageState extends State<AIScannerPage>
                   child: Icon(
                     Icons.circle,
                     size: 5,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon pada bagian komponen ini
                   ),
                 ),
                 Expanded(
@@ -1027,7 +1161,9 @@ class _AIScannerPageState extends State<AIScannerPage>
                     item,
                     style: const TextStyle(
                       fontSize: 11.5,
-                      color: Color(0xFF4E4E4E),
+                      color: Color(
+                        0xFF4E4E4E,
+                      ), // Warna teks pada bagian komponen ini
                       height: 1.35,
                     ),
                   ),
@@ -1044,9 +1180,15 @@ class _AIScannerPageState extends State<AIScannerPage>
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF9F5),
+        color: const Color(
+          0xFFFFF9F5,
+        ), // Warna border atau garis tepi bagian produk
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFFDEC7)),
+        border: Border.all(
+          color: const Color(
+            0xFFFFDEC7,
+          ), // Warna border atau garis tepi bagian produk
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1056,7 +1198,7 @@ class _AIScannerPageState extends State<AIScannerPage>
               Icon(
                 Icons.storefront_rounded,
                 size: 14,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Tersedia di Katalog JNOVA MUSIC"
               ),
               SizedBox(width: 6),
               Text(
@@ -1064,7 +1206,7 @@ class _AIScannerPageState extends State<AIScannerPage>
                 style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna teks pada "Tersedia di Katalog JNOVA MUSIC"
                 ),
               ),
             ],
@@ -1078,16 +1220,18 @@ class _AIScannerPageState extends State<AIScannerPage>
                 height: 60,
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.white, // Warna border atau garis tepi untuk "Tersedia di Katalog JNOVA MUSIC"
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0xFFEEEEEE)),
+                  border: Border.all(
+                    color: const Color(0xFFEEEEEE), // Warna ikon ikon untuk "Tersedia di Katalog JNOVA MUSIC"
+                  ),
                 ),
                 child: Image.asset(
                   product.image,
                   fit: BoxFit.contain,
                   errorBuilder: (ctx, err, stack) => const Icon(
                     Icons.music_note,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "Tersedia di Katalog JNOVA MUSIC"
                   ),
                 ),
               ),
@@ -1104,7 +1248,9 @@ class _AIScannerPageState extends State<AIScannerPage>
                       style: const TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF1E1E1E),
+                        color: Color(
+                          0xFF1E1E1E,
+                        ), // Warna teks pada bagian produk
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -1113,7 +1259,8 @@ class _AIScannerPageState extends State<AIScannerPage>
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.primaryOrange,
+                        color: AppColors
+                            .primaryOrange, // Warna teks pada bagian produk
                       ),
                     ),
                   ],
@@ -1132,7 +1279,8 @@ class _AIScannerPageState extends State<AIScannerPage>
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryOrange,
+                  backgroundColor: AppColors
+                      .primaryOrange, // Warna latar tombol pada bagian produk
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -1145,7 +1293,7 @@ class _AIScannerPageState extends State<AIScannerPage>
                 child: const Text(
                   'Lihat',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.white, // Warna teks pada "Lihat"
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                   ),
@@ -1160,4 +1308,3 @@ class _AIScannerPageState extends State<AIScannerPage>
 }
 
 typedef AIScannerScreen = AIScannerPage;
-

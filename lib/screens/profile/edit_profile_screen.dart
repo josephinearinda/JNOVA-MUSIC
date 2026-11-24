@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -136,7 +137,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final success = await _profileService.updateProfile(
       fullName: _fullNameController.text.trim(),
       username: _usernameController.text.trim(),
-      email: profile.email.isNotEmpty ? profile.email : _emailController.text.trim(),
+      email: profile.email.isNotEmpty
+          ? profile.email
+          : _emailController.text.trim(),
       phoneNumber: _phoneController.text.trim(),
       birthDate: _birthDateController.text.trim(),
       streetAddress: _streetAddressController.text.trim(),
@@ -158,7 +161,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Perubahan profil berhasil disimpan!'),
-          backgroundColor: Color(0xFF1E1A18),
+          backgroundColor: Color(
+            0xFF1E1A18,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
           duration: Duration(seconds: 2),
         ),
       );
@@ -176,7 +181,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final profile = _profileService.profile;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -251,9 +257,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/order-detail"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/order-detail"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -266,7 +278,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 height: 20,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.graphic_eq_rounded,
-                  color: AppColors.primaryOrange,
+                  color:
+                      AppColors.primaryOrange, // Warna ikon ikon untuk "Profil"
                   size: 20,
                 ),
               ),
@@ -276,7 +289,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Profil"
                 ),
               ),
             ],
@@ -287,7 +300,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
             onPressed: () {
               Navigator.pushNamed(context, '/notifications');
             },
-            color: const Color(0xFF4A403A),
+            color: const Color(
+              0xFF4A403A,
+            ), // Warna ikon ikon untuk "/notifications"
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -297,12 +312,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
             height: 28,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFB45309),
+              color: Color(
+                0xFFB45309,
+              ), // Warna ikon ikon untuk "/notifications"
             ),
             child: const Icon(
               Icons.person_rounded,
               size: 17,
-              color: Colors.white,
+              color: Colors.white, // Warna ikon ikon untuk "/notifications"
             ),
           ),
         ],
@@ -314,9 +331,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/notifications"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/notifications"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -328,14 +351,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFFF7F6F4),
+                color: const Color(
+                  0xFFF7F6F4,
+                ), // Warna border atau garis tepi untuk "/notifications"
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+                border: Border.all(
+                  color: const Color(
+                    0xFFEBE8E3,
+                  ), // Warna ikon ikon untuk "/notifications"
+                  width: 1.0,
+                ),
               ),
               child: const Icon(
                 Icons.arrow_back_rounded,
                 size: 18,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "/notifications"
               ),
             ),
           ),
@@ -349,12 +380,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada "Edit Profil"
                   ),
                 ),
                 Text(
                   'Perbarui informasi akun dan pengiriman',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF8E837D), // Warna teks pada "Perbarui informasi akun dan pengiriman"
+                  ),
                 ),
               ],
             ),
@@ -365,7 +400,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFEDDF),
+                color: const Color(0xFFFFEDDF), // Warna latar kotak atau kartu untuk "Perbarui informasi akun dan pengiriman"
                 borderRadius: BorderRadius.circular(14),
               ),
               child: _isLoading
@@ -374,7 +409,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       height: 14,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: AppColors.primaryOrange,
+                        color:
+                            AppColors.primaryOrange, // Warna teks pada "Simpan"
                       ),
                     )
                   : const Text(
@@ -382,7 +418,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       style: TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.primaryOrange,
+                        color:
+                            AppColors.primaryOrange, // Warna teks pada "Simpan"
                       ),
                     ),
             ),
@@ -405,31 +442,42 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 height: 84,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFFFD8BF), width: 2.5),
+                  border: Border.all(
+                    color: const Color(
+                      0xFFFFD8BF,
+                    ), // Warna border atau garis tepi bagian komponen ini
+                    width: 2.5,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
+                      color: Colors.black.withValues(
+                        // Warna border atau garis tepi bagian komponen ini
+
+                        alpha: 0.08,
+                      ),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: ClipOval(
-                  child: _buildAvatarImage(profile.photoUrl),
-                ),
+                child: ClipOval(child: _buildAvatarImage(profile.photoUrl)),
               ),
               Container(
                 width: 26,
                 height: 26,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primaryOrange,
-                  border: Border.all(color: Colors.white, width: 2),
+                  color: AppColors.primaryOrange, // Warna ikon ikon pada bagian komponen ini
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 2,
+                  ), // Warna ikon ikon pada bagian komponen ini
                 ),
                 child: const Icon(
                   Icons.camera_alt_rounded,
                   size: 13,
-                  color: Colors.white,
+                  color:
+                      Colors.white, // Warna ikon ikon pada bagian komponen ini
                 ),
               ),
             ],
@@ -448,7 +496,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF2F0ED),
+                  color: const Color(
+                    0xFFF2F0ED,
+                  ), // Warna latar kotak atau kartu untuk "Ganti Foto"
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Text(
@@ -456,7 +506,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   style: TextStyle(
                     fontSize: 10.5,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF4A403A),
+                    color: Color(0xFF4A403A), // Warna teks pada "Ganti Foto"
                   ),
                 ),
               ),
@@ -472,7 +522,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   style: TextStyle(
                     fontSize: 10.5,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFFDC2626),
+                    color: Color(0xFFDC2626), // Warna teks pada "Hapus Foto"
                   ),
                 ),
               ),
@@ -482,7 +532,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
         const SizedBox(height: 4),
         const Text(
           'Format JPG atau PNG maks. 5MB',
-          style: TextStyle(fontSize: 9.5, color: Color(0xFF8E837D)),
+          style: TextStyle(
+            fontSize: 9.5,
+            color: Color(
+              0xFF8E837D,
+            ), // Warna teks pada "Format JPG atau PNG maks. 5MB"
+          ),
         ),
       ],
     );
@@ -515,11 +570,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   Widget _buildAvatarFallback() {
     return Container(
-      color: const Color(0xFFF7F6F4),
+      color: const Color(
+        0xFFF7F6F4,
+      ), // Warna ikon ikon pada bagian komponen ini
       child: const Icon(
         Icons.person_rounded,
         size: 44,
-        color: Color(0xFF8E837D),
+        color: Color(0xFF8E837D), // Warna ikon ikon pada bagian komponen ini
       ),
     );
   }
@@ -527,11 +584,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void _showPhotoSourcePicker() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors
+          .transparent, // Warna latar kotak atau kartu pada bagian komponen ini
       builder: (ctx) => Container(
         padding: const EdgeInsets.all(20),
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: Colors
+              .white, // Warna latar kotak atau kartu pada bagian komponen ini
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(
@@ -543,7 +602,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD4D0C8),
+                  color: const Color(
+                    0xFFD4D0C8,
+                  ), // Warna latar kotak atau kartu untuk "Ubah Foto Profil"
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -554,21 +615,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Ubah Foto Profil"
               ),
             ),
             const SizedBox(height: 14),
             ListTile(
-              leading: const Icon(Icons.camera_alt_rounded, color: AppColors.primaryOrange),
-              title: const Text('Ambil Foto (Kamera)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+              leading: const Icon(
+                Icons.camera_alt_rounded,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Ambil Foto (Kamera)"
+              ),
+              title: const Text(
+                'Ambil Foto (Kamera)',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+              ),
               onTap: () {
                 Navigator.pop(ctx);
                 _pickPhoto(ImageSource.camera);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library_rounded, color: AppColors.primaryOrange),
-              title: const Text('Pilih dari Galeri', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+              leading: const Icon(
+                Icons.photo_library_rounded,
+                color: AppColors
+                    .primaryOrange, // Warna ikon ikon untuk "Pilih dari Galeri"
+              ),
+              title: const Text(
+                'Pilih dari Galeri',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+              ),
               onTap: () {
                 Navigator.pop(ctx);
                 _pickPhoto(ImageSource.gallery);
@@ -590,8 +664,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       SnackBar(
         content: Text(result['message'] as String),
         backgroundColor: (result['success'] as bool? ?? false)
-            ? Colors.green
-            : const Color(0xFFDC2626),
+            ? Colors
+                  .green // Warna visual pada bagian komponen ini
+            : const Color(0xFFDC2626), // Warna visual pada bagian komponen ini
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -613,8 +688,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(success ? 'Foto profil berhasil dihapus.' : 'Gagal menghapus foto profil.'),
-        backgroundColor: success ? Colors.green : const Color(0xFFDC2626),
+        content: Text(
+          success
+              ? 'Foto profil berhasil dihapus.'
+              : 'Gagal menghapus foto profil.',
+        ),
+        backgroundColor: success ? Colors.green : const Color(0xFFDC2626), // Warna latar kotak atau kartu untuk "Gagal menghapus foto profil."
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -625,9 +704,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "Gagal menghapus foto profil."
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Gagal menghapus foto profil."
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -638,13 +722,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEDDF),
+                  color: const Color(
+                    0xFFFFEDDF,
+                  ), // Warna ikon ikon untuk "Gagal menghapus foto profil."
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: const Icon(
                   Icons.badge_outlined,
                   size: 16,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna ikon ikon untuk "Gagal menghapus foto profil."
                 ),
               ),
               const SizedBox(width: 8),
@@ -657,12 +743,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimaryDark, // Warna teks pada "Informasi Akun & Kontak"
                       ),
                     ),
                     Text(
                       'Data identitas member musisi',
-                      style: TextStyle(fontSize: 9.5, color: Color(0xFF7E756F)),
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        color: Color(
+                          0xFF7E756F,
+                        ), // Warna teks pada "Data identitas member musisi"
+                      ),
                     ),
                   ],
                 ),
@@ -714,8 +805,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             'Alamat Email',
             customRightWidget: profile.email.isNotEmpty
                 ? (profile.isEmailVerified
-                    ? _buildVerifiedBadge('Terverifikasi')
-                    : _buildUnverifiedBadge('Belum Verifikasi'))
+                      ? _buildVerifiedBadge('Terverifikasi')
+                      : _buildUnverifiedBadge('Belum Verifikasi'))
                 : null,
           ),
           const SizedBox(height: 4),
@@ -727,7 +818,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
             readOnly: true,
             suffixWidget: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              child: Icon(Icons.lock_outline_rounded, size: 14, color: Color(0xFF8E837D)),
+              child: Icon(
+                Icons.lock_outline_rounded,
+                size: 14,
+                color: Color(0xFF8E837D), // Warna ikon ikon untuk "Email Anda"
+              ),
             ),
           ),
           const SizedBox(height: 10),
@@ -737,8 +832,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             'Nomor Handphone',
             customRightWidget: profile.phoneNumber.isNotEmpty
                 ? (profile.isPhoneVerified
-                    ? _buildVerifiedBadge('Terverifikasi')
-                    : _buildUnverifiedBadge('Belum Verifikasi'))
+                      ? _buildVerifiedBadge('Terverifikasi')
+                      : _buildUnverifiedBadge('Belum Verifikasi'))
                 : null,
           ),
           const SizedBox(height: 4),
@@ -758,9 +853,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "+62 ..."
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "+62 ..."
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -771,13 +873,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEDDF),
+                  color: const Color(
+                    0xFFFFEDDF,
+                  ), // Warna ikon ikon untuk "+62 ..."
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: const Icon(
                   Icons.location_on_outlined,
                   size: 16,
-                  color: AppColors.primaryOrange,
+                  color: AppColors
+                      .primaryOrange, // Warna ikon ikon untuk "+62 ..."
                 ),
               ),
               const SizedBox(width: 8),
@@ -790,12 +895,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimaryDark, // Warna teks pada "Alamat Pengiriman Utama"
                       ),
                     ),
                     Text(
                       'Tujuan pengiriman instrumen & aksesoris',
-                      style: TextStyle(fontSize: 9.5, color: Color(0xFF7E756F)),
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        color: Color(0xFF7E756F), // Warna teks pada "Tujuan pengiriman instrumen & akses..."
+                      ),
                     ),
                   ],
                 ),
@@ -921,7 +1029,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         _isDefaultAddress = val ?? true;
                       });
                     },
-                    activeColor: AppColors.primaryOrange,
+                    activeColor:
+                        AppColors.primaryOrange, // Warna visual pada kartu
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -934,7 +1043,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     style: TextStyle(
                       fontSize: 10.5,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF4A403A),
+                      color: Color(0xFF4A403A), // Warna teks pada "Jadikan alamat default untuk checko..."
                     ),
                   ),
                 ),
@@ -951,21 +1060,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBF7),
+        color: const Color(0xFFFFFBF7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFFFEDD5), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFFFEDD5), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.lock_outline_rounded, size: 15, color: Color(0xFFB45309)),
+          Icon(
+            Icons.lock_outline_rounded,
+            size: 15,
+            color: Color(0xFFB45309), // Warna ikon ikon pada kartu
+          ),
           SizedBox(width: 8),
           Expanded(
             child: Text(
               'Data profil Anda dienkripsi aman dan disinkronkan langsung via backend JNOVAMUSIC. Kata sandi akun dapat diperbarui terpisah pada menu Keamanan Akun.',
               style: TextStyle(
                 fontSize: 9.5,
-                color: Color(0xFF78350F),
+                color: Color(0xFF78350F), // Warna teks pada kartu
                 height: 1.35,
               ),
             ),
@@ -997,14 +1113,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(
-                        color: Colors.white,
+                        color:
+                            Colors.white, // Warna indikator loading pada tombol
                         strokeWidth: 2,
                       ),
                     )
                   : const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check, size: 16, color: Colors.white),
+                        Icon(
+                          Icons.check,
+                          size: 16,
+                          color: Colors.white, // Warna ikon ikon untuk "Simpan Perubahan"
+                        ),
                         SizedBox(width: 6),
                         Text(
                           'Simpan Perubahan',
@@ -1025,7 +1146,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
             child: TextButton(
               onPressed: _handleBack,
               style: TextButton.styleFrom(
-                backgroundColor: const Color(0xFFF2F0ED),
+                backgroundColor: const Color(
+                  0xFFF2F0ED,
+                ), // Warna latar tombol pada tombol
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -1035,7 +1158,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF6E6560),
+                  color: Color(0xFF6E6560), // Warna teks pada "Batal"
                 ),
               ),
             ),
@@ -1058,7 +1181,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           style: const TextStyle(
             fontSize: 10.5,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF4A403A),
+            color: Color(0xFF4A403A), // Warna teks pada bagian komponen ini
           ),
         ),
         if (customRightWidget != null)
@@ -1066,7 +1189,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
         else if (rightNote != null)
           Text(
             rightNote,
-            style: const TextStyle(fontSize: 9, color: Color(0xFF8E837D)),
+            style: const TextStyle(
+              fontSize: 9,
+              color: Color(0xFF8E837D), // Warna teks pada "Terverifikasi"
+            ),
           ),
       ],
     );
@@ -1076,20 +1202,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFFDCFCE7),
+        color: const Color(
+          0xFFDCFCE7,
+        ), // Warna latar kotak atau kartu untuk "Terverifikasi"
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.check_circle_rounded, size: 9, color: Color(0xFF15803D)),
+          const Icon(
+            Icons.check_circle_rounded,
+            size: 9,
+            color: Color(0xFF15803D), // Warna ikon ikon untuk "Terverifikasi"
+          ),
           const SizedBox(width: 3),
           Text(
             label,
             style: const TextStyle(
               fontSize: 8.5,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF15803D),
+              color: Color(0xFF15803D), // Warna teks pada "Terverifikasi"
             ),
           ),
         ],
@@ -1101,27 +1233,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFFFEF3C7),
+        color: const Color(
+          0xFFFEF3C7,
+        ), // Warna latar kotak atau kartu untuk "Belum Verifikasi"
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.info_outline_rounded, size: 9, color: Color(0xFFB45309)),
+          const Icon(
+            Icons.info_outline_rounded,
+            size: 9,
+            color: Color(
+              0xFFB45309,
+            ), // Warna ikon ikon untuk "Belum Verifikasi"
+          ),
           const SizedBox(width: 3),
           Text(
             label,
             style: const TextStyle(
               fontSize: 8.5,
               fontWeight: FontWeight.w700,
-              color: Color(0xFFB45309),
+              color: Color(0xFFB45309), // Warna teks pada "Belum Verifikasi"
             ),
           ),
         ],
       ),
     );
   }
-
 
   Widget _buildTextFormField({
     required TextEditingController controller,
@@ -1134,9 +1273,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: readOnly ? const Color(0xFFF7F6F4) : Colors.white,
+        color: readOnly
+            ? const Color(
+                0xFFF7F6F4,
+              ) // Warna border atau garis tepi bagian komponen ini
+            : Colors.white, // Warna border atau garis tepi bagian komponen ini
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFE5E2DC), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFE5E2DC,
+          ), // Warna border atau garis tepi bagian komponen ini
+          width: 1.0,
+        ),
       ),
       child: TextFormField(
         controller: controller,
@@ -1155,7 +1303,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
             vertical: 10,
           ),
           prefixIcon: prefixIcon != null
-              ? Icon(prefixIcon, size: 16, color: const Color(0xFF8E837D))
+              ? Icon(
+                  prefixIcon,
+                  size: 16,
+                  color: const Color(
+                    0xFF8E837D,
+                  ), // Warna ikon ikon pada bagian komponen ini
+                )
               : null,
           prefixIconConstraints: const BoxConstraints(
             minWidth: 32,
@@ -1170,7 +1324,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           hintText: hintText,
           hintStyle: const TextStyle(
             fontSize: 11.5,
-            color: Color(0xFFB0AAA4),
+            color: Color(0xFFB0AAA4), // Warna teks pada bagian komponen ini
             fontWeight: FontWeight.normal,
           ),
         ),
@@ -1180,4 +1334,3 @@ class _EditProfilePageState extends State<EditProfilePage> {
 }
 
 typedef EditProfileScreen = EditProfilePage;
-

@@ -57,13 +57,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${product.name} ditambahkan ke keranjang.'),
-        backgroundColor: AppColors.darkGrey,
+        backgroundColor: AppColors.darkGrey, // Warna latar pesan pemberitahuan pada bagian komponen ini
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         action: SnackBarAction(
           label: 'Lihat',
-          textColor: AppColors.primaryOrange,
+          textColor:
+              AppColors.primaryOrange, // Warna visual pada bagian komponen ini
           onPressed: () {
             widget.onOpenCart?.call();
           },
@@ -88,12 +89,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryOrange,
+              backgroundColor:
+                  AppColors.primaryOrange, // Warna teks pada "Hapus Semua"
             ),
             onPressed: () => Navigator.of(ctx).pop(true),
             child: const Text(
               'Hapus Semua',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                color: Colors.white, // Warna teks pada "Hapus Semua"
+              ),
             ),
           ),
         ],
@@ -111,7 +115,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     final int cartCount = _cartService.items.length;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -180,8 +185,16 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
-        border: Border(bottom: BorderSide(color: Color(0xFFF0F0F0), width: 1)),
+        color:
+            AppColors.white, // Warna border atau garis tepi bagian komponen ini
+        border: Border(
+          bottom: BorderSide(
+            color: Color(
+              0xFFF0F0F0,
+            ), // Warna border atau garis tepi bagian komponen ini
+            width: 1,
+          ),
+        ),
       ),
       child: Row(
         children: [
@@ -200,7 +213,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               child: Icon(
                 Icons.arrow_back,
                 size: 22,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "Favorit Saya"
               ),
             ),
           ),
@@ -224,7 +238,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   'Produk pilihan yang kamu simpan.',
                   style: TextStyle(
                     fontSize: 10.5,
-                    color: AppColors.textSecondaryBrown,
+                    color: AppColors.textSecondaryBrown, // Warna teks pada "Produk pilihan yang kamu simpan."
                   ),
                 ),
               ],
@@ -242,7 +256,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   child: Icon(
                     Icons.shopping_bag_outlined,
                     size: 22,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna ikon ikon pada bagian komponen ini
                   ),
                 ),
                 if (cartCount > 0)
@@ -252,7 +266,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(3.5),
                       decoration: const BoxDecoration(
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna latar kotak atau kartu untuk "$cartCount"
                         shape: BoxShape.circle,
                       ),
                       constraints: const BoxConstraints(
@@ -263,7 +277,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                         '$cartCount',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Colors.white, // Warna teks pada "$cartCount"
                           fontSize: 9,
                           fontWeight: FontWeight.w800,
                           height: 1.0,
@@ -289,10 +303,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               width: 28,
               height: 28,
               decoration: const BoxDecoration(
-                color: Color(0xFF8D4315),
+                color: Color(0xFF8D4315), // Warna ikon ikon untuk "/profile"
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.person, color: Colors.white, size: 16),
+              child: const Icon(
+                Icons.person,
+                color: Colors.white, // Warna ikon ikon untuk "/profile"
+                size: 16,
+              ),
             ),
           ),
         ],
@@ -308,7 +326,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: const Color(0xFFF2F2F2),
+            color: const Color(
+              0xFFF2F2F2,
+            ), // Warna latar kotak atau kartu pada bagian komponen ini
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
@@ -318,7 +338,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 width: 5,
                 height: 5,
                 decoration: const BoxDecoration(
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna latar kotak atau kartu untuk "$totalCount produk tersimpan"
                   shape: BoxShape.circle,
                 ),
               ),
@@ -328,7 +348,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 style: const TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "$totalCount produk tersimpan"
                 ),
               ),
             ],
@@ -346,7 +366,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: const Color(0xFFF2F2F2),
+              color: const Color(
+                0xFFF2F2F2,
+              ), // Warna latar kotak atau kartu pada bagian komponen ini
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
@@ -357,14 +379,16 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   style: const TextStyle(
                     fontSize: 10.5,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna ikon ikon untuk "Terbaru"
                   ),
                 ),
                 const SizedBox(width: 3),
                 const Icon(
                   Icons.keyboard_arrow_down,
                   size: 14,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors
+                      .textPrimaryDark, // Warna ikon ikon untuk "Terbaru"
                 ),
               ],
             ),
@@ -397,7 +421,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               style: TextStyle(
                 fontSize: 10.5,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF6E6560),
+                color: Color(0xFF6E6560), // Warna teks pada "Hapus Semua"
               ),
             ),
           ),
@@ -438,7 +462,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F6F4),
+        color: const Color(
+          0xFFF7F6F4,
+        ), // Warna latar kotak atau kartu untuk "/product-detail"
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -448,12 +474,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             width: 36,
             height: 36,
             decoration: const BoxDecoration(
-              color: Color(0xFFFFECE0),
+              color: Color(
+                0xFFFFECE0,
+              ), // Warna ikon ikon untuk "/product-detail"
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.local_shipping_outlined,
-              color: AppColors.primaryOrange,
+              color: AppColors
+                  .primaryOrange, // Warna ikon ikon untuk "/product-detail"
               size: 19,
             ),
           ),
@@ -469,7 +498,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Pengiriman Cepat & Aman"
                   ),
                 ),
                 SizedBox(height: 2),
@@ -477,7 +506,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   'Packing kayu & asuransi resmi ke seluruh Indonesia.',
                   style: TextStyle(
                     fontSize: 10,
-                    color: Color(0xFF7E756F),
+                    color: Color(0xFF7E756F), // Warna teks pada "Packing kayu & asuransi resmi ke se..."
                     height: 1.3,
                   ),
                 ),
@@ -501,13 +530,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               width: 72,
               height: 72,
               decoration: const BoxDecoration(
-                color: Color(0xFFFFF0E6),
+                color: Color(
+                  0xFFFFF0E6,
+                ), // Warna ikon ikon untuk "Belum Ada Produk Favorit"
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.favorite_border_rounded,
                 size: 36,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Belum Ada Produk Favorit"
               ),
             ),
             const SizedBox(height: 16),
@@ -516,7 +547,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna teks pada "Belum Ada Produk Favorit"
               ),
             ),
             const SizedBox(height: 6),
@@ -525,7 +556,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
-                color: Color(0xFF7E756F),
+                color: Color(
+                  0xFF7E756F,
+                ), // Warna teks pada "Simpan produk alat musik yang kamu..."
                 height: 1.4,
               ),
             ),
@@ -535,7 +568,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 _favService.setSort('Terbaru');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian komponen ini
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -547,7 +580,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               child: const Text(
                 'Jelajahi Produk',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.white, // Warna teks pada "Jelajahi Produk"
                   fontWeight: FontWeight.w700,
                 ),
               ),

@@ -153,7 +153,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
     FocusScope.of(context).unfocus();
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, // Warna latar kotak untuk "/profile"
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -167,7 +167,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: Colors.grey.shade300, // Warna latar kotak atau kartu untuk "Pilih Provinsi"
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -178,7 +178,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Pilih Provinsi"
                   ),
                 ),
               ),
@@ -194,17 +196,24 @@ class _AddressEditPageState extends State<AddressEditPage> {
                         province,
                         style: TextStyle(
                           fontSize: 13,
-                          fontWeight:
-                              isSelected ? FontWeight.w700 : FontWeight.w400,
+                          fontWeight: isSelected
+                              ? FontWeight.w700
+                              : FontWeight.w400,
                           color: isSelected
-                              ? const Color(0xFFFF5500)
-                              : const Color(0xFF1E1E1E),
+                              ? const Color(
+                                  0xFFFF5500,
+                                ) // Warna teks pada bagian komponen ini
+                              : const Color(
+                                  0xFF1E1E1E,
+                                ), // Warna ikon ikon pada bagian komponen ini
                         ),
                       ),
                       trailing: isSelected
                           ? const Icon(
                               Icons.check,
-                              color: Color(0xFFFF5500),
+                              color: Color(
+                                0xFFFF5500,
+                              ), // Warna ikon ikon pada bagian komponen ini
                               size: 18,
                             )
                           : null,
@@ -258,7 +267,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Alamat pengiriman berhasil diperbarui!'),
-          backgroundColor: Color(0xFF1E1E1E),
+          backgroundColor: Color(
+            0xFF1E1E1E,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
           behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 2),
         ),
@@ -276,15 +287,23 @@ class _AddressEditPageState extends State<AddressEditPage> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor:
+              Colors.white, // Warna teks pada "Tidak Dapat Menghapus"
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: const Text(
             'Tidak Dapat Menghapus',
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
           ),
           content: const Text(
             'Alamat utama tidak dapat dihapus. Silakan tentukan alamat utama lainnya terlebih dahulu.',
-            style: TextStyle(fontSize: 12, color: Color(0xFF6E6560)),
+            style: TextStyle(
+              fontSize: 12,
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "Tidak Dapat Menghapus"
+            ),
           ),
           actions: [
             TextButton(
@@ -292,7 +311,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
               child: const Text(
                 'Mengerti',
                 style: TextStyle(
-                  color: Color(0xFFFF5500),
+                  color: Color(0xFFFF5500), // Warna teks pada "Mengerti"
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -304,22 +323,31 @@ class _AddressEditPageState extends State<AddressEditPage> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: Colors.white, // Warna teks pada "Hapus Alamat"
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: const Text(
             'Hapus Alamat',
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
           ),
           content: const Text(
             'Apakah kamu yakin ingin menghapus alamat pengiriman ini?',
-            style: TextStyle(fontSize: 12, color: Color(0xFF6E6560)),
+            style: TextStyle(
+              fontSize: 12,
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "Apakah kamu yakin ingin menghapus a..."
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
               child: const Text(
                 'Batal',
-                style: TextStyle(color: Color(0xFF6E6560)),
+                style: TextStyle(
+                  color: Color(0xFF6E6560), // Warna teks pada "Batal"
+                ),
               ),
             ),
             ElevatedButton(
@@ -334,7 +362,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 _handleBack();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFDC2626),
+                backgroundColor: const Color(
+                  0xFFDC2626,
+                ), // Warna latar pesan pemberitahuan pada bagian komponen ini
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -343,7 +373,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
               child: const Text(
                 'Hapus',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.white, // Warna teks pada "Hapus"
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -357,7 +387,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "Hapus"
       body: SafeArea(
         child: Column(
           children: [
@@ -432,9 +462,15 @@ class _AddressEditPageState extends State<AddressEditPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/order-detail"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/order-detail"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -446,7 +482,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 width: 26,
                 height: 26,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFF5500),
+                  color: const Color(
+                    0xFFFF5500,
+                  ), // Warna latar kotak atau kartu untuk "/order-detail"
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Center(
@@ -473,7 +511,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF1E1E1E),
+                  color: Color(0xFF1E1E1E), // Warna teks pada "JNOVAMUSIC"
                   letterSpacing: 0.3,
                 ),
               ),
@@ -483,7 +521,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
           IconButton(
             icon: const Icon(Icons.search_rounded, size: 21),
             onPressed: () => Navigator.pushNamed(context, '/search'),
-            color: const Color(0xFF4A403A),
+            color: const Color(0xFF4A403A), // Warna ikon ikon untuk "/search"
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -493,7 +531,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
               IconButton(
                 icon: const Icon(Icons.notifications_none_rounded, size: 21),
                 onPressed: () => Navigator.pushNamed(context, '/notifications'),
-                color: const Color(0xFF4A403A),
+                color: const Color(
+                  0xFF4A403A,
+                ), // Warna ikon ikon untuk "/notifications"
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
               ),
@@ -504,7 +544,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                   width: 7,
                   height: 7,
                   decoration: const BoxDecoration(
-                    color: Color(0xFFFF5500),
+                    color: Color(
+                      0xFFFF5500,
+                    ), // Warna latar kotak atau kartu untuk "/notifications"
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -519,12 +561,12 @@ class _AddressEditPageState extends State<AddressEditPage> {
               height: 30,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFFB45309),
+                color: Color(0xFFB45309), // Warna ikon ikon untuk "/profile"
               ),
               child: const Icon(
                 Icons.person_rounded,
                 size: 18,
-                color: Colors.white,
+                color: Colors.white, // Warna ikon ikon untuk "/profile"
               ),
             ),
           ),
@@ -538,7 +580,8 @@ class _AddressEditPageState extends State<AddressEditPage> {
       width: 1.8,
       height: height,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors
+            .white, // Warna latar kotak atau kartu pada bagian komponen ini
         borderRadius: BorderRadius.circular(1.0),
       ),
     );
@@ -556,13 +599,15 @@ class _AddressEditPageState extends State<AddressEditPage> {
               width: 34,
               height: 34,
               decoration: const BoxDecoration(
-                color: Color(0xFFF3F3F5),
+                color: Color(
+                  0xFFF3F3F5,
+                ), // Warna ikon ikon pada bagian komponen ini
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.arrow_back_rounded,
                 size: 19,
-                color: Color(0xFF1E1E1E),
+                color: Color(0xFF1E1E1E), // Warna ikon ikon untuk "Ubah Alamat"
               ),
             ),
           ),
@@ -576,13 +621,16 @@ class _AddressEditPageState extends State<AddressEditPage> {
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(0xFF1E1E1E), // Warna teks pada "Ubah Alamat"
                   ),
                 ),
                 SizedBox(height: 1),
                 Text(
                   'Kelola pengiriman alat musik & aksesoris',
-                  style: TextStyle(fontSize: 10.5, color: Color(0xFF7E7E7E)),
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    color: Color(0xFF7E7E7E), // Warna teks pada "Kelola pengiriman alat musik & akse..."
+                  ),
                 ),
               ],
             ),
@@ -597,9 +645,16 @@ class _AddressEditPageState extends State<AddressEditPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF7F2),
+        color: const Color(
+          0xFFFFF7F2,
+        ), // Warna border atau garis tepi bagian komponen ini
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFFEBDD), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFFFEBDD,
+          ), // Warna border atau garis tepi bagian komponen ini
+          width: 1.0,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -608,13 +663,17 @@ class _AddressEditPageState extends State<AddressEditPage> {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEDDF),
+              color: const Color(
+                0xFFFFEDDF,
+              ), // Warna ikon ikon pada bagian komponen ini
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
               Icons.local_shipping_outlined,
               size: 16,
-              color: Color(0xFFFF5500),
+              color: Color(
+                0xFFFF5500,
+              ), // Warna ikon ikon untuk "Pengiriman Khusus Audio & Instrumen"
             ),
           ),
           const SizedBox(width: 10),
@@ -627,7 +686,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Pengiriman Khusus Audio & Instrumen"
                   ),
                 ),
                 SizedBox(height: 2),
@@ -635,7 +696,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                   'Pastikan nomor kontak selalu aktif agar kurir spesialis dapat melakukan konfirmasi sebelum pengantaran.',
                   style: TextStyle(
                     fontSize: 9.5,
-                    color: Color(0xFF7E7E7E),
+                    color: Color(
+                      0xFF7E7E7E,
+                    ), // Warna teks pada "Pengiriman Khusus Audio & Instrumen"
                     height: 1.35,
                   ),
                 ),
@@ -659,7 +722,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
               fontSize: 10,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.5,
-              color: Color(0xFF5A524D),
+              color: Color(0xFF5A524D), // Warna teks pada "TIPE LOKASI"
             ),
           ),
           const SizedBox(height: 8),
@@ -705,8 +768,12 @@ class _AddressEditPageState extends State<AddressEditPage> {
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: isSelected
-                ? const Color(0xFFFF5500)
-                : const Color(0xFFF4F2EE),
+                ? const Color(
+                    0xFFFF5500,
+                  ) // Warna latar kotak atau kartu untuk "Studio Musik"
+                : const Color(
+                    0xFFF4F2EE,
+                  ), // Warna latar kotak atau kartu untuk "Studio Musik"
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
@@ -715,7 +782,11 @@ class _AddressEditPageState extends State<AddressEditPage> {
               Icon(
                 icon,
                 size: 14,
-                color: isSelected ? Colors.white : const Color(0xFF6E6560),
+                color: isSelected
+                    ? Colors.white
+                    : const Color(
+                        0xFF6E6560,
+                      ), // Warna ikon ikon untuk "Studio Musik"
               ),
               const SizedBox(width: 5),
               Text(
@@ -723,7 +794,11 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                  color: isSelected ? Colors.white : const Color(0xFF6E6560),
+                  color: isSelected
+                      ? Colors.white
+                      : const Color(
+                          0xFF6E6560,
+                        ), // Warna teks pada "Studio Musik"
                 ),
               ),
             ],
@@ -756,8 +831,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
             controller: _recipientNameController,
             prefixIcon: Icons.person_outline_rounded,
             hintText: 'Nama lengkap penerima',
-            validator: (v) =>
-                v == null || v.trim().isEmpty ? 'Nama penerima wajib diisi' : null,
+            validator: (v) => v == null || v.trim().isEmpty
+                ? 'Nama penerima wajib diisi'
+                : null,
           ),
           const SizedBox(height: 12),
 
@@ -770,7 +846,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 height: 42,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF4F2EE),
+                  color: const Color(
+                    0xFFF4F2EE,
+                  ), // Warna latar kotak atau kartu untuk "Nomor HP Penerima"
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Row(
@@ -783,7 +861,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF1E1E1E),
+                        color: Color(0xFF1E1E1E), // Warna teks pada "+62"
                       ),
                     ),
                   ],
@@ -824,9 +902,8 @@ class _AddressEditPageState extends State<AddressEditPage> {
             controller: _kelurahanController,
             prefixIcon: Icons.location_on_outlined,
             hintText: 'Masukkan kelurahan / desa',
-            validator: (v) => v == null || v.trim().isEmpty
-                ? 'Kelurahan wajib diisi'
-                : null,
+            validator: (v) =>
+                v == null || v.trim().isEmpty ? 'Kelurahan wajib diisi' : null,
           ),
           const SizedBox(height: 12),
 
@@ -837,9 +914,8 @@ class _AddressEditPageState extends State<AddressEditPage> {
             controller: _kecamatanController,
             prefixIcon: Icons.location_city_outlined,
             hintText: 'Masukkan kecamatan',
-            validator: (v) => v == null || v.trim().isEmpty
-                ? 'Kecamatan wajib diisi'
-                : null,
+            validator: (v) =>
+                v == null || v.trim().isEmpty ? 'Kecamatan wajib diisi' : null,
           ),
           const SizedBox(height: 12),
 
@@ -868,7 +944,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 hintText: 'Pilih provinsi',
                 suffixIcon: const Icon(
                   Icons.keyboard_arrow_down_rounded,
-                  color: Color(0xFF757575),
+                  color: Color(
+                    0xFF757575,
+                  ), // Warna ikon ikon untuk "Pilih provinsi"
                   size: 20,
                 ),
                 validator: (v) => v == null || v.trim().isEmpty
@@ -905,7 +983,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
           Container(
             height: 72,
             decoration: BoxDecoration(
-              color: const Color(0xFFF4F2EE),
+              color: const Color(
+                0xFFF4F2EE,
+              ), // Warna latar kotak atau kartu untuk "Catatan untuk Kurir"
               borderRadius: BorderRadius.circular(10),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -915,7 +995,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
               style: const TextStyle(
                 fontSize: 11.5,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF1E1E1E),
+                color: Color(
+                  0xFF1E1E1E,
+                ), // Warna teks pada "Dekat patokan rumah, warna pagar, a..."
                 height: 1.3,
               ),
               decoration: const InputDecoration(
@@ -923,7 +1005,12 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
                 hintText: 'Dekat patokan rumah, warna pagar, ada bel pintu...',
-                hintStyle: TextStyle(fontSize: 11.5, color: Color(0xFF9E9E9E)),
+                hintStyle: TextStyle(
+                  fontSize: 11.5,
+                  color: Color(
+                    0xFF9E9E9E,
+                  ), // Warna teks pada "Dekat patokan rumah, warna pagar, a..."
+                ),
               ),
             ),
           ),
@@ -937,9 +1024,12 @@ class _AddressEditPageState extends State<AddressEditPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white, // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: Row(
         children: [
@@ -948,12 +1038,16 @@ class _AddressEditPageState extends State<AddressEditPage> {
             height: 28,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFFFEDDF),
+              color: Color(
+                0xFFFFEDDF,
+              ), // Warna ikon ikon untuk "Jadikan Alamat Utama"
             ),
             child: const Icon(
               Icons.star_rounded,
               size: 17,
-              color: Color(0xFFFF5500),
+              color: Color(
+                0xFFFF5500,
+              ), // Warna ikon ikon untuk "Jadikan Alamat Utama"
             ),
           ),
           const SizedBox(width: 10),
@@ -966,13 +1060,18 @@ class _AddressEditPageState extends State<AddressEditPage> {
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Jadikan Alamat Utama"
                   ),
                 ),
                 SizedBox(height: 2),
                 Text(
                   'Diprioritaskan otomatis saat checkout pemesanan instrumen.',
-                  style: TextStyle(fontSize: 9.5, color: Color(0xFF7E7E7E)),
+                  style: TextStyle(
+                    fontSize: 9.5,
+                    color: Color(0xFF7E7E7E), // Warna teks pada "Diprioritaskan otomatis saat checko..."
+                  ),
                 ),
               ],
             ),
@@ -993,8 +1092,12 @@ class _AddressEditPageState extends State<AddressEditPage> {
               padding: const EdgeInsets.symmetric(horizontal: 2),
               decoration: BoxDecoration(
                 color: _isPrimaryAddress
-                    ? const Color(0xFFFF5500)
-                    : const Color(0xFFD4D0C8),
+                    ? const Color(
+                        0xFFFF5500,
+                      ) // Warna latar kotak atau kartu pada kartu
+                    : const Color(
+                        0xFFD4D0C8,
+                      ), // Warna latar kotak atau kartu pada kartu
                 borderRadius: BorderRadius.circular(12),
               ),
               alignment: _isPrimaryAddress
@@ -1004,14 +1107,14 @@ class _AddressEditPageState extends State<AddressEditPage> {
                 width: 20,
                 height: 20,
                 decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.white, // Warna ikon ikon pada kartu
                   shape: BoxShape.circle,
                 ),
                 child: _isPrimaryAddress
                     ? const Icon(
                         Icons.check_rounded,
                         size: 13,
-                        color: Color(0xFFFF5500),
+                        color: Color(0xFFFF5500), // Warna ikon ikon pada kartu
                       )
                     : null,
               ),
@@ -1034,7 +1137,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
             child: ElevatedButton(
               onPressed: _isLoading ? null : _handleSave,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF5500),
+                backgroundColor: const Color(
+                  0xFFFF5500,
+                ), // Warna indikator loading pada tombol
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -1045,7 +1150,8 @@ class _AddressEditPageState extends State<AddressEditPage> {
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(
-                        color: Colors.white,
+                        color:
+                            Colors.white, // Warna indikator loading pada tombol
                         strokeWidth: 2,
                       ),
                     )
@@ -1055,13 +1161,13 @@ class _AddressEditPageState extends State<AddressEditPage> {
                         Icon(
                           Icons.check_circle_outline_rounded,
                           size: 16,
-                          color: Colors.white,
+                          color: Colors.white, // Warna ikon ikon untuk "Simpan Perubahan Alamat"
                         ),
                         SizedBox(width: 8),
                         Text(
                           'Simpan Perubahan Alamat',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.white, // Warna teks pada "Simpan Perubahan Alamat"
                             fontSize: 13,
                             fontWeight: FontWeight.w800,
                           ),
@@ -1079,7 +1185,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
               width: double.infinity,
               height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFFF4F2EE),
+                color: const Color(
+                  0xFFF4F2EE,
+                ), // Warna latar kotak atau kartu pada tombol
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Row(
@@ -1088,7 +1196,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                   Icon(
                     Icons.delete_outline_rounded,
                     size: 15,
-                    color: Color(0xFFDC2626),
+                    color: Color(
+                      0xFFDC2626,
+                    ), // Warna ikon ikon untuk "Hapus Alamat Ini"
                   ),
                   SizedBox(width: 6),
                   Text(
@@ -1096,7 +1206,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFFDC2626),
+                      color: Color(
+                        0xFFDC2626,
+                      ), // Warna teks pada "Hapus Alamat Ini"
                     ),
                   ),
                 ],
@@ -1117,7 +1229,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
           style: const TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF262626),
+            color: Color(0xFF262626), // Warna teks pada bagian komponen ini
           ),
         ),
         if (rightNote != null)
@@ -1127,8 +1239,12 @@ class _AddressEditPageState extends State<AddressEditPage> {
               fontSize: 9.5,
               fontWeight: FontWeight.w700,
               color: rightNote.contains('*')
-                  ? const Color(0xFFFF5500)
-                  : const Color(0xFF8E837D),
+                  ? const Color(
+                      0xFFFF5500,
+                    ) // Warna teks pada bagian komponen ini
+                  : const Color(
+                      0xFF8E837D,
+                    ), // Warna visual pada bagian komponen ini
             ),
           ),
       ],
@@ -1146,7 +1262,9 @@ class _AddressEditPageState extends State<AddressEditPage> {
     return Container(
       height: 42,
       decoration: BoxDecoration(
-        color: const Color(0xFFF4F2EE),
+        color: const Color(
+          0xFFF4F2EE,
+        ), // Warna latar kotak atau kartu pada bagian komponen ini
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextFormField(
@@ -1156,7 +1274,7 @@ class _AddressEditPageState extends State<AddressEditPage> {
         style: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: Color(0xFF1E1E1E),
+          color: Color(0xFF1E1E1E), // Warna teks pada bagian komponen ini
         ),
         decoration: InputDecoration(
           isDense: true,
@@ -1165,7 +1283,13 @@ class _AddressEditPageState extends State<AddressEditPage> {
             vertical: 11,
           ),
           prefixIcon: prefixIcon != null
-              ? Icon(prefixIcon, size: 16, color: const Color(0xFF7E756F))
+              ? Icon(
+                  prefixIcon,
+                  size: 16,
+                  color: const Color(
+                    0xFF7E756F,
+                  ), // Warna ikon ikon pada bagian komponen ini
+                )
               : null,
           prefixIconConstraints: const BoxConstraints(
             minWidth: 34,
@@ -1177,7 +1301,10 @@ class _AddressEditPageState extends State<AddressEditPage> {
             minHeight: 34,
           ),
           hintText: hintText,
-          hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF9E9E9E)),
+          hintStyle: const TextStyle(
+            fontSize: 12,
+            color: Color(0xFF9E9E9E), // Warna teks pada bagian komponen ini
+          ),
           border: InputBorder.none,
         ),
       ),
@@ -1186,4 +1313,3 @@ class _AddressEditPageState extends State<AddressEditPage> {
 }
 
 typedef AddressEditScreen = AddressEditPage;
-

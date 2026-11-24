@@ -61,10 +61,16 @@ class _CartScreenState extends State<CartScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryOrange,
+              backgroundColor:
+                  AppColors.primaryOrange, // Warna teks pada "Kosongkan"
             ),
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Kosongkan', style: TextStyle(color: Colors.white)),
+            child: const Text(
+              'Kosongkan',
+              style: TextStyle(
+                color: Colors.white, // Warna teks pada "Kosongkan"
+              ),
+            ),
           ),
         ],
       ),
@@ -83,7 +89,8 @@ class _CartScreenState extends State<CartScreen> {
     final int discountAmount = _cartService.discountAmount;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -110,12 +117,16 @@ class _CartScreenState extends State<CartScreen> {
                           ...items.map(
                             (item) => CartItemCard(
                               item: item,
-                              onToggleSelect: (_) =>
-                                  _cartService.toggleItemSelection(item.product.id),
-                              onIncrement: () =>
-                                  _cartService.updateQuantity(item.product.id, 1),
-                              onDecrement: () =>
-                                  _cartService.updateQuantity(item.product.id, -1),
+                              onToggleSelect: (_) => _cartService
+                                  .toggleItemSelection(item.product.id),
+                              onIncrement: () => _cartService.updateQuantity(
+                                item.product.id,
+                                1,
+                              ),
+                              onDecrement: () => _cartService.updateQuantity(
+                                item.product.id,
+                                -1,
+                              ),
                               onRemove: () =>
                                   _cartService.removeItem(item.product.id),
                             ),
@@ -129,7 +140,11 @@ class _CartScreenState extends State<CartScreen> {
                           const SizedBox(height: 14),
 
                           // E. Ringkasan Belanja
-                          _buildPriceSummary(selectedCount, discountAmount, totalPayment),
+                          _buildPriceSummary(
+                            selectedCount,
+                            discountAmount,
+                            totalPayment,
+                          ),
 
                           const SizedBox(height: 24),
                         ],
@@ -139,7 +154,11 @@ class _CartScreenState extends State<CartScreen> {
 
             // G. Bottom Payment Bar (Sticky di atas Bottom Navigation)
             if (items.isNotEmpty)
-              _buildBottomPaymentBar(selectedCount, totalPayment, discountAmount),
+              _buildBottomPaymentBar(
+                selectedCount,
+                totalPayment,
+                discountAmount,
+              ),
 
             // Bottom Navigation Bar
             AppBottomNav(
@@ -171,9 +190,15 @@ class _CartScreenState extends State<CartScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color:
+            AppColors.white, // Warna border atau garis tepi bagian komponen ini
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF0F0F0), width: 1),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF0F0F0,
+            ), // Warna border atau garis tepi bagian komponen ini
+            width: 1,
+          ),
         ),
       ),
       child: Row(
@@ -193,7 +218,8 @@ class _CartScreenState extends State<CartScreen> {
               child: Icon(
                 Icons.arrow_back,
                 size: 22,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "Keranjang Saya"
               ),
             ),
           ),
@@ -205,7 +231,8 @@ class _CartScreenState extends State<CartScreen> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
+              color:
+                  AppColors.textPrimaryDark, // Warna teks pada "Keranjang Saya"
             ),
           ),
           const Spacer(),
@@ -219,7 +246,9 @@ class _CartScreenState extends State<CartScreen> {
                   Icon(
                     Icons.delete_outline_rounded,
                     size: 15,
-                    color: Color(0xFF6E6560),
+                    color: Color(
+                      0xFF6E6560,
+                    ), // Warna ikon ikon untuk "Kosongkan"
                   ),
                   SizedBox(width: 4),
                   Text(
@@ -227,7 +256,7 @@ class _CartScreenState extends State<CartScreen> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF6E6560),
+                      color: Color(0xFF6E6560), // Warna teks pada "Kosongkan"
                     ),
                   ),
                 ],
@@ -242,12 +271,14 @@ class _CartScreenState extends State<CartScreen> {
               width: 28,
               height: 28,
               decoration: const BoxDecoration(
-                color: Color(0xFF8D4315),
+                color: Color(
+                  0xFF8D4315,
+                ), // Warna ikon ikon pada bagian komponen ini
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.person,
-                color: Colors.white,
+                color: Colors.white, // Warna ikon ikon untuk "Pilih Semua (3)"
                 size: 16,
               ),
             ),
@@ -272,10 +303,14 @@ class _CartScreenState extends State<CartScreen> {
                 width: 18,
                 height: 18,
                 decoration: BoxDecoration(
-                  color: isAll ? AppColors.primaryOrange : Colors.transparent,
+                  color: isAll ? AppColors.primaryOrange : Colors.transparent, // Warna border atau garis tepi bagian komponen ini
                   borderRadius: BorderRadius.circular(4),
                   border: Border.all(
-                    color: isAll ? AppColors.primaryOrange : const Color(0xFFCCCCCC),
+                    color: isAll
+                        ? AppColors.primaryOrange
+                        : const Color(
+                            0xFFCCCCCC,
+                          ), // Warna border atau garis tepi bagian komponen ini
                     width: 1.5,
                   ),
                 ),
@@ -283,7 +318,8 @@ class _CartScreenState extends State<CartScreen> {
                     ? const Icon(
                         Icons.check,
                         size: 13,
-                        color: Colors.white,
+                        color:
+                            Colors.white, // Warna ikon ikon untuk "Pilih Semua"
                       )
                     : null,
               ),
@@ -300,7 +336,9 @@ class _CartScreenState extends State<CartScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF2F2F2),
+                  color: const Color(
+                    0xFFF2F2F2,
+                  ), // Warna latar kotak atau kartu untuk "($selectedCount)"
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -326,7 +364,9 @@ class _CartScreenState extends State<CartScreen> {
                 Icon(
                   Icons.delete_sweep_outlined,
                   size: 15,
-                  color: Color(0xFF6E6560),
+                  color: Color(
+                    0xFF6E6560,
+                  ), // Warna ikon ikon untuk "Hapus Pilihan"
                 ),
                 SizedBox(width: 4),
                 Text(
@@ -334,7 +374,7 @@ class _CartScreenState extends State<CartScreen> {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF6E6560),
+                    color: Color(0xFF6E6560), // Warna teks pada "Hapus Pilihan"
                   ),
                 ),
               ],
@@ -348,7 +388,9 @@ class _CartScreenState extends State<CartScreen> {
   Widget _buildMembershipCard(int discountAmount) {
     final int points = _cartService.currentPoints;
     final int target = _cartService.targetPoints;
-    final double progress = target > 0 ? (points / target).clamp(0.0, 1.0) : 1.0;
+    final double progress = target > 0
+        ? (points / target).clamp(0.0, 1.0)
+        : 1.0;
     final int pointsNeeded = (target - points).clamp(0, target);
     final String tierTitle = _cartService.isMember
         ? '${_cartService.tierName} Terdeteksi'
@@ -357,9 +399,16 @@ class _CartScreenState extends State<CartScreen> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFFEF6F0),
+        color: const Color(
+          0xFFFEF6F0,
+        ), // Warna border atau garis tepi untuk "Belum Menjadi Member"
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFFFDEC9), width: 1),
+        border: Border.all(
+          color: const Color(
+            0xFFFFDEC9,
+          ), // Warna border atau garis tepi untuk "Belum Menjadi Member"
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -371,12 +420,13 @@ class _CartScreenState extends State<CartScreen> {
                 width: 32,
                 height: 32,
                 decoration: const BoxDecoration(
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna ikon ikon untuk "Belum Menjadi Member"
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.military_tech_rounded,
-                  color: Colors.white,
+                  color: Colors
+                      .white, // Warna ikon ikon untuk "Belum Menjadi Member"
                   size: 18,
                 ),
               ),
@@ -389,7 +439,7 @@ class _CartScreenState extends State<CartScreen> {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Belum Menjadi Member"
                   ),
                 ),
               ),
@@ -398,8 +448,12 @@ class _CartScreenState extends State<CartScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: _cartService.isMember
-                      ? const Color(0xFFFCE3D2)
-                      : const Color(0xFFEDEBE7),
+                      ? const Color(
+                          0xFFFCE3D2,
+                        ) // Warna teks pada "Belum Menjadi Member"
+                      : const Color(
+                          0xFFEDEBE7,
+                        ), // Warna teks pada "Belum Menjadi Member"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -408,8 +462,12 @@ class _CartScreenState extends State<CartScreen> {
                     fontSize: 8.5,
                     fontWeight: FontWeight.w800,
                     color: _cartService.isMember
-                        ? const Color(0xFFA64A13)
-                        : const Color(0xFF6E6560),
+                        ? const Color(
+                            0xFFA64A13,
+                          ) // Warna teks pada "Belum Menjadi Member"
+                        : const Color(
+                            0xFF6E6560,
+                          ), // Warna teks pada "Belum Menjadi Member"
                   ),
                 ),
               ),
@@ -421,12 +479,14 @@ class _CartScreenState extends State<CartScreen> {
           Text(
             _cartService.discountPercentage > 0
                 ? (pointsNeeded > 0
-                    ? 'Diskon ${_cartService.discountPercentage}% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Kumpulkan $pointsNeeded poin lagi menuju ${_cartService.nextTierName} untuk benefit VIP & hadiah eksklusif!'
-                    : 'Diskon ${_cartService.discountPercentage}% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Tingkat membership maksimal tercapai!')
+                      ? 'Diskon ${_cartService.discountPercentage}% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Kumpulkan $pointsNeeded poin lagi menuju ${_cartService.nextTierName} untuk benefit VIP & hadiah eksklusif!'
+                      : 'Diskon ${_cartService.discountPercentage}% (Hemat ${formatRupiah(discountAmount)}) otomatis terpasang. Tingkat membership maksimal tercapai!')
                 : 'Belanja & kumpulkan minimal 1.000 poin untuk menjadi Silver Member dan nikmati diskon spesial 10%!',
             style: const TextStyle(
               fontSize: 10,
-              color: Color(0xFF6E6560),
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "${_cartService.tierName} (${points...."
               height: 1.35,
             ),
           ),
@@ -444,7 +504,7 @@ class _CartScreenState extends State<CartScreen> {
                   style: const TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "${_cartService.tierName} (${points...."
                   ),
                 ),
               ),
@@ -458,7 +518,9 @@ class _CartScreenState extends State<CartScreen> {
                   style: const TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF888888),
+                    color: Color(
+                      0xFF888888,
+                    ), // Warna teks pada "(\d{1,3})(?=(\d{3})+(?!\d))"
                   ),
                 ),
               ),
@@ -471,8 +533,12 @@ class _CartScreenState extends State<CartScreen> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: progress,
-              backgroundColor: const Color(0xFFEADBCE),
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryOrange),
+              backgroundColor: const Color(
+                0xFFEADBCE,
+              ), // Warna indikator loading pada kartu
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppColors.primaryOrange, // Warna indikator loading pada kartu
+              ),
               minHeight: 5.5,
             ),
           ),
@@ -481,9 +547,12 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-
   /// Ringkasan Belanja
-  Widget _buildPriceSummary(int selectedCount, int discountAmount, int totalPayment) {
+  Widget _buildPriceSummary(
+    int selectedCount,
+    int discountAmount,
+    int totalPayment,
+  ) {
     final int subtotal = _cartService.subtotal;
 
     return Container(
@@ -491,7 +560,12 @@ class _CartScreenState extends State<CartScreen> {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEFEFEF), width: 1),
+        border: Border.all(
+          color: const Color(
+            0xFFEFEFEF,
+          ), // Warna border atau garis tepi untuk "Ringkasan Belanja"
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -529,7 +603,7 @@ class _CartScreenState extends State<CartScreen> {
                         maxLines: 1,
                         style: const TextStyle(
                           fontSize: 11,
-                          color: Color(0xFF6E6560),
+                          color: Color(0xFF6E6560), // Warna ikon ikon untuk "Diskon ${_cartService.tierName} (${..."
                         ),
                       ),
                     ),
@@ -537,7 +611,7 @@ class _CartScreenState extends State<CartScreen> {
                     const Icon(
                       Icons.info_outline,
                       size: 13,
-                      color: Color(0xFFA64A13),
+                      color: Color(0xFFA64A13), // Warna ikon ikon untuk "-${formatRupiah(discountAmount)}"
                     ),
                   ],
                 ),
@@ -548,7 +622,9 @@ class _CartScreenState extends State<CartScreen> {
                 style: const TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFFA64A13),
+                  color: Color(
+                    0xFFA64A13,
+                  ), // Warna teks pada "-${formatRupiah(discountAmount)}"
                 ),
               ),
             ],
@@ -567,14 +643,19 @@ class _CartScreenState extends State<CartScreen> {
                     'Metode Pemenuhan',
                     style: TextStyle(
                       fontSize: 11,
-                      color: Color(0xFF6E6560),
+                      color: Color(
+                        0xFF6E6560,
+                      ), // Warna teks pada "Metode Pemenuhan"
                     ),
                   ),
                   const SizedBox(height: 3),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFEFE5),
+                      color: const Color(0xFFFFEFE5), // Warna latar kotak atau kartu untuk "Ambil di Toko Resmi"
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: const Text(
@@ -582,7 +663,9 @@ class _CartScreenState extends State<CartScreen> {
                       style: TextStyle(
                         fontSize: 8.5,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFFC2410C),
+                        color: Color(
+                          0xFFC2410C,
+                        ), // Warna teks pada "Ambil di Toko Resmi"
                       ),
                     ),
                   ),
@@ -597,7 +680,9 @@ class _CartScreenState extends State<CartScreen> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF16A34A),
+                      color: Color(
+                        0xFF16A34A,
+                      ), // Warna teks pada "Gratis (Rp 0)"
                     ),
                   ),
                   SizedBox(height: 2),
@@ -605,7 +690,9 @@ class _CartScreenState extends State<CartScreen> {
                     '5 Cabang Tersedia',
                     style: TextStyle(
                       fontSize: 9,
-                      color: Color(0xFF7E756F),
+                      color: Color(
+                        0xFF7E756F,
+                      ), // Warna teks pada "5 Cabang Tersedia"
                     ),
                   ),
                 ],
@@ -615,7 +702,12 @@ class _CartScreenState extends State<CartScreen> {
 
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: Divider(color: Color(0xFFEEEEEE), thickness: 1),
+            child: Divider(
+              color: Color(
+                0xFFEEEEEE,
+              ), // Warna garis pemisah pada bagian komponen ini
+              thickness: 1,
+            ),
           ),
 
           // Total Pembayaran
@@ -657,7 +749,11 @@ class _CartScreenState extends State<CartScreen> {
           label,
           style: TextStyle(
             fontSize: 11,
-            color: isBold ? AppColors.textPrimaryDark : const Color(0xFF6E6560),
+            color: isBold
+                ? AppColors.textPrimaryDark
+                : const Color(
+                    0xFF6E6560,
+                  ), // Warna teks pada bagian komponen ini
             fontWeight: isBold ? FontWeight.w500 : FontWeight.w400,
           ),
         ),
@@ -666,7 +762,8 @@ class _CartScreenState extends State<CartScreen> {
           style: TextStyle(
             fontSize: 11.5,
             fontWeight: isBold ? FontWeight.w700 : FontWeight.w500,
-            color: AppColors.textPrimaryDark,
+            color: AppColors
+                .textPrimaryDark, // Warna teks pada bagian komponen ini
           ),
         ),
       ],
@@ -674,17 +771,31 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   /// Sticky Bottom Payment Bar
-  Widget _buildBottomPaymentBar(int selectedCount, int totalPayment, int discountAmount) {
+  Widget _buildBottomPaymentBar(
+    int selectedCount,
+    int totalPayment,
+    int discountAmount,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color:
+            AppColors.white, // Warna border atau garis tepi bagian komponen ini
         border: const Border(
-          top: BorderSide(color: Color(0xFFEEEEEE), width: 1),
+          top: BorderSide(
+            color: Color(
+              0xFFEEEEEE,
+            ), // Warna border atau garis tepi bagian komponen ini
+            width: 1,
+          ),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(
+              // Warna latar kotak atau kartu pada bagian komponen ini
+
+              alpha: 0.04,
+            ),
             blurRadius: 10,
             offset: const Offset(0, -3),
           ),
@@ -702,7 +813,9 @@ class _CartScreenState extends State<CartScreen> {
                   'Total Pembayaran',
                   style: TextStyle(
                     fontSize: 9.5,
-                    color: Color(0xFF7E756F),
+                    color: Color(
+                      0xFF7E756F,
+                    ), // Warna teks pada "Total Pembayaran"
                   ),
                 ),
                 Text(
@@ -710,7 +823,7 @@ class _CartScreenState extends State<CartScreen> {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w900,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna teks pada "Hemat ${formatRupiah(discountAmount)}"
                   ),
                 ),
                 if (discountAmount > 0)
@@ -719,7 +832,7 @@ class _CartScreenState extends State<CartScreen> {
                     style: const TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF8D4315),
+                      color: Color(0xFF8D4315), // Warna teks pada "Hemat ${formatRupiah(discountAmount)}"
                     ),
                   ),
               ],
@@ -738,8 +851,11 @@ class _CartScreenState extends State<CartScreen> {
                     }
                   },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryOrange,
-              disabledBackgroundColor: const Color(0xFFCCCCCC),
+              backgroundColor: AppColors
+                  .primaryOrange, // Warna latar tombol pada bagian komponen ini
+              disabledBackgroundColor: const Color(
+                0xFFCCCCCC,
+              ), // Warna latar tombol pada bagian komponen ini
               elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
               shape: RoundedRectangleBorder(
@@ -752,7 +868,7 @@ class _CartScreenState extends State<CartScreen> {
                 Text(
                   'Lanjut Checkout ($selectedCount)',
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.white, // Warna ikon ikon untuk "Lanjut Checkout ($selectedCount)"
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                   ),
@@ -760,7 +876,7 @@ class _CartScreenState extends State<CartScreen> {
                 const SizedBox(width: 4),
                 const Icon(
                   Icons.arrow_forward_rounded,
-                  color: Colors.white,
+                  color: Colors.white, // Warna ikon ikon untuk "Lanjut Checkout ($selectedCount)"
                   size: 14,
                 ),
               ],
@@ -783,13 +899,15 @@ class _CartScreenState extends State<CartScreen> {
               width: 72,
               height: 72,
               decoration: const BoxDecoration(
-                color: Color(0xFFFFF0E6),
+                color: Color(
+                  0xFFFFF0E6,
+                ), // Warna ikon ikon untuk "Keranjangmu Masih Kosong"
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.shopping_cart_outlined,
                 size: 36,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Keranjangmu Masih Kosong"
               ),
             ),
             const SizedBox(height: 16),
@@ -798,7 +916,7 @@ class _CartScreenState extends State<CartScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna teks pada "Keranjangmu Masih Kosong"
               ),
             ),
             const SizedBox(height: 6),
@@ -807,7 +925,9 @@ class _CartScreenState extends State<CartScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
-                color: Color(0xFF7E756F),
+                color: Color(
+                  0xFF7E756F,
+                ), // Warna teks pada "Temukan berbagai instrumen musik be..."
                 height: 1.4,
               ),
             ),
@@ -821,15 +941,21 @@ class _CartScreenState extends State<CartScreen> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian komponen ini
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
               ),
               child: const Text(
                 'Mulai Belanja',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  color: Colors.white, // Warna teks pada "Mulai Belanja"
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],

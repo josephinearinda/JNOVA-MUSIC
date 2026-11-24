@@ -142,9 +142,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFFFF5500),
-              onPrimary: Colors.white,
-              onSurface: Color(0xFF1E1E1E),
+              primary: Color(
+                0xFFFF5500,
+              ), // Warna visual pada bagian komponen ini
+              onPrimary: Colors.white, // Warna visual pada bagian komponen ini
+              onSurface: Color(
+                0xFF1E1E1E,
+              ), // Warna visual pada bagian komponen ini
             ),
           ),
           child: child!,
@@ -165,7 +169,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     FocusScope.of(context).unfocus();
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, // Warna latar kotak untuk "${picked.day} $monthName ${picked.y..."
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -179,7 +183,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: 36,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0),
+                  color: const Color(
+                    0xFFE0E0E0,
+                  ), // Warna latar kotak atau kartu untuk "Pilih Provinsi"
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -190,7 +196,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Pilih Provinsi"
                   ),
                 ),
               ),
@@ -210,14 +218,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ? FontWeight.w700
                               : FontWeight.w400,
                           color: isSelected
-                              ? const Color(0xFFFF5500)
-                              : const Color(0xFF1E1E1E),
+                              ? const Color(
+                                  0xFFFF5500,
+                                ) // Warna teks pada bagian komponen ini
+                              : const Color(
+                                  0xFF1E1E1E,
+                                ), // Warna ikon ikon pada bagian komponen ini
                         ),
                       ),
                       trailing: isSelected
                           ? const Icon(
                               Icons.check,
-                              color: Color(0xFFFF5500),
+                              color: Color(
+                                0xFFFF5500,
+                              ), // Warna ikon ikon pada bagian komponen ini
                               size: 18,
                             )
                           : null,
@@ -253,7 +267,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             'Anda harus menyetujui Syarat dan Ketentuan serta Kebijakan Privasi.',
             style: TextStyle(fontSize: 12.5),
           ),
-          backgroundColor: const Color(0xFF2E2E2E),
+          backgroundColor: const Color(
+            0xFF2E2E2E,
+          ), // Warna teks pada "Anda harus menyetujui Syarat dan Ke..."
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -285,8 +301,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       SnackBar(
         content: Text(result.message, style: const TextStyle(fontSize: 12.5)),
         backgroundColor: result.isSuccess
-            ? Colors.green
-            : const Color(0xFF2E2E2E),
+            ? Colors
+                  .green // Warna teks pada bagian komponen ini
+            : const Color(0xFF2E2E2E), // Warna teks pada bagian komponen ini
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -349,7 +366,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, // Warna latar kotak untuk "/login"
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -371,7 +388,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: 38,
                         height: 38,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFF5500),
+                          color: const Color(0xFFFF5500), // Warna latar kotak atau kartu pada bagian komponen ini
                           borderRadius: BorderRadius.circular(9),
                         ),
                         child: Center(
@@ -403,7 +420,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF1E1E1E),
+                              color: Color(
+                                0xFF1E1E1E,
+                              ), // Warna teks pada "JNÓVAMUSIC"
                               letterSpacing: 0.3,
                             ),
                           ),
@@ -412,7 +431,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             style: TextStyle(
                               fontSize: 8.5,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF757575),
+                              color: Color(
+                                0xFF757575,
+                              ), // Warna teks pada "TOKO ALAT MUSIK RESMI"
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -431,7 +452,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1E1E1E),
+                      color: Color(0xFF1E1E1E), // Warna teks pada "Buat Akun"
                       letterSpacing: -0.2,
                     ),
                   ),
@@ -444,7 +465,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF7E7E7E),
+                      color: Color(0xFF7E7E7E), // Warna teks pada "Lengkapi data diri untuk mulai berb..."
                       height: 1.35,
                     ),
                   ),
@@ -459,7 +480,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       width: 6.5,
                       height: 6.5,
                       decoration: const BoxDecoration(
-                        color: Color(0xFFFF5500),
+                        color: Color(
+                          0xFFFF5500,
+                        ), // Warna latar kotak atau kartu untuk "Data Diri"
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -469,7 +492,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       style: TextStyle(
                         fontSize: 14.5,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF1E1E1E),
+                        color: Color(0xFF1E1E1E), // Warna teks pada "Data Diri"
                       ),
                     ),
                   ],
@@ -486,7 +509,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Masukkan nama lengkap"
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Masukkan nama lengkap',
@@ -511,7 +536,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(0xFF1E1E1E), // Warna teks pada "Masukkan username (misal: budiprata..."
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Masukkan username (misal: budipratama_music)',
@@ -543,14 +568,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: _birthDateController,
                       style: const TextStyle(
                         fontSize: 12.5,
-                        color: Color(0xFF1E1E1E),
+                        color: Color(
+                          0xFF1E1E1E,
+                        ), // Warna teks pada "Pilih tanggal lahir"
                       ),
                       decoration: _buildInputDecoration(
                         hint: 'Pilih tanggal lahir',
                         prefixIcon: Icons.calendar_today_outlined,
                         suffixIcon: const Icon(
                           Icons.keyboard_arrow_down_rounded,
-                          color: Color(0xFF757575),
+                          color: Color(
+                            0xFF757575,
+                          ), // Warna ikon ikon untuk "Pilih tanggal lahir"
                           size: 20,
                         ),
                       ),
@@ -569,7 +598,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Contoh: 081234567890"
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Contoh: 081234567890',
@@ -598,7 +629,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Masukkan alamat email"
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Masukkan alamat email',
@@ -629,7 +662,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Buat kata sandi"
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Buat kata sandi',
@@ -639,7 +674,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _obscurePassword
                             ? Icons.visibility_off_outlined
                             : Icons.visibility_outlined,
-                        color: const Color(0xFF9E9E9E),
+                        color: const Color(
+                          0xFF9E9E9E,
+                        ), // Warna ikon ikon untuk "Buat kata sandi"
                         size: 19,
                       ),
                       onPressed: () {
@@ -671,7 +708,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Masukkan ulang kata sandi"
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Masukkan ulang kata sandi',
@@ -681,7 +720,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _obscureConfirmPassword
                             ? Icons.visibility_off_outlined
                             : Icons.visibility_outlined,
-                        color: const Color(0xFF9E9E9E),
+                        color: const Color(
+                          0xFF9E9E9E,
+                        ), // Warna ikon ikon untuk "Masukkan ulang kata sandi"
                         size: 19,
                       ),
                       onPressed: () {
@@ -714,7 +755,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   maxLines: 2,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(0xFF1E1E1E), // Warna teks pada "Masukkan nama jalan, nomor bangunan..."
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Masukkan nama jalan, nomor bangunan, RT/RW',
@@ -739,7 +780,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Masukkan kelurahan / desa"
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Masukkan kelurahan / desa',
@@ -764,7 +807,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Masukkan kecamatan"
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Masukkan kecamatan',
@@ -789,7 +834,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.next,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Contoh: Jakarta Pusat"
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Contoh: Jakarta Pusat',
@@ -815,14 +862,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       controller: _provinceController,
                       style: const TextStyle(
                         fontSize: 12.5,
-                        color: Color(0xFF1E1E1E),
+                        color: Color(
+                          0xFF1E1E1E,
+                        ), // Warna teks pada "Pilih provinsi"
                       ),
                       decoration: _buildInputDecoration(
                         hint: 'Pilih provinsi',
                         prefixIcon: Icons.map_outlined,
                         suffixIcon: const Icon(
                           Icons.keyboard_arrow_down_rounded,
-                          color: Color(0xFF757575),
+                          color: Color(
+                            0xFF757575,
+                          ), // Warna ikon ikon untuk "Pilih provinsi"
                           size: 20,
                         ),
                       ),
@@ -847,7 +898,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textInputAction: TextInputAction.done,
                   style: const TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(0xFF1E1E1E), // Warna teks pada "Contoh: 10110"
                   ),
                   decoration: _buildInputDecoration(
                     hint: 'Contoh: 10110',
@@ -881,20 +932,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: 19,
                         decoration: BoxDecoration(
                           color: _agreeTerms
-                              ? const Color(0xFFFF5500)
-                              : const Color(0xFFF5F5F5),
+                              ? const Color(0xFFFF5500) // Warna latar kotak atau kartu pada bagian komponen ini
+                              : const Color(0xFFF5F5F5), // Warna border atau garis tepi bagian komponen ini
                           borderRadius: BorderRadius.circular(4),
                           border: Border.all(
                             color: _agreeTerms
-                                ? const Color(0xFFFF5500)
-                                : const Color(0xFFD6D6D6),
+                                ? const Color(0xFFFF5500) // Warna border atau garis tepi bagian komponen ini
+                                : const Color(0xFFD6D6D6), // Warna border atau garis tepi bagian komponen ini
                             width: 1.2,
                           ),
                         ),
                         child: _agreeTerms
                             ? const Icon(
                                 Icons.check_rounded,
-                                color: Colors.white,
+                                color: Colors.white, // Warna ikon ikon pada bagian komponen ini
                                 size: 14,
                               )
                             : null,
@@ -914,29 +965,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             children: [
                               TextSpan(
                                 text: 'Saya menyetujui ',
-                                style: TextStyle(color: Color(0xFF555555)),
+                                style: TextStyle(
+                                  color: Color(
+                                    0xFF555555,
+                                  ), // Warna teks pada "Saya menyetujui"
+                                ),
                               ),
                               TextSpan(
                                 text: 'Syarat dan Ketentuan',
                                 style: TextStyle(
-                                  color: Color(0xFFFF5500),
+                                  color: Color(
+                                    0xFFFF5500,
+                                  ), // Warna teks pada "Syarat dan Ketentuan"
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               TextSpan(
                                 text: ' serta ',
-                                style: TextStyle(color: Color(0xFF555555)),
+                                style: TextStyle(
+                                  color: Color(
+                                    0xFF555555,
+                                  ), // Warna teks pada "serta"
+                                ),
                               ),
                               TextSpan(
                                 text: 'Kebijakan Privasi',
                                 style: TextStyle(
-                                  color: Color(0xFFFF5500),
+                                  color: Color(
+                                    0xFFFF5500,
+                                  ), // Warna teks pada "Kebijakan Privasi"
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               TextSpan(
                                 text: '.',
-                                style: TextStyle(color: Color(0xFF555555)),
+                                style: TextStyle(
+                                  color: Color(
+                                    0xFF555555,
+                                  ), // Warna teks pada "Kebijakan Privasi"
+                                ),
                               ),
                             ],
                           ),
@@ -955,11 +1022,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     width: double.infinity,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFF5500),
+                      color: const Color(0xFFFF5500), // Warna latar kotak atau kartu pada bagian komponen ini
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: const [
                         BoxShadow(
-                          color: Color(0x44FF5500),
+                          color: Color(0x44FF5500), // Warna latar kotak atau kartu pada bagian komponen ini
                           blurRadius: 16,
                           offset: Offset(0, 6),
                         ),
@@ -973,7 +1040,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.2,
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
+                                  Colors.white, // Warna indikator loading pada bagian komponen ini
                                 ),
                               ),
                             )
@@ -985,14 +1052,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                    color: Colors.white, // Warna ikon ikon untuk "Daftar"
                                     letterSpacing: 0.2,
                                   ),
                                 ),
                                 SizedBox(width: 8),
                                 Icon(
                                   Icons.arrow_forward_rounded,
-                                  color: Colors.white,
+                                  color: Colors
+                                      .white, // Warna ikon ikon untuk "Daftar"
                                   size: 16,
                                 ),
                               ],
@@ -1010,7 +1078,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const Text(
                       'Sudah punya akun? ',
                       style: TextStyle(
-                        color: Color(0xFF4A4A4A),
+                        color: Color(
+                          0xFF4A4A4A,
+                        ), // Warna teks pada "Sudah punya akun?"
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
@@ -1020,7 +1090,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: const Text(
                         'Masuk',
                         style: TextStyle(
-                          color: Color(0xFFFF5500),
+                          color: Color(0xFFFF5500), // Warna teks pada "Masuk"
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                         ),
@@ -1039,7 +1109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       vertical: 7,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF3F3F5),
+                      color: const Color(0xFFF3F3F5), // Warna ikon ikon untuk "Transaksi Aman & Bergaransi Resmi Toko"
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
@@ -1052,7 +1122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           style: TextStyle(
                             fontSize: 10.5,
                             fontWeight: FontWeight.w500,
-                            color: Color(0xFF4A4A4A),
+                            color: Color(0xFF4A4A4A), // Warna teks pada "Transaksi Aman & Bergaransi Resmi Toko"
                           ),
                         ),
                       ],
@@ -1076,7 +1146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       style: const TextStyle(
         fontSize: 11.5,
         fontWeight: FontWeight.w600,
-        color: Color(0xFF262626),
+        color: Color(0xFF262626), // Warna teks pada bagian komponen ini
       ),
     );
   }
@@ -1087,7 +1157,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       width: 2.2,
       height: height,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors
+            .white, // Warna latar kotak atau kartu pada bagian komponen ini
         borderRadius: BorderRadius.circular(1.5),
       ),
     );
@@ -1110,11 +1181,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(fontSize: 12.5, color: Color(0xFFA8A8A8)),
-      prefixIcon: Icon(prefixIcon, color: const Color(0xFF9E9E9E), size: 19),
+      hintStyle: const TextStyle(
+        fontSize: 12.5,
+        color: Color(0xFFA8A8A8), // Warna ikon ikon pada bagian komponen ini
+      ),
+      prefixIcon: Icon(
+        prefixIcon,
+        color: const Color(
+          0xFF9E9E9E,
+        ), // Warna ikon ikon pada bagian komponen ini
+        size: 19,
+      ),
       suffixIcon: suffixIcon,
       filled: true,
-      fillColor: const Color(0xFFF6F6F6),
+      fillColor: const Color(
+        0xFFF6F6F6,
+      ), // Warna latar field input pada bagian komponen ini
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -1126,15 +1208,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFFFF5500), width: 1.2),
+        borderSide: const BorderSide(
+          color: Color(
+            0xFFFF5500,
+          ), // Warna border atau garis tepi bagian komponen ini
+          width: 1.2,
+        ),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.redAccent, width: 1.0),
+        borderSide: const BorderSide(
+          color: Colors
+              .redAccent, // Warna border atau garis tepi bagian komponen ini
+          width: 1.0,
+        ),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+        borderSide: const BorderSide(
+          color: Colors
+              .redAccent, // Warna border atau garis tepi bagian komponen ini
+          width: 1.2,
+        ),
       ),
     );
   }
@@ -1162,16 +1257,23 @@ class _ShieldBadgePainter extends CustomPainter {
     canvas.clipPath(path);
     canvas.drawRect(
       Rect.fromLTWH(0, 0, size.width * 0.5, size.height),
-      Paint()..color = const Color(0xFFD4D4D8),
+      Paint()
+        ..color = const Color(
+          0xFFD4D4D8,
+        ), // Warna visual pada bagian komponen ini
     );
     canvas.drawRect(
       Rect.fromLTWH(size.width * 0.5, 0, size.width * 0.5, size.height),
-      Paint()..color = const Color(0xFFFF5500),
+      Paint()
+        ..color = const Color(
+          0xFFFF5500,
+        ), // Warna visual pada bagian komponen ini
     );
     canvas.restore();
 
     final borderPaint = Paint()
-      ..color = const Color(0xFF9E9E9E)
+      ..color =
+          const Color(0xFF9E9E9E) // Warna visual pada bagian komponen ini
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.9;
     canvas.drawPath(path, borderPaint);

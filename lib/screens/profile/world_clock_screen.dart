@@ -95,7 +95,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "$dayName, ${adjusted.day} $monthNam..."
       body: SafeArea(
         child: Column(
           children: [
@@ -166,9 +166,15 @@ class _WorldClockPageState extends State<WorldClockPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/order-detail"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/order-detail"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -181,7 +187,8 @@ class _WorldClockPageState extends State<WorldClockPage> {
                 height: 20,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.graphic_eq_rounded,
-                  color: AppColors.primaryOrange,
+                  color:
+                      AppColors.primaryOrange, // Warna ikon ikon untuk "Profil"
                   size: 20,
                 ),
               ),
@@ -191,7 +198,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Profil"
                 ),
               ),
             ],
@@ -200,7 +207,9 @@ class _WorldClockPageState extends State<WorldClockPage> {
           IconButton(
             icon: const Icon(Icons.notifications_none_rounded, size: 22),
             onPressed: () => Navigator.pushNamed(context, '/notifications'),
-            color: const Color(0xFF4A403A),
+            color: const Color(
+              0xFF4A403A,
+            ), // Warna ikon ikon untuk "/notifications"
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -210,12 +219,14 @@ class _WorldClockPageState extends State<WorldClockPage> {
             height: 28,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFB45309),
+              color: Color(
+                0xFFB45309,
+              ), // Warna ikon ikon untuk "/notifications"
             ),
             child: const Icon(
               Icons.person_rounded,
               size: 17,
-              color: Colors.white,
+              color: Colors.white, // Warna ikon ikon untuk "/notifications"
             ),
           ),
         ],
@@ -227,9 +238,15 @@ class _WorldClockPageState extends State<WorldClockPage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/notifications"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/notifications"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -241,14 +258,22 @@ class _WorldClockPageState extends State<WorldClockPage> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFFF7F6F4),
+                color: const Color(
+                  0xFFF7F6F4,
+                ), // Warna border atau garis tepi untuk "/notifications"
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+                border: Border.all(
+                  color: const Color(
+                    0xFFEBE8E3,
+                  ), // Warna ikon ikon untuk "/notifications"
+                  width: 1.0,
+                ),
               ),
               child: const Icon(
                 Icons.arrow_back_rounded,
                 size: 18,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "/notifications"
               ),
             ),
           ),
@@ -262,12 +287,16 @@ class _WorldClockPageState extends State<WorldClockPage> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada "Jam Dunia"
                   ),
                 ),
                 Text(
                   'Sinkronisasi ritme audio antar wilayah',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF8E837D), // Warna ikon ikon untuk "Sinkronisasi ritme audio antar wilayah"
+                  ),
                 ),
               ],
             ),
@@ -275,7 +304,9 @@ class _WorldClockPageState extends State<WorldClockPage> {
           const Icon(
             Icons.info_outline_rounded,
             size: 18,
-            color: Color(0xFF8E837D),
+            color: Color(
+              0xFF8E837D,
+            ), // Warna ikon ikon untuk "Sinkronisasi ritme audio antar wilayah"
           ),
         ],
       ),
@@ -286,16 +317,22 @@ class _WorldClockPageState extends State<WorldClockPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Sinkronisasi ritme audio antar wilayah"
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFEBE8E3)),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Sinkronisasi ritme audio antar wilayah"
+        ),
       ),
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
-              Icon(Icons.circle, size: 6, color: AppColors.primaryOrange),
+              Icon(
+                Icons.circle,
+                size: 6,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "NTP ATOMIK AKTIF • LATENSI 12MS"
+              ),
               SizedBox(width: 6),
               Text(
                 'NTP ATOMIK AKTIF • LATENSI 12MS',
@@ -303,7 +340,9 @@ class _WorldClockPageState extends State<WorldClockPage> {
                   fontSize: 8.5,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.4,
-                  color: Color(0xFF7E756F),
+                  color: Color(
+                    0xFF7E756F,
+                  ), // Warna teks pada "NTP ATOMIK AKTIF • LATENSI 12MS"
                 ),
               ),
             ],
@@ -314,7 +353,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
               fontSize: 8,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.5,
-              color: Color(0xFF9A3412),
+              color: Color(0xFF9A3412), // Warna teks pada "PRESISI TINGGI"
             ),
           ),
         ],
@@ -330,12 +369,23 @@ class _WorldClockPageState extends State<WorldClockPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBF7),
+        color: const Color(
+          0xFFFFFBF7,
+        ), // Warna border atau garis tepi bagian komponen ini
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFEDD5), width: 1.2),
+        border: Border.all(
+          color: const Color(
+            0xFFFFEDD5,
+          ), // Warna border atau garis tepi bagian komponen ini
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryOrange.withValues(alpha: 0.05),
+            color: AppColors.primaryOrange.withValues(
+              // Warna bayangan pada bagian komponen ini
+
+              alpha: 0.05,
+            ),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -350,7 +400,9 @@ class _WorldClockPageState extends State<WorldClockPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEDDF),
+                  color: const Color(
+                    0xFFFFEDDF,
+                  ), // Warna latar kotak atau kartu untuk "Zona Waktu Utama"
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Row(
@@ -358,7 +410,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
                     Icon(
                       Icons.radio_button_checked_rounded,
                       size: 11,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna ikon ikon untuk "Zona Waktu Utama"
                     ),
                     SizedBox(width: 4),
                     Text(
@@ -366,7 +418,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
                       style: TextStyle(
                         fontSize: 9.5,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna teks pada "Zona Waktu Utama"
                       ),
                     ),
                   ],
@@ -375,7 +427,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEDEBE7),
+                  color: const Color(0xFFEDEBE7), // Warna teks pada "UTC+07:00"
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Text(
@@ -383,7 +435,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF5A524D),
+                    color: Color(0xFF5A524D), // Warna teks pada "UTC+07:00"
                   ),
                 ),
               ),
@@ -397,7 +449,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
               Icon(
                 Icons.location_on_rounded,
                 size: 13,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Yogyakarta, Indonesia • Studio Sentral"
               ),
               SizedBox(width: 4),
               Text(
@@ -405,7 +457,9 @@ class _WorldClockPageState extends State<WorldClockPage> {
                 style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF5A524D),
+                  color: Color(
+                    0xFF5A524D,
+                  ), // Warna teks pada "Yogyakarta, Indonesia • Studio Sentral"
                 ),
               ),
             ],
@@ -419,7 +473,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
               fontSize: 34,
               fontWeight: FontWeight.w900,
               letterSpacing: -1.0,
-              color: AppColors.textPrimaryDark,
+              color: AppColors.textPrimaryDark, // Warna teks pada "Yogyakarta, Indonesia • Studio Sentral"
             ),
           ),
           const SizedBox(height: 2),
@@ -430,7 +484,9 @@ class _WorldClockPageState extends State<WorldClockPage> {
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF6E6560),
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "Yogyakarta, Indonesia • Studio Sentral"
             ),
           ),
 
@@ -440,9 +496,11 @@ class _WorldClockPageState extends State<WorldClockPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white, // Warna border atau garis tepi untuk "Yogyakarta, Indonesia • Studio Sentral"
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFFFE0C2)),
+              border: Border.all(
+                color: const Color(0xFFFFE0C2), // Warna border atau garis tepi untuk "Yogyakarta, Indonesia • Studio Sentral"
+              ),
             ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
@@ -450,7 +508,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
                 Icon(
                   Icons.storefront_outlined,
                   size: 13,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna ikon ikon untuk "Toko Pusat & Pengiriman JNOVAMUSIC"
                 ),
                 SizedBox(width: 5),
                 Text(
@@ -458,7 +516,9 @@ class _WorldClockPageState extends State<WorldClockPage> {
                   style: TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF4A403A),
+                    color: Color(
+                      0xFF4A403A,
+                    ), // Warna teks pada "Toko Pusat & Pengiriman JNOVAMUSIC"
                   ),
                 ),
                 SizedBox(width: 8),
@@ -467,7 +527,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFFB45309),
+                    color: Color(0xFFB45309), // Warna teks pada "Buka"
                   ),
                 ),
               ],
@@ -507,7 +567,9 @@ class _WorldClockPageState extends State<WorldClockPage> {
               style: TextStyle(
                 fontSize: 9.5,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF8E837D),
+                color: Color(
+                  0xFF8E837D,
+                ), // Warna teks pada "3 Wilayah Operasional"
               ),
             ),
           ],
@@ -523,7 +585,8 @@ class _WorldClockPageState extends State<WorldClockPage> {
           date: witaDate,
           time: witaTime,
           diff: '+1 jam dari WIB',
-          diffColor: AppColors.primaryOrange,
+          diffColor:
+              AppColors.primaryOrange, // Warna visual pada bagian komponen ini
         ),
         const SizedBox(height: 8),
 
@@ -536,7 +599,8 @@ class _WorldClockPageState extends State<WorldClockPage> {
           date: witDate,
           time: witTime,
           diff: '+2 jam dari WIB',
-          diffColor: AppColors.primaryOrange,
+          diffColor:
+              AppColors.primaryOrange, // Warna visual pada bagian komponen ini
         ),
         const SizedBox(height: 8),
 
@@ -549,7 +613,9 @@ class _WorldClockPageState extends State<WorldClockPage> {
           date: londonDate,
           time: londonTime,
           diff: '-6 jam dari WIB',
-          diffColor: const Color(0xFF7E756F),
+          diffColor: const Color(
+            0xFF7E756F,
+          ), // Warna visual pada bagian komponen ini
         ),
       ],
     );
@@ -568,9 +634,11 @@ class _WorldClockPageState extends State<WorldClockPage> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3)),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+        ),
       ),
       child: Row(
         children: [
@@ -578,10 +646,14 @@ class _WorldClockPageState extends State<WorldClockPage> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: const Color(0xFFEDEBE7),
+              color: const Color(0xFFEDEBE7), // Warna ikon ikon pada kartu
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, size: 16, color: const Color(0xFF5A524D)),
+            child: Icon(
+              icon,
+              size: 16,
+              color: const Color(0xFF5A524D), // Warna ikon ikon pada kartu
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -595,7 +667,8 @@ class _WorldClockPageState extends State<WorldClockPage> {
                       style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color:
+                            AppColors.textPrimaryDark, // Warna teks pada kartu
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -605,7 +678,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
                         vertical: 1,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFECEAE6),
+                        color: const Color(0xFFECEAE6), // Warna teks pada kartu
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: Text(
@@ -613,7 +686,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
                         style: const TextStyle(
                           fontSize: 7.5,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF5A524D),
+                          color: Color(0xFF5A524D), // Warna teks pada kartu
                         ),
                       ),
                     ),
@@ -624,14 +697,14 @@ class _WorldClockPageState extends State<WorldClockPage> {
                   cities,
                   style: const TextStyle(
                     fontSize: 9.5,
-                    color: Color(0xFF6E6560),
+                    color: Color(0xFF6E6560), // Warna teks pada kartu
                   ),
                 ),
                 Text(
                   date,
                   style: const TextStyle(
                     fontSize: 8.5,
-                    color: Color(0xFF8E837D),
+                    color: Color(0xFF8E837D), // Warna teks pada kartu
                   ),
                 ),
               ],
@@ -646,7 +719,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
                   fontSize: 14,
                   fontWeight: FontWeight.w900,
                   letterSpacing: -0.3,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada kartu
                 ),
               ),
               Text(
@@ -668,9 +741,11 @@ class _WorldClockPageState extends State<WorldClockPage> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3)),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -680,12 +755,14 @@ class _WorldClockPageState extends State<WorldClockPage> {
             height: 28,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFFFEDDF),
+              color: Color(
+                0xFFFFEDDF,
+              ), // Warna ikon ikon untuk "Jadwal Rilis Piringan Hitam & Master"
             ),
             child: const Icon(
               Icons.album_outlined,
               size: 16,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "Jadwal Rilis Piringan Hitam & Master"
             ),
           ),
           const SizedBox(width: 10),
@@ -698,7 +775,7 @@ class _WorldClockPageState extends State<WorldClockPage> {
                   style: TextStyle(
                     fontSize: 10.5,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Jadwal Rilis Piringan Hitam & Master"
                   ),
                 ),
                 SizedBox(height: 2),
@@ -706,7 +783,9 @@ class _WorldClockPageState extends State<WorldClockPage> {
                   'Pemesanan pre-order rilisan fisik internasional disinkronkan otomatis mengikuti jam buka Abbey Road & partner kurasi London.',
                   style: TextStyle(
                     fontSize: 9.5,
-                    color: Color(0xFF6E6560),
+                    color: Color(
+                      0xFF6E6560,
+                    ), // Warna teks pada "Jadwal Rilis Piringan Hitam & Master"
                     height: 1.3,
                   ),
                 ),
@@ -720,4 +799,3 @@ class _WorldClockPageState extends State<WorldClockPage> {
 }
 
 typedef WorldClockScreen = WorldClockPage;
-

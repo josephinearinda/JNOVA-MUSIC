@@ -51,7 +51,8 @@ class PickupDetailScreen extends StatelessWidget {
 
     if (activeOrder == null) {
       return Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors
+            .white, // Warna latar kotak untuk "Tidak ada pesanan pickup aktif."
         body: SafeArea(
           child: Column(
             children: [
@@ -60,7 +61,12 @@ class PickupDetailScreen extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'Tidak ada pesanan pickup aktif.',
-                    style: TextStyle(fontSize: 12, color: Color(0xFF7E756F)),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(
+                        0xFF7E756F,
+                      ), // Warna teks pada "Tidak ada pesanan pickup aktif."
+                    ),
                   ),
                 ),
               ),
@@ -73,7 +79,8 @@ class PickupDetailScreen extends StatelessWidget {
     final store = activeOrder.pickupStore;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak untuk "Tidak ada pesanan pickup aktif."
       body: SafeArea(
         child: Column(
           children: [
@@ -146,9 +153,14 @@ class PickupDetailScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "/profile"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/profile"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -161,7 +173,7 @@ class PickupDetailScreen extends StatelessWidget {
               child: Icon(
                 Icons.arrow_back_rounded,
                 size: 22,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Detail Pengambilan"
               ),
             ),
           ),
@@ -184,12 +196,12 @@ class PickupDetailScreen extends StatelessWidget {
               height: 30,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFFB45309),
+                color: Color(0xFFB45309), // Warna ikon ikon untuk "/profile"
               ),
               child: const Icon(
                 Icons.person_rounded,
                 size: 18,
-                color: Colors.white,
+                color: Colors.white, // Warna ikon ikon untuk "/profile"
               ),
             ),
           ),
@@ -215,7 +227,7 @@ class PickupDetailScreen extends StatelessWidget {
                 child: const Text(
                   'AMBIL DI TOKO',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.white, // Warna teks pada "AMBIL DI TOKO"
                     fontSize: 8.5,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.3,
@@ -226,13 +238,17 @@ class PickupDetailScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFDCFCE7),
+                  color: const Color(
+                    0xFFDCFCE7,
+                  ), // Warna latar kotak atau kartu untuk "• SIAP DIAMBIL"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
                   '• SIAP DIAMBIL',
                   style: TextStyle(
-                    color: Color(0xFF15803D),
+                    color: Color(
+                      0xFF15803D,
+                    ), // Warna teks pada "• SIAP DIAMBIL"
                     fontSize: 8.5,
                     fontWeight: FontWeight.w800,
                   ),
@@ -255,7 +271,7 @@ class PickupDetailScreen extends StatelessWidget {
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: AppColors.textMuted,
+              color: AppColors.textMuted, // Warna teks pada "Dibuat"
             ),
           ),
           const SizedBox(height: 12),
@@ -288,24 +304,36 @@ class PickupDetailScreen extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isDone
-                ? AppColors.primaryOrange
+                ? AppColors
+                      .primaryOrange // Warna border atau garis tepi bagian komponen ini
                 : (isActive
-                      ? const Color(0xFFFFEDDF)
-                      : const Color(0xFFE5E2DC)),
+                      ? const Color(
+                          0xFFFFEDDF,
+                        ) // Warna border atau garis tepi bagian komponen ini
+                      : const Color(
+                          0xFFE5E2DC,
+                        )), // Warna border atau garis tepi bagian komponen ini
             border: isActive
-                ? Border.all(color: AppColors.primaryOrange, width: 2)
+                ? Border.all(
+                    color: AppColors.primaryOrange, // Warna border atau garis tepi bagian komponen ini
+                    width: 2,
+                  )
                 : null,
           ),
           child: Center(
             child: isDone
-                ? const Icon(Icons.check, size: 13, color: Colors.white)
+                ? const Icon(
+                    Icons.check,
+                    size: 13,
+                    color: Colors.white,
+                  ) // Warna ikon ikon pada bagian komponen ini
                 : (isActive
                       ? Container(
                           width: 8,
                           height: 8,
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color: AppColors.primaryOrange,
+                            color: AppColors.primaryOrange, // Warna latar kotak atau kartu pada bagian komponen ini
                           ),
                         )
                       : null),
@@ -318,10 +346,13 @@ class PickupDetailScreen extends StatelessWidget {
             fontSize: 9.5,
             fontWeight: isActive || isDone ? FontWeight.w700 : FontWeight.w500,
             color: isActive
-                ? AppColors.primaryOrange
+                ? AppColors
+                      .primaryOrange // Warna teks pada bagian komponen ini
                 : (isDone
                       ? AppColors.textPrimaryDark
-                      : const Color(0xFF8E837D)),
+                      : const Color(
+                          0xFF8E837D,
+                        )), // Warna teks pada bagian komponen ini
           ),
         ),
       ],
@@ -333,7 +364,11 @@ class PickupDetailScreen extends StatelessWidget {
       child: Container(
         height: 2,
         margin: const EdgeInsets.only(bottom: 14),
-        color: isCompleted ? AppColors.primaryOrange : const Color(0xFFE5E2DC),
+        color: isCompleted
+            ? AppColors.primaryOrange
+            : const Color(
+                0xFFE5E2DC,
+              ), // Warna latar kotak atau kartu pada bagian komponen ini
       ),
     );
   }
@@ -343,9 +378,12 @@ class PickupDetailScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBF7),
+        color: const Color(0xFFFFFBF7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFEDD5), width: 1.2),
+        border: Border.all(
+          color: const Color(0xFFFFEDD5), // Warna border atau garis tepi kartu
+          width: 1.2,
+        ),
       ),
       child: Column(
         children: [
@@ -355,7 +393,7 @@ class PickupDetailScreen extends StatelessWidget {
               Icon(
                 Icons.verified_rounded,
                 size: 14,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Kode Pengambilan Resmi"
               ),
               SizedBox(width: 4),
               Text(
@@ -363,7 +401,9 @@ class PickupDetailScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF8E837D),
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "Kode Pengambilan Resmi"
                 ),
               ),
             ],
@@ -374,9 +414,12 @@ class PickupDetailScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white, // Warna border atau garis tepi untuk "Kode Pengambilan Resmi"
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFFFFE0C2), width: 1.0),
+              border: Border.all(
+                color: const Color(0xFFFFE0C2), // Warna border atau garis tepi untuk "Kode Pengambilan Resmi"
+                width: 1.0,
+              ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -387,7 +430,7 @@ class PickupDetailScreen extends StatelessWidget {
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.2,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna teks pada "Kode pengambilan berhasil disalin!"
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -408,7 +451,9 @@ class PickupDetailScreen extends StatelessWidget {
                       Icon(
                         Icons.copy_rounded,
                         size: 13,
-                        color: Color(0xFF7E756F),
+                        color: Color(
+                          0xFF7E756F,
+                        ), // Warna ikon ikon untuk "Salin Kode"
                       ),
                       SizedBox(width: 3),
                       Text(
@@ -416,7 +461,9 @@ class PickupDetailScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF7E756F),
+                          color: Color(
+                            0xFF7E756F,
+                          ), // Warna teks pada "Salin Kode"
                         ),
                       ),
                     ],
@@ -438,7 +485,9 @@ class PickupDetailScreen extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 10.5,
-              color: Color(0xFF5A524D),
+              color: Color(
+                0xFF5A524D,
+              ), // Warna teks pada "Tunjukkan kode ini kepada petugas k..."
               height: 1.35,
             ),
           ),
@@ -452,9 +501,12 @@ class PickupDetailScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Tunjukkan kode ini kepada petugas k..."
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Tunjukkan kode ini kepada petugas k..."
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -467,7 +519,7 @@ class PickupDetailScreen extends StatelessWidget {
                   Icon(
                     Icons.storefront_rounded,
                     size: 16,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "Lokasi Pengambilan"
                   ),
                   SizedBox(width: 6),
                   Text(
@@ -475,7 +527,7 @@ class PickupDetailScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna teks pada "Lokasi Pengambilan"
                     ),
                   ),
                 ],
@@ -483,7 +535,9 @@ class PickupDetailScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFECEAE6),
+                  color: const Color(
+                    0xFFECEAE6,
+                  ), // Warna latar kotak atau kartu untuk "CABANG UTAMA"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
@@ -491,7 +545,7 @@ class PickupDetailScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF5A524D),
+                    color: Color(0xFF5A524D), // Warna teks pada "CABANG UTAMA"
                   ),
                 ),
               ),
@@ -503,7 +557,7 @@ class PickupDetailScreen extends StatelessWidget {
             style: const TextStyle(
               fontSize: 12.5,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
+              color: AppColors.textPrimaryDark, // Warna teks pada "JNOVAMUSIC Flagship Jakarta"
             ),
           ),
           const SizedBox(height: 2),
@@ -511,7 +565,9 @@ class PickupDetailScreen extends StatelessWidget {
             store?.address ?? 'Jl. Sultan Iskandar Muda No. 88, Kebayoran Lama, Jakarta Selatan',
             style: const TextStyle(
               fontSize: 10.5,
-              color: Color(0xFF6E6560),
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "Jl. Sultan Iskandar Muda No. 88, Ke..."
               height: 1.3,
             ),
           ),
@@ -521,12 +577,17 @@ class PickupDetailScreen extends StatelessWidget {
               const Icon(
                 Icons.access_time_rounded,
                 size: 12,
-                color: Color(0xFF8E837D),
+                color: Color(0xFF8E837D), // Warna ikon ikon untuk "Jam Operasional: ${store?.operating..."
               ),
               const SizedBox(width: 4),
               Text(
                 'Jam Operasional: ${store?.operatingHours ?? '10.00 - 21.00 WIB'}',
-                style: const TextStyle(fontSize: 10, color: Color(0xFF6E6560)),
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: Color(
+                    0xFF6E6560,
+                  ), // Warna teks pada "Jam Operasional: ${store?.operating..."
+                ),
               ),
             ],
           ),
@@ -540,7 +601,10 @@ class PickupDetailScreen extends StatelessWidget {
                   final uri = Uri.parse(store.getDirectionsUrl());
                   try {
                     if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      await launchUrl(
+                        uri,
+                        mode: LaunchMode.externalApplication,
+                      );
                       return;
                     }
                   } catch (_) {}
@@ -548,13 +612,18 @@ class PickupDetailScreen extends StatelessWidget {
                 if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Membuka peta ke ${store?.name ?? 'toko'}...'),
+                    content: Text(
+                      'Membuka peta ke ${store?.name ?? 'toko'}...',
+                    ),
                     duration: const Duration(seconds: 1),
                   ),
                 );
               },
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFFD4D0C8), width: 1.0),
+                side: const BorderSide(
+                  color: Color(0xFFD4D0C8), // Warna border atau garis tepi untuk "Membuka peta ke ${store?.name ??"
+                  width: 1.0,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -566,7 +635,8 @@ class PickupDetailScreen extends StatelessWidget {
                   Icon(
                     Icons.location_on_outlined,
                     size: 14,
-                    color: AppColors.primaryOrange,
+                    color: AppColors
+                        .primaryOrange, // Warna ikon ikon untuk "Lihat Lokasi"
                   ),
                   SizedBox(width: 4),
                   Text(
@@ -594,9 +664,16 @@ class PickupDetailScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi bagian produk
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi bagian produk
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -609,7 +686,9 @@ class PickupDetailScreen extends StatelessWidget {
                   Icon(
                     Icons.inventory_2_outlined,
                     size: 15,
-                    color: Color(0xFF7E756F),
+                    color: Color(
+                      0xFF7E756F,
+                    ), // Warna ikon ikon untuk "Ringkasan Produk"
                   ),
                   SizedBox(width: 6),
                   Text(
@@ -617,18 +696,15 @@ class PickupDetailScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna teks pada "Ringkasan Produk"
                     ),
                   ),
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 6,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFECEAE6),
+                  color: const Color(0xFFECEAE6), // Warna latar kotak atau kartu untuk "$totalUnits Unit (${items.length} B..."
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -636,7 +712,7 @@ class PickupDetailScreen extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF5A524D),
+                    color: Color(0xFF5A524D), // Warna teks pada "$totalUnits Unit (${items.length} B..."
                   ),
                 ),
               ),
@@ -651,7 +727,12 @@ class PickupDetailScreen extends StatelessWidget {
                 if (index > 0)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Divider(color: Color(0xFFEBE8E3), height: 1),
+                    child: Divider(
+                      color: Color(
+                        0xFFEBE8E3,
+                      ), // Warna garis pemisah pada bagian produk
+                      height: 1,
+                    ),
                   ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -661,15 +742,17 @@ class PickupDetailScreen extends StatelessWidget {
                       child: Container(
                         width: 44,
                         height: 44,
-                        color: Colors.white,
+                        color:
+                            Colors.white, // Warna ikon ikon pada bagian produk
                         child: Image.asset(
                           item.product.image,
                           fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) => const Icon(
-                            Icons.image_not_supported_rounded,
-                            size: 18,
-                            color: AppColors.placeholder,
-                          ),
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(
+                                Icons.image_not_supported_rounded,
+                                size: 18,
+                                color: AppColors.placeholder, // Warna ikon ikon pada bagian produk
+                              ),
                         ),
                       ),
                     ),
@@ -685,13 +768,12 @@ class PickupDetailScreen extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 11.5,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimaryDark,
+                              color: AppColors.textPrimaryDark, // Warna teks pada "Jumlah: ${item.quantity} Unit"
                             ),
                           ),
                           const SizedBox(height: 1),
                           Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Flexible(
                                 child: Text(
@@ -700,7 +782,7 @@ class PickupDetailScreen extends StatelessWidget {
                                   maxLines: 1,
                                   style: const TextStyle(
                                     fontSize: 10,
-                                    color: Color(0xFF7E756F),
+                                    color: Color(0xFF7E756F), // Warna teks pada "Jumlah: ${item.quantity} Unit"
                                   ),
                                 ),
                               ),
@@ -713,7 +795,7 @@ class PickupDetailScreen extends StatelessWidget {
                                   style: const TextStyle(
                                     fontSize: 11.5,
                                     fontWeight: FontWeight.w800,
-                                    color: AppColors.primaryOrange,
+                                    color: AppColors.primaryOrange, // Warna teks pada "Jumlah: ${item.quantity} Unit"
                                   ),
                                 ),
                               ),
@@ -737,9 +819,12 @@ class PickupDetailScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -749,7 +834,9 @@ class PickupDetailScreen extends StatelessWidget {
               Icon(
                 Icons.info_outline_rounded,
                 size: 15,
-                color: Color(0xFF7E756F),
+                color: Color(
+                  0xFF7E756F,
+                ), // Warna ikon ikon untuk "Petunjuk Singkat"
               ),
               SizedBox(width: 6),
               Text(
@@ -791,7 +878,7 @@ class PickupDetailScreen extends StatelessWidget {
           height: 16,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: Color(0xFFECEAE6),
+            color: Color(0xFFECEAE6), // Warna teks pada bagian komponen ini
           ),
           child: Center(
             child: Text(
@@ -799,7 +886,7 @@ class PickupDetailScreen extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 9,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF5A524D),
+                color: Color(0xFF5A524D), // Warna teks pada bagian komponen ini
               ),
             ),
           ),
@@ -810,7 +897,7 @@ class PickupDetailScreen extends StatelessWidget {
             text,
             style: const TextStyle(
               fontSize: 10,
-              color: Color(0xFF5A524D),
+              color: Color(0xFF5A524D), // Warna teks pada bagian komponen ini
               height: 1.35,
             ),
           ),
@@ -830,7 +917,8 @@ class PickupDetailScreen extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => _handleOpenOrderDetail(context, activeOrder),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor:
+                    AppColors.primaryOrange, // Warna visual pada tombol
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -839,7 +927,7 @@ class PickupDetailScreen extends StatelessWidget {
               child: const Text(
                 'Lihat Detail Pesanan',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.white, // Warna teks pada "Lihat Detail Pesanan"
                   fontSize: 12.5,
                   fontWeight: FontWeight.w800,
                 ),
@@ -860,7 +948,10 @@ class PickupDetailScreen extends StatelessWidget {
                 );
               },
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFFD4D0C8), width: 1.0),
+                side: const BorderSide(
+                  color: Color(0xFFD4D0C8), // Warna border atau garis tepi untuk "Menghubungi hotline toko: (021) 728..."
+                  width: 1.0,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -871,7 +962,7 @@ class PickupDetailScreen extends StatelessWidget {
                   Icon(
                     Icons.phone_outlined,
                     size: 14,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Hubungi Toko"
                   ),
                   SizedBox(width: 6),
                   Text(

@@ -57,7 +57,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
     final progress = (points / targetPoints).clamp(0.0, 1.0);
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "/profile"
       body: SafeArea(
         child: Column(
           children: [
@@ -102,7 +102,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 9,
-                            color: Color(0xFF8E837D),
+                            color: Color(0xFF8E837D), // Warna teks pada "Poin didapatkan setelah pesanan dia..."
                             height: 1.3,
                           ),
                         ),
@@ -138,9 +138,14 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "/profile"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/profile"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -156,7 +161,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                     child: Icon(
                       Icons.arrow_back_rounded,
                       size: 20,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Membership"
                     ),
                   ),
                 ),
@@ -175,7 +180,12 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                   ),
                   Text(
                     'More Points, More Music Benefits',
-                    style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Color(
+                        0xFF8E837D,
+                      ), // Warna teks pada "More Points, More Music Benefits"
+                    ),
                   ),
                 ],
               ),
@@ -186,7 +196,9 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
               IconButton(
                 icon: const Icon(Icons.notifications_none_rounded, size: 22),
                 onPressed: () => Navigator.pushNamed(context, '/notifications'),
-                color: const Color(0xFF4A403A),
+                color: const Color(
+                  0xFF4A403A,
+                ), // Warna ikon ikon untuk "/notifications"
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
               ),
@@ -198,12 +210,14 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                   height: 28,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFFB45309),
+                    color: Color(
+                      0xFFB45309,
+                    ), // Warna ikon ikon untuk "/profile"
                   ),
                   child: const Icon(
                     Icons.person_rounded,
                     size: 17,
-                    color: Colors.white,
+                    color: Colors.white, // Warna ikon ikon untuk "/profile"
                   ),
                 ),
               ),
@@ -224,12 +238,19 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBF7),
+        color: const Color(0xFFFFFBF7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFEDD5), width: 1.2),
+        border: Border.all(
+          color: const Color(0xFFFFEDD5), // Warna border atau garis tepi kartu
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryOrange.withValues(alpha: 0.05),
+            color: AppColors.primaryOrange.withValues(
+              // Warna border atau garis tepi kartu
+
+              alpha: 0.05,
+            ),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -244,7 +265,9 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEDDF),
+                  color: const Color(
+                    0xFFFFEDDF,
+                  ), // Warna latar kotak atau kartu untuk "MEMBERSHIP KAMU"
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Row(
@@ -252,7 +275,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                     Icon(
                       Icons.military_tech_rounded,
                       size: 11,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna ikon ikon untuk "MEMBERSHIP KAMU"
                     ),
                     SizedBox(width: 4),
                     Text(
@@ -261,7 +284,8 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                         fontSize: 8.5,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0.4,
-                        color: AppColors.primaryOrange,
+                        color: AppColors
+                            .primaryOrange, // Warna teks pada "MEMBERSHIP KAMU"
                       ),
                     ),
                   ],
@@ -272,7 +296,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                 style: TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF8E837D),
+                  color: Color(0xFF8E837D), // Warna teks pada "ID: JNV-882190"
                 ),
               ),
             ],
@@ -296,7 +320,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Pengguna JNOVAMUSIC"
                     ),
                   ),
                   Row(
@@ -307,8 +331,12 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                             : Icons.lock_outline_rounded,
                         size: 13,
                         color: _membershipService.isMember
-                            ? const Color(0xFFB45309)
-                            : const Color(0xFF8E837D),
+                            ? const Color(
+                                0xFFB45309,
+                              ) // Warna ikon ikon untuk "Pengguna JNOVAMUSIC"
+                            : const Color(
+                                0xFF8E837D,
+                              ), // Warna visual pada kartu
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -317,8 +345,10 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
                           color: _membershipService.isMember
-                              ? const Color(0xFF8D4315)
-                              : const Color(0xFF7E756F),
+                              ? const Color(
+                                  0xFF8D4315,
+                                ) // Warna teks pada "Pengguna JNOVAMUSIC"
+                              : const Color(0xFF7E756F), // Warna latar kotak atau kartu untuk "Pengguna JNOVAMUSIC"
                         ),
                       ),
                     ],
@@ -331,12 +361,16 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                 height: 30,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color(0xFFEDEBE7),
+                  color: Color(
+                    0xFFEDEBE7,
+                  ), // Warna ikon ikon untuk "Pengguna JNOVAMUSIC"
                 ),
                 child: const Icon(
                   Icons.settings_outlined,
                   size: 16,
-                  color: Color(0xFF5A524D),
+                  color: Color(
+                    0xFF5A524D,
+                  ), // Warna ikon ikon untuk "Pengguna JNOVAMUSIC"
                 ),
               ),
             ],
@@ -353,14 +387,19 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                 children: [
                   const Text(
                     'Saldo Poin Kamu',
-                    style: TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Color(
+                        0xFF7E756F,
+                      ), // Warna ikon ikon untuk "Saldo Poin Kamu"
+                    ),
                   ),
                   Row(
                     children: [
                       const Icon(
                         Icons.stars_rounded,
                         size: 18,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna ikon ikon untuk "${points.toString().replaceAllMappe..."
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -368,7 +407,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w900,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna teks pada "${points.toString().replaceAllMappe..."
                           letterSpacing: -0.5,
                         ),
                       ),
@@ -385,7 +424,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna latar kotak atau kartu untuk "Gunakan"
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Row(
@@ -395,14 +434,15 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color:
+                              Colors.white, // Warna ikon ikon untuk "Gunakan"
                         ),
                       ),
                       SizedBox(width: 2),
                       Icon(
                         Icons.chevron_right_rounded,
                         size: 14,
-                        color: Colors.white,
+                        color: Colors.white, // Warna ikon ikon untuk "Gunakan"
                       ),
                     ],
                   ),
@@ -421,19 +461,20 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                   const Icon(
                     Icons.trending_up_rounded,
                     size: 12,
-                    color: AppColors.primaryOrange,
+                    color: AppColors
+                        .primaryOrange, // Warna ikon ikon untuk "Maksimal"
                   ),
                   const SizedBox(width: 4),
                   Text(
                     _membershipService.nextTierName == 'Maksimal'
                         ? 'Tier maksimal tercapai'
                         : _membershipService.isMember
-                            ? 'Progres ke ${_membershipService.nextTierName} Member'
-                            : 'Kumpulkan 1.000 Poin untuk Jadi Member',
+                        ? 'Progres ke ${_membershipService.nextTierName} Member'
+                        : 'Kumpulkan 1.000 Poin untuk Jadi Member',
                     style: const TextStyle(
                       fontSize: 9.5,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF6E6560),
+                      color: Color(0xFF6E6560), // Warna teks pada "Kumpulkan 1.000 Poin untuk Jadi Member"
                     ),
                   ),
                 ],
@@ -443,7 +484,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                 style: const TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "${points.toString().replaceAllMappe..."
                 ),
               ),
             ],
@@ -453,9 +494,11 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: progress,
-              backgroundColor: const Color(0xFFFFEDDF),
+              backgroundColor: const Color(
+                0xFFFFEDDF,
+              ), // Warna indikator loading pada kartu
               valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primaryOrange,
+                AppColors.primaryOrange, // Warna latar kotak atau kartu untuk "${points.toString().replaceAllMappe..."
               ),
               minHeight: 6,
             ),
@@ -465,16 +508,18 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white, // Warna border atau garis tepi untuk "${points.toString().replaceAllMappe..."
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFFFE0C2)),
+              border: Border.all(
+                color: const Color(0xFFFFE0C2), // Warna border atau garis tepi untuk "${points.toString().replaceAllMappe..."
+              ),
             ),
             child: Row(
               children: [
                 const Icon(
                   Icons.info_outline_rounded,
                   size: 13,
-                  color: Color(0xFFB45309),
+                  color: Color(0xFFB45309), // Warna ikon ikon untuk "Maksimal"
                 ),
                 const SizedBox(width: 6),
                 Expanded(
@@ -482,11 +527,11 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                     _membershipService.nextTierName == 'Maksimal'
                         ? 'Kamu sudah mencapai tier tertinggi dengan benefit diskon ${_membershipService.discountPercentage}%.'
                         : _membershipService.isMember
-                            ? 'Target: ${targetPoints.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (match) => '${match[1]}.')} poin. Butuh $pointsNeeded poin lagi untuk membuka benefit ${_membershipService.nextTierName}.'
-                            : 'Belanja & kumpulkan $pointsNeeded poin lagi untuk membuka keanggotaan Silver Member dan nikmati diskon 10%!',
+                        ? 'Target: ${targetPoints.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (match) => '${match[1]}.')} poin. Butuh $pointsNeeded poin lagi untuk membuka benefit ${_membershipService.nextTierName}.'
+                        : 'Belanja & kumpulkan $pointsNeeded poin lagi untuk membuka keanggotaan Silver Member dan nikmati diskon 10%!',
                     style: const TextStyle(
                       fontSize: 9,
-                      color: Color(0xFF78350F),
+                      color: Color(0xFF78350F), // Warna teks pada "Target: ${targetPoints.toString().r..."
                     ),
                   ),
                 ),
@@ -519,7 +564,12 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
         const SizedBox(height: 1),
         const Text(
           'Perbandingan benefit dan keuntungan tiap tingkat keanggotaan',
-          style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+          style: TextStyle(
+            fontSize: 10,
+            color: Color(
+              0xFF8E837D,
+            ), // Warna teks pada "Perbandingan benefit dan keuntungan..."
+          ),
         ),
         const SizedBox(height: 12),
 
@@ -527,21 +577,30 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
         _buildTierCard(
           isActive: isSilverActive,
           isNextTier: isNonMember,
-          tagColor: AppColors.primaryOrange,
-          tagBg: const Color(0xFFFFEDDF),
+          tagColor:
+              AppColors.primaryOrange, // Warna visual pada bagian komponen ini
+          tagBg: const Color(
+            0xFFFFEDDF,
+          ), // Warna visual pada bagian komponen ini
           pointRange: '1.000 - 2.999 POIN',
           title: 'SILVER',
           subtitle: 'Kolektor Musik Pemula',
           icon: Icons.shield_rounded,
-          iconBg: const Color(0xFFEDEBE7),
-          iconColor: const Color(0xFF7E756F),
+          iconBg: const Color(
+            0xFFEDEBE7,
+          ), // Warna visual pada bagian komponen ini
+          iconColor: const Color(
+            0xFF7E756F,
+          ), // Warna visual pada bagian komponen ini
           discountBenefit: 'Diskon 10%',
           benefits: [
             'Diskon 10% untuk semua pembelian alat musik & aksesoris',
             'Akses awal pre-order, diskon seasonal sale',
             'Konsultasi gear dasar bersama audio specialist',
           ],
-          borderColor: const Color(0xFFEBE8E3),
+          borderColor: const Color(
+            0xFFEBE8E3,
+          ), // Warna visual pada bagian komponen ini
         ),
         const SizedBox(height: 12),
 
@@ -549,14 +608,22 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
         _buildTierCard(
           isActive: isGoldActive,
           isNextTier: isSilverActive,
-          tagColor: const Color(0xFFB45309),
-          tagBg: const Color(0xFFFEF3C7),
+          tagColor: const Color(
+            0xFFB45309,
+          ), // Warna visual pada bagian komponen ini
+          tagBg: const Color(
+            0xFFFEF3C7,
+          ), // Warna visual pada bagian komponen ini
           pointRange: '3.000 - 9.999 POIN',
           title: 'GOLD',
           subtitle: 'Musisi Aktif & Creator',
           icon: Icons.military_tech_rounded,
-          iconBg: const Color(0xFFFEF3C7),
-          iconColor: const Color(0xFFD97706),
+          iconBg: const Color(
+            0xFFFEF3C7,
+          ), // Warna visual pada bagian komponen ini
+          iconColor: const Color(
+            0xFFD97706,
+          ), // Warna visual pada bagian komponen ini
           discountBenefit: 'Diskon 20%',
           benefits: [
             'Diskon 20% untuk semua pembelian alat musik & aksesoris',
@@ -564,7 +631,9 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
             'Prioritas layanan servis alat musik & luthier',
             'Akses workshop & klinik musik berkala eksklusif',
           ],
-          borderColor: const Color(0xFFEBE8E3),
+          borderColor: const Color(
+            0xFFEBE8E3,
+          ), // Warna visual pada bagian komponen ini
         ),
         const SizedBox(height: 12),
 
@@ -572,16 +641,26 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
         _buildTierCard(
           isActive: isPlatinumActive,
           isNextTier: isGoldActive,
-          tagColor: const Color(0xFF0369A1),
-          tagBg: const Color(0xFFE0F2FE),
+          tagColor: const Color(
+            0xFF0369A1,
+          ), // Warna visual pada bagian komponen ini
+          tagBg: const Color(
+            0xFFE0F2FE,
+          ), // Warna visual pada bagian komponen ini
           pointRange: '10.000+ POIN',
           title: 'PLATINUM',
           subtitle: 'VIP & Pro Audiophile',
           icon: Icons.workspace_premium_rounded,
-          iconBg: const Color(0xFFE0F2FE),
-          iconColor: const Color(0xFF0284C7),
+          iconBg: const Color(
+            0xFFE0F2FE,
+          ), // Warna visual pada bagian komponen ini
+          iconColor: const Color(
+            0xFF0284C7,
+          ), // Warna visual pada bagian komponen ini
           discountBenefit: 'Diskon 35%',
-          discountColor: const Color(0xFF0284C7),
+          discountColor: const Color(
+            0xFF0284C7,
+          ), // Warna visual pada bagian komponen ini
           benefits: [
             'Diskon 35% untuk semua instrumen & aksesoris',
             'Gratis ongkir sesuai ketentuan',
@@ -589,7 +668,9 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
             'Merchandise gratis eksklusif JNOVAMUSIC',
             'Layanan VIP & undangan peluncuran gear eksklusif',
           ],
-          borderColor: const Color(0xFFEBE8E3),
+          borderColor: const Color(
+            0xFFEBE8E3,
+          ), // Warna visual pada bagian komponen ini
         ),
       ],
     );
@@ -617,23 +698,34 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
         ? 'Tingkat Berikutnya'
         : 'Keanggotaan';
     final effectiveTagColor = isActive
-        ? AppColors.primaryOrange
+        ? AppColors
+              .primaryOrange // Warna latar kotak atau kartu untuk "Keanggotaan"
         : isNextTier
         ? tagColor
-        : const Color(0xFF8E837D);
+        : const Color(
+            0xFF8E837D,
+          ); // Warna latar kotak atau kartu untuk "Keanggotaan"
     final effectiveTagBg = isActive
-        ? const Color(0xFFFFEDDF)
+        ? const Color(
+            0xFFFFEDDF,
+          ) // Warna latar kotak atau kartu untuk "Keanggotaan"
         : isNextTier
         ? tagBg
-        : const Color(0xFFEDEBE7);
+        : const Color(
+            0xFFEDEBE7,
+          ); // Warna latar kotak atau kartu untuk "Keanggotaan"
 
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "Keanggotaan"
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: isActive ? AppColors.primaryOrange : borderColor,
+          color: isActive
+              ? AppColors.primaryOrange
+              : borderColor, // Warna border atau garis tepi untuk "Keanggotaan"
           width: isActive ? 1.8 : 1.2,
         ),
       ),
@@ -666,7 +758,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                 style: const TextStyle(
                   fontSize: 9,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF8E837D),
+                  color: Color(0xFF8E837D), // Warna teks pada kartu
                 ),
               ),
             ],
@@ -697,14 +789,17 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w900,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors
+                              .textPrimaryDark, // Warna teks pada kartu
                         ),
                       ),
                       Text(
                         subtitle,
                         style: const TextStyle(
                           fontSize: 9.5,
-                          color: Color(0xFF6E6560),
+                          color: Color(
+                            0xFF6E6560,
+                          ), // Warna teks pada "BENEFIT UTAMA"
                         ),
                       ),
                     ],
@@ -720,7 +815,9 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                       fontSize: 7.5,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.4,
-                      color: Color(0xFF8E837D),
+                      color: Color(
+                        0xFF8E837D,
+                      ), // Warna teks pada "BENEFIT UTAMA"
                     ),
                   ),
                   Text(
@@ -728,7 +825,10 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w900,
-                      color: discountColor ?? AppColors.primaryOrange,
+                      color:
+                          discountColor ??
+                          AppColors
+                              .primaryOrange, // Warna teks pada "BENEFIT UTAMA"
                     ),
                   ),
                 ],
@@ -756,7 +856,8 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                   const Icon(
                     Icons.check,
                     size: 13,
-                    color: AppColors.primaryOrange,
+                    color:
+                        AppColors.primaryOrange, // Warna ikon ikon pada kartu
                   ),
                   const SizedBox(width: 6),
                   Expanded(
@@ -764,7 +865,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                       b,
                       style: const TextStyle(
                         fontSize: 9.5,
-                        color: Color(0xFF5A524D),
+                        color: Color(0xFF5A524D), // Warna teks pada kartu
                         height: 1.25,
                       ),
                     ),
@@ -787,22 +888,30 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w800,
-            color: AppColors.textPrimaryDark,
+            color:
+                AppColors.textPrimaryDark, // Warna teks pada "Aktivitas Poin"
           ),
         ),
         const SizedBox(height: 1),
         const Text(
           'Kelola dan nikmati hadiah dari setiap belanjaan musikmu',
-          style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+          style: TextStyle(
+            fontSize: 10,
+            color: Color(
+              0xFF8E837D,
+            ), // Warna teks pada "Kelola dan nikmati hadiah dari seti..."
+          ),
         ),
         const SizedBox(height: 10),
 
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: const Color(0xFFFAF9F7),
+            color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Kelola dan nikmati hadiah dari seti..."
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFEBE8E3)),
+            border: Border.all(
+              color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Kelola dan nikmati hadiah dari seti..."
+            ),
           ),
           child: Column(
             children: [
@@ -813,7 +922,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                     Icon(
                       Icons.history_rounded,
                       size: 18,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna ikon ikon untuk "/point-history"
                     ),
                     SizedBox(width: 10),
                     Expanded(
@@ -825,14 +934,14 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                             style: TextStyle(
                               fontSize: 11.5,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimaryDark,
+                              color: AppColors.textPrimaryDark, // Warna teks pada "Riwayat Poin"
                             ),
                           ),
                           Text(
                             'Lihat poin yang diperoleh dan digunakan',
                             style: TextStyle(
                               fontSize: 9.5,
-                              color: Color(0xFF7E756F),
+                              color: Color(0xFF7E756F), // Warna ikon ikon untuk "Lihat poin yang diperoleh dan digun..."
                             ),
                           ),
                         ],
@@ -841,7 +950,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
                     Icon(
                       Icons.chevron_right_rounded,
                       size: 18,
-                      color: Color(0xFF8E837D),
+                      color: Color(0xFF8E837D), // Warna ikon ikon untuk "Lihat poin yang diperoleh dan digun..."
                     ),
                   ],
                 ),
@@ -909,7 +1018,9 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
       height: 40,
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
-        color: Color(0xFFEDEBE7),
+        color: Color(
+          0xFFEDEBE7,
+        ), // Warna latar kotak atau kartu pada bagian komponen ini
       ),
       child: Center(
         child: Text(
@@ -917,7 +1028,7 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
           style: const TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF4A403A),
+            color: Color(0xFF4A403A), // Warna teks pada bagian komponen ini
           ),
         ),
       ),
@@ -926,4 +1037,3 @@ class _MembershipSettingsPageState extends State<MembershipSettingsPage> {
 }
 
 typedef MembershipScreen = MembershipSettingsPage;
-

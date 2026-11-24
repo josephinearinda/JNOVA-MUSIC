@@ -105,7 +105,9 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(result.message, style: const TextStyle(fontSize: 13)),
-        backgroundColor: result.isSuccess ? Colors.green : AppColors.darkGrey,
+        backgroundColor: result.isSuccess
+            ? Colors.green
+            : AppColors.darkGrey, // Warna teks pada bagian komponen ini
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -139,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Perangkat ini tidak mendukung sensor sidik jari.'),
-          backgroundColor: AppColors.darkGrey,
+          backgroundColor: AppColors.darkGrey, // Warna latar pesan pemberitahuan pada bagian komponen ini
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -183,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text(
             'Fitur login sidik jari belum diaktifkan. Silakan masuk terlebih dahulu dengan kata sandi, lalu aktifkan melalui menu Keamanan Akun.',
           ),
-          backgroundColor: AppColors.darkGrey,
+          backgroundColor: AppColors.darkGrey, // Warna latar pesan pemberitahuan pada bagian komponen ini
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -199,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
           content: Text(
             'Belum ada sidik jari yang terdaftar di perangkat. Silakan atur sidik jari di pengaturan ponsel Android Anda.',
           ),
-          backgroundColor: AppColors.darkGrey,
+          backgroundColor: AppColors.darkGrey, // Warna latar pesan pemberitahuan pada bagian komponen ini
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -217,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(bioResult.message),
-          backgroundColor: AppColors.darkGrey,
+          backgroundColor: AppColors.darkGrey, // Warna latar pesan pemberitahuan pada bagian komponen ini
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -243,8 +245,9 @@ class _LoginScreenState extends State<LoginScreen> {
       SnackBar(
         content: Text(authResult.message),
         backgroundColor: authResult.isSuccess
-            ? Colors.green
-            : AppColors.darkGrey,
+            ? Colors
+                  .green // Warna visual pada bagian komponen ini
+            : AppColors.darkGrey, // Warna visual pada bagian komponen ini
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -283,7 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
             'Halaman Lupa Kata Sandi disiapkan untuk tahap berikutnya.',
             style: TextStyle(fontSize: 13),
           ),
-          backgroundColor: AppColors.darkGrey,
+          backgroundColor: AppColors.darkGrey, // Warna teks pada "Halaman Lupa Kata Sandi disiapkan u..."
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -325,7 +328,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -354,7 +358,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada "Selamat Datang!"
                     letterSpacing: -0.3,
                   ),
                 ),
@@ -365,7 +370,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     fontSize: 13,
                     height: 1.4,
                     fontWeight: FontWeight.w400,
-                    color: AppColors.textSecondaryBrown,
+                    color: AppColors.textSecondaryBrown, // Warna teks pada "Temukan alat musik yang tepat untuk..."
                   ),
                 ),
 
@@ -377,7 +382,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada "Alamat Email"
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -387,21 +393,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   textInputAction: TextInputAction.next,
                   style: const TextStyle(
                     fontSize: 13.5,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Masukkan alamat email"
                   ),
                   decoration: InputDecoration(
                     hintText: 'Masukkan alamat email',
                     hintStyle: const TextStyle(
                       fontSize: 13,
-                      color: AppColors.placeholder,
+                      color: AppColors.placeholder, // Warna ikon ikon untuk "Masukkan alamat email"
                     ),
                     prefixIcon: const Icon(
                       Icons.mail_outline_rounded,
-                      color: AppColors.placeholder,
+                      color: AppColors.placeholder, // Warna ikon ikon untuk "Masukkan alamat email"
                       size: 19,
                     ),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: AppColors.inputBackground, // Warna ikon ikon untuk "Masukkan alamat email"
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 14,
                       vertical: 14,
@@ -417,7 +423,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: const BorderSide(
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna border atau garis tepi bagian komponen ini
                         width: 1.2,
                       ),
                     ),
@@ -431,7 +437,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     focusedErrorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: const BorderSide(
-                        color: Colors.redAccent,
+                        color: Colors.redAccent, // Warna border atau garis tepi untuk "Alamat email wajib diisi"
                         width: 1.2,
                       ),
                     ),
@@ -458,7 +464,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada "Kata Sandi"
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -468,17 +475,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   textInputAction: TextInputAction.done,
                   style: const TextStyle(
                     fontSize: 13.5,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Masukkan kata sandi"
                   ),
                   decoration: InputDecoration(
                     hintText: 'Masukkan kata sandi',
                     hintStyle: const TextStyle(
                       fontSize: 13,
-                      color: AppColors.placeholder,
+                      color: AppColors.placeholder, // Warna ikon ikon untuk "Masukkan kata sandi"
                     ),
                     prefixIcon: const Icon(
                       Icons.lock_outline_rounded,
-                      color: AppColors.placeholder,
+                      color: AppColors.placeholder, // Warna ikon ikon untuk "Masukkan kata sandi"
                       size: 19,
                     ),
                     suffixIcon: IconButton(
@@ -496,7 +503,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     filled: true,
-                    fillColor: AppColors.inputBackground,
+                    fillColor: AppColors.inputBackground, // Warna latar field input pada bagian komponen ini
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 14,
                       vertical: 14,
@@ -512,7 +519,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: const BorderSide(
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna border atau garis tepi bagian komponen ini
                         width: 1.2,
                       ),
                     ),
@@ -526,7 +533,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     focusedErrorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: const BorderSide(
-                        color: Colors.redAccent,
+                        color: Colors.redAccent, // Warna border atau garis tepi untuk "Kata sandi wajib diisi"
                         width: 1.2,
                       ),
                     ),
@@ -558,7 +565,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text(
                       'Lupa Kata Sandi?',
                       style: TextStyle(
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna teks pada "Lupa Kata Sandi?"
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
@@ -579,6 +586,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.primaryOrange.withValues(
+                                // Warna latar kotak atau kartu pada bagian komponen ini
+
                                 alpha: 0.35,
                               ),
                               blurRadius: 14,
@@ -591,8 +600,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ? null
                               : _handleLogin,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryOrange,
-                            disabledBackgroundColor: AppColors.primaryOrange
+                            backgroundColor: AppColors.primaryOrange, // Warna indikator loading pada bagian komponen ini
+                            disabledBackgroundColor: AppColors
+                                .primaryOrange // Warna indikator loading pada bagian komponen ini
                                 .withValues(alpha: 0.6),
                             elevation: 0,
                             shape: RoundedRectangleBorder(
@@ -605,7 +615,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   height: 20,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2.2,
-                                    color: Colors.white,
+                                    color: Colors.white, // Warna indikator loading pada bagian komponen ini
                                   ),
                                 )
                               : const Row(
@@ -614,7 +624,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Text(
                                       'Masuk \u2192',
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: Colors.white, // Warna teks pada "Masuk \u2192"
                                         fontSize: 14.5,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -638,19 +648,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 48,
                           decoration: BoxDecoration(
                             color: _isBiometricEnabledForLastUser
-                                ? const Color(0xFFFFEDDF)
-                                : const Color(0xFFF7F6F4),
+                                ? const Color(0xFFFFEDDF) // Warna border atau garis tepi untuk "Masuk dengan Sidik Jari"
+                                : const Color(0xFFF7F6F4), // Warna border atau garis tepi untuk "Masuk dengan Sidik Jari"
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: _isBiometricEnabledForLastUser
-                                  ? AppColors.primaryOrange
-                                  : AppColors.borderLight,
+                                  ? AppColors
+                                        .primaryOrange // Warna border atau garis tepi untuk "Masuk dengan Sidik Jari"
+                                  : AppColors.borderLight, // Warna border atau garis tepi untuk "Masuk dengan Sidik Jari"
                               width: 1.2,
                             ),
                             boxShadow: _isBiometricEnabledForLastUser
                                 ? [
                                     BoxShadow(
                                       color: AppColors.primaryOrange.withValues(
+                                        // Warna bayangan pada bagian komponen ini
+
                                         alpha: 0.18,
                                       ),
                                       blurRadius: 10,
@@ -660,7 +673,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 : null,
                           ),
                           child: Material(
-                            color: Colors.transparent,
+                            color: Colors.transparent, // Warna indikator loading pada bagian komponen ini
                             child: InkWell(
                               borderRadius: BorderRadius.circular(12),
                               onTap: (_isLoading || _isBiometricLoading)
@@ -673,14 +686,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                         height: 20,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2.2,
-                                          color: AppColors.primaryOrange,
+                                          color: AppColors.primaryOrange, // Warna ikon ikon pada bagian komponen ini
                                         ),
                                       )
                                     : Icon(
                                         Icons.fingerprint_rounded,
                                         color: _isBiometricEnabledForLastUser
-                                            ? AppColors.primaryOrange
-                                            : const Color(0xFF6E6560),
+                                            ? AppColors
+                                                  .primaryOrange // Warna ikon ikon pada bagian komponen ini
+                                            : const Color(0xFF6E6560), // Warna ikon ikon pada bagian komponen ini
                                         size: 26,
                                       ),
                               ),
@@ -723,7 +737,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text(
                       'Belum punya akun? ',
                       style: TextStyle(
-                        color: AppColors.textSecondaryBrown,
+                        color: AppColors.textSecondaryBrown, // Warna teks pada "Belum punya akun?"
                         fontSize: 12.5,
                         fontWeight: FontWeight.w500,
                       ),
@@ -752,7 +766,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       vertical: 5,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.inputBackground,
+                      color: AppColors.inputBackground, // Warna ikon ikon untuk "Transaksi Aman & Bergaransi Resmi Toko"
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Row(
@@ -760,14 +774,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Icon(
                           Icons.verified_user_outlined,
-                          color: AppColors.primaryOrange,
+                          color: AppColors.primaryOrange, // Warna ikon ikon untuk "Transaksi Aman & Bergaransi Resmi Toko"
                           size: 13.5,
                         ),
                         SizedBox(width: 6),
                         Text(
                           'Transaksi Aman & Bergaransi Resmi Toko',
                           style: TextStyle(
-                            color: AppColors.textSecondaryBrown,
+                            color: AppColors.textSecondaryBrown, // Warna teks pada "Transaksi Aman & Bergaransi Resmi Toko"
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                           ),
@@ -784,7 +798,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Jaminan produk orisinal 100% langsung dari distributor terpercaya',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: AppColors.textMuted,
+                      color: AppColors.textMuted, // Warna teks pada "Jaminan produk orisinal 100% langsu..."
                       fontSize: 9.5,
                       fontWeight: FontWeight.w400,
                       height: 1.3,
@@ -807,7 +821,8 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
         decoration: BoxDecoration(
-          color: AppColors.inputBackground,
+          color:
+              AppColors.inputBackground, // Warna ikon ikon pada bagian kategori
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -821,7 +836,8 @@ class _LoginScreenState extends State<LoginScreen> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna teks pada bagian kategori
                 fontSize: 10.5,
                 fontWeight: FontWeight.w700,
               ),

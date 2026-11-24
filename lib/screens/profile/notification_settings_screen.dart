@@ -58,8 +58,8 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
 
   Future<void> _loadNotificationPreferences() async {
     final preferences = await NotificationService.instance.loadPreferences();
-    final isAllowed =
-        await NotificationService.instance.areNotificationsEnabled();
+    final isAllowed = await NotificationService.instance
+        .areNotificationsEnabled();
     if (!mounted) return;
 
     setState(() {
@@ -209,8 +209,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       time: '10 mnt lalu',
       message: 'Fender Player Stratocaster (INV/2026/04/JNV-BB21) sudah siap di Toko Galeri Yogyakarta.',
       icon: Icons.storefront_rounded,
-      iconColor: AppColors.primaryOrange,
-      iconBg: const Color(0xFFFFEDDF),
+      iconColor:
+          AppColors.primaryOrange, // Warna visual pada bagian komponen ini
+      iconBg: const Color(0xFFFFEDDF), // Warna visual pada bagian komponen ini
       isRead: false,
     ),
     NotificationItem(
@@ -219,8 +220,10 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       time: '2 jam lalu',
       message: '+165 Poin berhasil masuk dari pembelian Yamaha F310 Folk. Total poin: 2.400.',
       icon: Icons.stars_rounded,
-      iconColor: const Color(0xFFB45309),
-      iconBg: const Color(0xFFFEF3C7),
+      iconColor: const Color(
+        0xFFB45309,
+      ), // Warna visual pada bagian komponen ini
+      iconBg: const Color(0xFFFEF3C7), // Warna visual pada bagian komponen ini
       isRead: false,
     ),
     NotificationItem(
@@ -229,8 +232,10 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       time: '5 jam lalu',
       message: 'Dapatkan cashback s.d Rp250.000 untuk pembelian senar & gitar pilihan.',
       icon: Icons.percent_rounded,
-      iconColor: const Color(0xFF0284C7),
-      iconBg: const Color(0xFFE0F2FE),
+      iconColor: const Color(
+        0xFF0284C7,
+      ), // Warna visual pada bagian komponen ini
+      iconBg: const Color(0xFFE0F2FE), // Warna visual pada bagian komponen ini
       isRead: false,
     ),
     NotificationItem(
@@ -239,8 +244,10 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       time: 'Kemarin, 14:20',
       message: 'Pembayaran sebesar Rp1.650.000 via BCA Virtual Account telah terkonfirmasi.',
       icon: Icons.check_circle_outline_rounded,
-      iconColor: const Color(0xFF15803D),
-      iconBg: const Color(0xFFDCFCE7),
+      iconColor: const Color(
+        0xFF15803D,
+      ), // Warna visual pada bagian komponen ini
+      iconBg: const Color(0xFFDCFCE7), // Warna visual pada bagian komponen ini
       isRead: true,
     ),
     NotificationItem(
@@ -249,8 +256,10 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       time: '2 hari lalu',
       message: 'Event baru JNova Rhythm telah dimulai. Kumpulkan skor dan rebut 500 Poin.',
       icon: Icons.sports_esports_rounded,
-      iconColor: const Color(0xFF7E756F),
-      iconBg: const Color(0xFFECEAE6),
+      iconColor: const Color(
+        0xFF7E756F,
+      ), // Warna visual pada bagian komponen ini
+      iconBg: const Color(0xFFECEAE6), // Warna visual pada bagian komponen ini
       isRead: true,
     ),
   ];
@@ -287,7 +296,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
         : _notifications.where((n) => !n.isRead).toList();
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "Semua notifikasi ditandai sudah dib..."
       body: SafeArea(
         child: Column(
           children: [
@@ -358,9 +367,15 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/order-detail"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/order-detail"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -373,7 +388,8 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                 height: 20,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.graphic_eq_rounded,
-                  color: AppColors.primaryOrange,
+                  color:
+                      AppColors.primaryOrange, // Warna ikon ikon untuk "Profil"
                   size: 20,
                 ),
               ),
@@ -383,7 +399,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Profil"
                 ),
               ),
             ],
@@ -392,7 +408,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
           IconButton(
             icon: const Icon(Icons.notifications_rounded, size: 22),
             onPressed: () {},
-            color: AppColors.primaryOrange,
+            color: AppColors.primaryOrange, // Warna ikon ikon untuk "Profil"
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -402,12 +418,12 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             height: 28,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFB45309),
+              color: Color(0xFFB45309), // Warna ikon ikon untuk "Profil"
             ),
             child: const Icon(
               Icons.person_rounded,
               size: 17,
-              color: Colors.white,
+              color: Colors.white, // Warna ikon ikon untuk "Profil"
             ),
           ),
         ],
@@ -419,9 +435,14 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "Profil"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "Profil"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -433,14 +454,22 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFFF7F6F4),
+                color: const Color(
+                  0xFFF7F6F4,
+                ), // Warna border atau garis tepi untuk "Profil"
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+                border: Border.all(
+                  color: const Color(
+                    0xFFEBE8E3,
+                  ), // Warna ikon ikon untuk "Profil"
+                  width: 1.0,
+                ),
               ),
               child: const Icon(
                 Icons.arrow_back_rounded,
                 size: 18,
-                color: AppColors.textPrimaryDark,
+                color:
+                    AppColors.textPrimaryDark, // Warna ikon ikon untuk "Profil"
               ),
             ),
           ),
@@ -454,12 +483,16 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada "Notifikasi"
                   ),
                 ),
                 Text(
                   'Kelola preferensi & riwayat pemberitahuan',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF8E837D), // Warna teks pada "Kelola preferensi & riwayat pemberi..."
+                  ),
                 ),
               ],
             ),
@@ -468,15 +501,17 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: const Color(0xFFFAF9F7),
+              color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Kelola preferensi & riwayat pemberi..."
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFEBE8E3)),
+              border: Border.all(
+                color: const Color(0xFFEBE8E3), // Warna ikon ikon untuk "Kelola preferensi & riwayat pemberi..."
+              ),
             ),
             child: const Center(
               child: Icon(
                 Icons.tune_rounded,
                 size: 16,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Kelola preferensi & riwayat pemberi..."
               ),
             ),
           ),
@@ -490,15 +525,19 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFEF2F2),
+        color: const Color(0xFFFEF2F2), // Warna border atau garis tepi untuk "Kelola preferensi & riwayat pemberi..."
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFECACA)),
+        border: Border.all(
+          color: const Color(0xFFFECACA), // Warna border atau garis tepi untuk "Kelola preferensi & riwayat pemberi..."
+        ),
       ),
       child: Row(
         children: [
           const Icon(
             Icons.warning_amber_rounded,
-            color: Color(0xFFDC2626),
+            color: Color(
+              0xFFDC2626,
+            ), // Warna ikon ikon untuk "Kelola preferensi & riwayat pemberi..."
             size: 22,
           ),
           const SizedBox(width: 10),
@@ -508,7 +547,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
               style: TextStyle(
                 fontSize: 10.5,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF991B1B),
+                color: Color(
+                  0xFF991B1B,
+                ), // Warna teks pada "Kelola preferensi & riwayat pemberi..."
               ),
             ),
           ),
@@ -516,8 +557,8 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
           InkWell(
             onTap: () async {
               await NotificationService.instance.openNotificationSettings();
-              final isAllowed =
-                  await NotificationService.instance.areNotificationsEnabled();
+              final isAllowed = await NotificationService.instance
+                  .areNotificationsEnabled();
               if (mounted) {
                 setState(() => _isSystemPermissionGranted = isAllowed);
               }
@@ -526,7 +567,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: const Color(0xFFDC2626),
+                color: const Color(0xFFDC2626), // Warna teks pada "Buka Izin"
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Text(
@@ -534,7 +575,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: Colors.white, // Warna teks pada "Buka Izin"
                 ),
               ),
             ),
@@ -549,9 +590,11 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi banner
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3)),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi banner
+        ),
       ),
       child: Row(
         children: [
@@ -559,13 +602,13 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEDDF),
+              color: const Color(0xFFFFEDDF), // Warna ikon ikon pada banner
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
               Icons.sports_esports_rounded,
               size: 20,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "NOTIFIKASI GAME & POPUP"
             ),
           ),
           const SizedBox(width: 10),
@@ -579,13 +622,16 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                     fontSize: 9.5,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.5,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "NOTIFIKASI GAME & POPUP"
                   ),
                 ),
                 SizedBox(height: 2),
                 Text(
                   'Pemberitahuan pengingat bermain game musik & bonus poin harian.',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF6E6560)),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF6E6560), // Warna teks pada "Pemberitahuan pengingat bermain gam..."
+                  ),
                 ),
               ],
             ),
@@ -604,7 +650,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                         content: Text(
                           'Notifikasi popup game berhasil dikirim! Ketuk untuk bermain.',
                         ),
-                        backgroundColor: Color(0xFF2E2E2E),
+                        backgroundColor: Color(
+                          0xFF2E2E2E,
+                        ), // Warna latar pesan pemberitahuan pada banner
                         duration: Duration(seconds: 2),
                         behavior: SnackBarBehavior.floating,
                       ),
@@ -613,8 +661,10 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                 },
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.primaryOrange,
                     borderRadius: BorderRadius.circular(8),
@@ -624,7 +674,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                     style: TextStyle(
                       fontSize: 9.5,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: Colors.white, // Warna teks pada "Uji Pop Up Game"
                     ),
                   ),
                 ),
@@ -641,7 +691,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                         content: Text(
                           'Pengingat game 11:30 AM dikirim! Ketuk notifikasi untuk masuk ke JNova Rhythm.',
                         ),
-                        backgroundColor: Color(0xFF2E2E2E),
+                        backgroundColor: Color(
+                          0xFF2E2E2E,
+                        ), // Warna latar pesan pemberitahuan pada banner
                         duration: Duration(seconds: 3),
                         behavior: SnackBarBehavior.floating,
                       ),
@@ -650,10 +702,14 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                 },
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE05275),
+                    color: const Color(
+                      0xFFE05275,
+                    ), // Warna latar kotak atau kartu untuk "💗 Uji 11:30"
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Text(
@@ -661,7 +717,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                     style: TextStyle(
                       fontSize: 9.5,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: Colors.white, // Warna teks pada "💗 Uji 11:30"
                     ),
                   ),
                 ),
@@ -678,9 +734,11 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3)),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -693,7 +751,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                   Icon(
                     Icons.tune_rounded,
                     size: 15,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "Preferensi Notifikasi"
                   ),
                   SizedBox(width: 6),
                   Text(
@@ -701,7 +759,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna teks pada "Preferensi Notifikasi"
                     ),
                   ),
                 ],
@@ -709,7 +767,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEDEBE7),
+                  color: const Color(
+                    0xFFEDEBE7,
+                  ), // Warna latar kotak atau kartu untuk "Aktif di perangkat"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
@@ -717,7 +777,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF5A524D),
+                    color: Color(
+                      0xFF5A524D,
+                    ), // Warna teks pada "Aktif di perangkat"
                   ),
                 ),
               ),
@@ -762,13 +824,16 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
               Icon(
                 Icons.cloud_done_outlined,
                 size: 13,
-                color: Color(0xFF8E837D),
+                color: Color(0xFF8E837D), // Warna ikon ikon untuk "Preferensi notifikasi tersimpan di..."
               ),
               SizedBox(width: 5),
               Expanded(
                 child: Text(
                   'Preferensi notifikasi tersimpan di perangkat ini',
-                  style: TextStyle(fontSize: 9, color: Color(0xFF8E837D)),
+                  style: TextStyle(
+                    fontSize: 9,
+                    color: Color(0xFF8E837D), // Warna teks pada "Preferensi notifikasi tersimpan di..."
+                  ),
                 ),
               ),
             ],
@@ -797,14 +862,17 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada bagian komponen ini
                   ),
                 ),
                 Text(
                   desc,
                   style: const TextStyle(
                     fontSize: 9.5,
-                    color: Color(0xFF7E756F),
+                    color: Color(
+                      0xFF7E756F,
+                    ), // Warna teks pada bagian komponen ini
                   ),
                 ),
               ],
@@ -814,7 +882,11 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             value: value,
             onChanged: onChanged,
             activeThumbColor: AppColors.primaryOrange,
-            activeTrackColor: AppColors.primaryOrange.withValues(alpha: 0.5),
+            activeTrackColor: AppColors.primaryOrange.withValues(
+              // Warna visual pada bagian komponen ini
+
+              alpha: 0.5,
+            ),
           ),
         ],
       ),
@@ -848,7 +920,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                     Icon(
                       Icons.done_all_rounded,
                       size: 13,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna ikon ikon untuk "Tandai Sudah Dibaca"
                     ),
                     SizedBox(width: 4),
                     Text(
@@ -856,7 +928,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna teks pada "Tandai Sudah Dibaca"
                       ),
                     ),
                   ],
@@ -879,8 +951,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                   ),
                   decoration: BoxDecoration(
                     color: _activeFilterIndex == 0
-                        ? AppColors.primaryOrange
-                        : const Color(0xFFF2F0ED),
+                        ? AppColors
+                              .primaryOrange // Warna teks pada "Semua"
+                        : const Color(0xFFF2F0ED), // Warna teks pada "Semua"
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Text(
@@ -889,8 +962,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                       fontSize: 10.5,
                       fontWeight: FontWeight.w700,
                       color: _activeFilterIndex == 0
-                          ? Colors.white
-                          : const Color(0xFF6E6560),
+                          ? Colors
+                                .white // Warna teks pada "Semua"
+                          : const Color(0xFF6E6560), // Warna teks pada "Semua"
                     ),
                   ),
                 ),
@@ -906,8 +980,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                   ),
                   decoration: BoxDecoration(
                     color: _activeFilterIndex == 1
-                        ? AppColors.primaryOrange
-                        : const Color(0xFFF2F0ED),
+                        ? AppColors
+                              .primaryOrange // Warna latar kotak atau kartu untuk "Belum Dibaca"
+                        : const Color(0xFFF2F0ED), // Warna latar kotak atau kartu untuk "Belum Dibaca"
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Row(
@@ -918,8 +993,11 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                           fontSize: 10.5,
                           fontWeight: FontWeight.w700,
                           color: _activeFilterIndex == 1
-                              ? Colors.white
-                              : const Color(0xFF6E6560),
+                              ? Colors
+                                    .white // Warna teks pada "Belum Dibaca"
+                              : const Color(
+                                  0xFF6E6560,
+                                ), // Warna teks pada "Belum Dibaca"
                         ),
                       ),
                       if (unreadCount > 0) ...[
@@ -931,8 +1009,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                           ),
                           decoration: BoxDecoration(
                             color: _activeFilterIndex == 1
-                                ? Colors.white
-                                : AppColors.primaryOrange,
+                                ? Colors
+                                      .white // Warna teks pada "$unreadCount"
+                                : AppColors.primaryOrange, // Warna teks pada "$unreadCount"
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -941,8 +1020,9 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                               fontSize: 8.5,
                               fontWeight: FontWeight.w800,
                               color: _activeFilterIndex == 1
-                                  ? AppColors.primaryOrange
-                                  : Colors.white,
+                                  ? AppColors
+                                        .primaryOrange // Warna teks pada "$unreadCount"
+                                  : Colors.white, // Warna teks pada "$unreadCount"
                             ),
                           ),
                         ),
@@ -967,9 +1047,11 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
       margin: const EdgeInsets.only(bottom: 8.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3)),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1007,7 +1089,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                           item.time,
                           style: const TextStyle(
                             fontSize: 9,
-                            color: Color(0xFF8E837D),
+                            color: Color(0xFF8E837D), // Warna teks pada kartu
                           ),
                         ),
                         if (!item.isRead) ...[
@@ -1017,7 +1099,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                             height: 6,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: AppColors.primaryOrange,
+                              color: AppColors.primaryOrange, // Warna latar kotak atau kartu pada kartu
                             ),
                           ),
                         ],
@@ -1030,7 +1112,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
                   item.message,
                   style: const TextStyle(
                     fontSize: 10,
-                    color: Color(0xFF6E6560),
+                    color: Color(0xFF6E6560), // Warna teks pada kartu
                     height: 1.3,
                   ),
                 ),
@@ -1044,4 +1126,3 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
 }
 
 typedef NotificationSettingsScreen = NotificationSettingsPage;
-

@@ -29,8 +29,8 @@ class StoreBranch {
     required this.phone,
   });
 
-  String get mapsUrl =>
-      'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+  String get mapsUrl => 
+      'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude'; // URL untuk maps
 
   String getDirectionsUrl([double? userLat, double? userLng]) {
     if (userLat != null && userLng != null) {

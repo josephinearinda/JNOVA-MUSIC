@@ -38,7 +38,7 @@ class TrackingScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Hubungi Bantuan CS"
                 ),
               ),
             ),
@@ -94,7 +94,7 @@ class TrackingScreen extends StatelessWidget {
 
     if (activeOrder == null) {
       return Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.white, // Warna latar kotak untuk "Tidak ada pesanan aktif untuk dilacak."
         body: SafeArea(
           child: Column(
             children: [
@@ -103,7 +103,10 @@ class TrackingScreen extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'Tidak ada pesanan aktif untuk dilacak.',
-                    style: TextStyle(fontSize: 12, color: Color(0xFF7E756F)),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF7E756F), // Warna teks pada "Tidak ada pesanan aktif untuk dilacak."
+                    ),
                   ),
                 ),
               ),
@@ -116,7 +119,7 @@ class TrackingScreen extends StatelessWidget {
     final item = activeOrder.items.isNotEmpty ? activeOrder.items.first : null;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "Tidak ada pesanan aktif untuk dilacak."
       body: SafeArea(
         child: Column(
           children: [
@@ -184,9 +187,14 @@ class TrackingScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "/profile"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/profile"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -199,7 +207,7 @@ class TrackingScreen extends StatelessWidget {
               child: Icon(
                 Icons.arrow_back_rounded,
                 size: 22,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Jnovamusic Lacak Pengiriman"
               ),
             ),
           ),
@@ -209,7 +217,7 @@ class TrackingScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 15.5,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
+              color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Jnovamusic Lacak Pengiriman"
             ),
           ),
           const Spacer(),
@@ -218,7 +226,9 @@ class TrackingScreen extends StatelessWidget {
             child: const Icon(
               Icons.help_outline_rounded,
               size: 20,
-              color: Color(0xFF7E756F),
+              color: Color(
+                0xFF7E756F,
+              ), // Warna ikon ikon untuk "Jnovamusic Lacak Pengiriman"
             ),
           ),
         ],
@@ -231,9 +241,16 @@ class TrackingScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBF7),
+        color: const Color(
+          0xFFFFFBF7,
+        ), // Warna border atau garis tepi untuk "Jnovamusic Lacak Pengiriman"
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFEDD5), width: 1.2),
+        border: Border.all(
+          color: const Color(
+            0xFFFFEDD5,
+          ), // Warna border atau garis tepi untuk "Jnovamusic Lacak Pengiriman"
+          width: 1.2,
+        ),
       ),
       child: Column(
         children: [
@@ -243,20 +260,24 @@ class TrackingScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEFE5),
+                  color: const Color(0xFFFFEFE5), // Warna latar kotak atau kartu untuk "Jnovamusic Lacak Pengiriman"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.circle, size: 7, color: AppColors.primaryOrange),
+                    Icon(
+                      Icons.circle,
+                      size: 7,
+                      color: AppColors.primaryOrange, // Warna ikon ikon untuk "Dalam Pengiriman"
+                    ),
                     SizedBox(width: 4),
                     Text(
                       'Dalam Pengiriman',
                       style: TextStyle(
                         fontSize: 9,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna teks pada "Dalam Pengiriman"
                       ),
                     ),
                   ],
@@ -267,7 +288,9 @@ class TrackingScreen extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF8E837D),
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "Dalam Pengiriman"
                 ),
               ),
             ],
@@ -278,9 +301,14 @@ class TrackingScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white, // Warna border atau garis tepi untuk "Dalam Pengiriman"
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFFFE0C2), width: 1.0),
+              border: Border.all(
+                color: const Color(
+                  0xFFFFE0C2,
+                ), // Warna border atau garis tepi untuk "Dalam Pengiriman"
+                width: 1.0,
+              ),
             ),
             child: Row(
               children: [
@@ -288,13 +316,15 @@ class TrackingScreen extends StatelessWidget {
                   width: 38,
                   height: 38,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFEDDF),
+                    color: const Color(
+                      0xFFFFEDDF,
+                    ), // Warna ikon ikon untuk "Dalam Pengiriman"
                     borderRadius: BorderRadius.circular(19),
                   ),
                   child: const Icon(
                     Icons.storefront_rounded,
                     size: 20,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "Dalam Pengiriman"
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -307,7 +337,9 @@ class TrackingScreen extends StatelessWidget {
                         fontSize: 8.5,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 0.5,
-                        color: Color(0xFF8E837D),
+                        color: Color(
+                          0xFF8E837D,
+                        ), // Warna teks pada "STATUS PENGAMBILAN"
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -318,7 +350,7 @@ class TrackingScreen extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimaryDark, // Warna teks pada "Siap Diambil di Toko"
                       ),
                     ),
                     Text(
@@ -328,8 +360,8 @@ class TrackingScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 10,
                         color: activeOrder.isCompleted
-                            ? const Color(0xFF15803D)
-                            : const Color(0xFF16A34A),
+                            ? const Color(0xFF15803D) // Warna teks pada "Kunjungi gerai toko resmi pilihan"
+                            : const Color(0xFF16A34A), // Warna teks pada "Kunjungi gerai toko resmi pilihan"
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -347,7 +379,9 @@ class TrackingScreen extends StatelessWidget {
               const Icon(
                 Icons.check_circle_rounded,
                 size: 14,
-                color: Color(0xFFB45309),
+                color: Color(
+                  0xFFB45309,
+                ), // Warna ikon ikon untuk "Gerai Resmi JNOVAMUSIC"
               ),
               const SizedBox(width: 4),
               Expanded(
@@ -356,14 +390,16 @@ class TrackingScreen extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Gerai Resmi JNOVAMUSIC"
                   ),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE0F2FE),
+                  color: const Color(
+                    0xFFE0F2FE,
+                  ), // Warna latar kotak atau kartu untuk "Store Pickup"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
@@ -371,7 +407,7 @@ class TrackingScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF0284C7),
+                    color: Color(0xFF0284C7), // Warna teks pada "Store Pickup"
                   ),
                 ),
               ),
@@ -382,7 +418,12 @@ class TrackingScreen extends StatelessWidget {
             children: [
               const Text(
                 'Kode Pengambilan: ',
-                style: TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Color(
+                    0xFF7E756F,
+                  ), // Warna teks pada "Kode Pengambilan:"
+                ),
               ),
               Text(
                 activeOrder.pickupCode,
@@ -411,9 +452,11 @@ class TrackingScreen extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.white, // Warna border atau garis tepi untuk "Kode pengambilan berhasil disalin!"
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: const Color(0xFFD4D0C8)),
+                    border: Border.all(
+                      color: const Color(0xFFD4D0C8), // Warna ikon ikon untuk "Kode pengambilan berhasil disalin!"
+                    ),
                   ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
@@ -421,7 +464,9 @@ class TrackingScreen extends StatelessWidget {
                       Icon(
                         Icons.copy_rounded,
                         size: 9,
-                        color: Color(0xFF7E756F),
+                        color: Color(
+                          0xFF7E756F,
+                        ), // Warna ikon ikon untuk "Salin"
                       ),
                       SizedBox(width: 2),
                       Text(
@@ -429,7 +474,7 @@ class TrackingScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF7E756F),
+                          color: Color(0xFF7E756F), // Warna teks pada "Salin"
                         ),
                       ),
                     ],
@@ -448,9 +493,16 @@ class TrackingScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "MUATAN PAKET"
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "MUATAN PAKET"
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,13 +516,15 @@ class TrackingScreen extends StatelessWidget {
                   fontSize: 10,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.5,
-                  color: Color(0xFF8E837D),
+                  color: Color(0xFF8E837D), // Warna teks pada "MUATAN PAKET"
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEFE5),
+                  color: const Color(
+                    0xFFFFEFE5,
+                  ), // Warna latar kotak atau kartu untuk "MUATAN PAKET"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
@@ -492,7 +546,7 @@ class TrackingScreen extends StatelessWidget {
                 child: Container(
                   width: 44,
                   height: 44,
-                  color: Colors.white,
+                  color: Colors.white, // Warna area atau kotak pada kartu
                   child: Image.asset(item.product.image, fit: BoxFit.contain),
                 ),
               ),
@@ -508,7 +562,7 @@ class TrackingScreen extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimaryDark, // Warna teks pada "3-Color Sunburst"
                       ),
                     ),
                     const SizedBox(height: 1),
@@ -516,7 +570,9 @@ class TrackingScreen extends StatelessWidget {
                       'Finish: ${item.product.colorVariants.isNotEmpty ? item.product.colorVariants.first : '3-Color Sunburst'}',
                       style: const TextStyle(
                         fontSize: 9.5,
-                        color: Color(0xFF7E756F),
+                        color: Color(
+                          0xFF7E756F,
+                        ), // Warna teks pada "3-Color Sunburst"
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -525,7 +581,7 @@ class TrackingScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 9.5,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna teks pada "1 Unit + Hard Case Kayu + QC Luthier"
                       ),
                     ),
                   ],
@@ -545,9 +601,16 @@ class TrackingScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "Riwayat Perjalanan Paket"
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "Riwayat Perjalanan Paket"
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,13 +620,18 @@ class TrackingScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 12.5,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
+              color: AppColors.textPrimaryDark, // Warna teks pada "Riwayat Perjalanan Paket"
             ),
           ),
           const SizedBox(height: 2),
           const Text(
             'Pembaruan Terakhir: 19 Mei 2025, 08:15 WIB',
-            style: TextStyle(fontSize: 9.5, color: Color(0xFF8E837D)),
+            style: TextStyle(
+              fontSize: 9.5,
+              color: Color(
+                0xFF8E837D,
+              ), // Warna teks pada "Pembaruan Terakhir: 19 Mei 2025, 08..."
+            ),
           ),
           const SizedBox(height: 12),
 
@@ -585,13 +653,16 @@ class TrackingScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: step.isCompleted
-                                ? AppColors.primaryOrange
+                                ? AppColors
+                                      .primaryOrange // Warna latar kotak atau kartu pada kartu
                                 : (step.isActive
-                                      ? const Color(0xFFFFEDDF)
-                                      : const Color(0xFFE5E2DC)),
+                                      ? const Color(
+                                          0xFFFFEDDF,
+                                        ) // Warna border atau garis tepi kartu
+                                      : const Color(0xFFE5E2DC)), // Warna border atau garis tepi kartu
                             border: step.isActive
                                 ? Border.all(
-                                    color: AppColors.primaryOrange,
+                                    color: AppColors.primaryOrange, // Warna ikon ikon pada kartu
                                     width: 2,
                                   )
                                 : null,
@@ -609,7 +680,7 @@ class TrackingScreen extends StatelessWidget {
                                           height: 5,
                                           decoration: const BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: AppColors.primaryOrange,
+                                            color: AppColors.primaryOrange, // Warna latar kotak atau kartu pada kartu
                                           ),
                                         ),
                                       )
@@ -620,8 +691,11 @@ class TrackingScreen extends StatelessWidget {
                             child: Container(
                               width: 1.5,
                               color: step.isCompleted
-                                  ? AppColors.primaryOrange
-                                  : const Color(0xFFE5E2DC),
+                                  ? AppColors
+                                        .primaryOrange // Warna area atau kotak pada kartu
+                                  : const Color(
+                                      0xFFE5E2DC,
+                                    ), // Warna area atau kotak pada kartu
                             ),
                           ),
                       ],
@@ -645,8 +719,9 @@ class TrackingScreen extends StatelessWidget {
                                         ? FontWeight.w800
                                         : FontWeight.w600,
                                     color: step.isActive
-                                        ? AppColors.primaryOrange
-                                        : AppColors.textPrimaryDark,
+                                        ? AppColors
+                                              .primaryOrange // Warna visual pada kartu
+                                        : AppColors.textPrimaryDark, // Warna teks pada kartu
                                   ),
                                 ),
                                 if (step.time.isNotEmpty)
@@ -654,7 +729,9 @@ class TrackingScreen extends StatelessWidget {
                                     step.time,
                                     style: const TextStyle(
                                       fontSize: 9.5,
-                                      color: Color(0xFF8E837D),
+                                      color: Color(
+                                        0xFF8E837D,
+                                      ), // Warna teks pada kartu
                                     ),
                                   ),
                               ],
@@ -664,7 +741,9 @@ class TrackingScreen extends StatelessWidget {
                               step.description,
                               style: const TextStyle(
                                 fontSize: 9.5,
-                                color: Color(0xFF6E6560),
+                                color: Color(
+                                  0xFF6E6560,
+                                ), // Warna teks pada kartu
                                 height: 1.25,
                               ),
                             ),
@@ -687,9 +766,12 @@ class TrackingScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -699,7 +781,7 @@ class TrackingScreen extends StatelessWidget {
               Icon(
                 Icons.storefront_rounded,
                 size: 15,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Lokasi Toko Pengambilan"
               ),
               SizedBox(width: 6),
               Text(
@@ -707,7 +789,7 @@ class TrackingScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Lokasi Toko Pengambilan"
                 ),
               ),
             ],
@@ -718,7 +800,7 @@ class TrackingScreen extends StatelessWidget {
             style: const TextStyle(
               fontSize: 10.5,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
+              color: AppColors.textPrimaryDark, // Warna teks pada "Cabang Toko Resmi JNOVAMUSIC"
             ),
           ),
           const SizedBox(height: 2),
@@ -726,7 +808,9 @@ class TrackingScreen extends StatelessWidget {
             activeOrder.pickupStore?.address ?? activeOrder.recipientAddress,
             style: const TextStyle(
               fontSize: 10,
-              color: Color(0xFF6E6560),
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "Cabang Toko Resmi JNOVAMUSIC"
               height: 1.3,
             ),
           ),
@@ -757,7 +841,9 @@ class TrackingScreen extends StatelessWidget {
                       );
                     },
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Color(0xFFD4D0C8)),
+                      side: const BorderSide(
+                        color: Color(0xFFD4D0C8), // Warna border atau garis tepi untuk "Menghubungkan ke layanan pelacakan..."
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -769,7 +855,7 @@ class TrackingScreen extends StatelessWidget {
                         Icon(
                           Icons.local_shipping_outlined,
                           size: 14,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "JNE Cargo"
                         ),
                         SizedBox(width: 4),
                         Text(
@@ -792,7 +878,11 @@ class TrackingScreen extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () => _showCustomerServiceOptions(context),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Color(0xFFD4D0C8)),
+                      side: const BorderSide(
+                        color: Color(
+                          0xFFD4D0C8,
+                        ), // Warna border atau garis tepi tombol
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -804,7 +894,7 @@ class TrackingScreen extends StatelessWidget {
                         Icon(
                           Icons.headset_mic_outlined,
                           size: 14,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Bantuan CS"
                         ),
                         SizedBox(width: 4),
                         Text(
@@ -812,7 +902,7 @@ class TrackingScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimaryDark,
+                            color: AppColors.textPrimaryDark, // Warna teks pada "Bantuan CS"
                           ),
                         ),
                       ],
@@ -829,7 +919,8 @@ class TrackingScreen extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => _handleBack(context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor:
+                    AppColors.primaryOrange, // Warna visual pada tombol
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),

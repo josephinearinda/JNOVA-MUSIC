@@ -10,10 +10,7 @@ import 'package:jnova/models/store_branch.dart';
 class SelectPickupStorePage extends StatefulWidget {
   final StoreBranch selectedBranch;
 
-  const SelectPickupStorePage({
-    super.key,
-    required this.selectedBranch,
-  });
+  const SelectPickupStorePage({super.key, required this.selectedBranch});
 
   @override
   State<SelectPickupStorePage> createState() => _SelectPickupStorePageState();
@@ -50,10 +47,7 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
 
   void _initializeBranches() {
     _sortedBranches = StoreBranch.branches.map((b) {
-      return StoreBranchWithDistance(
-        branch: b,
-        distanceMeters: null,
-      );
+      return StoreBranchWithDistance(branch: b, distanceMeters: null);
     }).toList();
   }
 
@@ -69,7 +63,8 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
         if (mounted) {
           setState(() {
             _isLoadingLocation = false;
-            _locationStatusMessage = 'GPS tidak aktif. Menggunakan lokasi default.';
+            _locationStatusMessage =
+                'GPS tidak aktif. Menggunakan lokasi default.';
           });
         }
         return;
@@ -170,12 +165,11 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
         Marker(
           markerId: MarkerId(b.id),
           position: LatLng(b.latitude, b.longitude),
-          infoWindow: InfoWindow(
-            title: b.name,
-            snippet: b.address,
-          ),
+          infoWindow: InfoWindow(title: b.name, snippet: b.address),
           icon: isSelected
-              ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange)
+              ? BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueOrange,
+                )
               : BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
           onTap: () {
             setState(() {
@@ -193,7 +187,9 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
           markerId: const MarkerId('user_current_location'),
           position: LatLng(_userPosition!.latitude, _userPosition!.longitude),
           infoWindow: const InfoWindow(title: 'Lokasi Anda'),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueAzure,
+          ),
         ),
       );
     }
@@ -222,9 +218,7 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Kesalahan saat membuka rute: $e'),
-        ),
+        SnackBar(content: Text('Kesalahan saat membuka rute: $e')),
       );
     }
   }
@@ -251,13 +245,16 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna ikon ikon untuk "${(meters / 1000).toStringAsFixed(1..."
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white, // Warna ikon ikon untuk "${(meters / 1000).toStringAsFixed(1..."
         elevation: 0,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent, // Warna ikon ikon untuk "${(meters / 1000).toStringAsFixed(1..."
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimaryDark),
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "${(meters / 1000).toStringAsFixed(1..."
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Column(
@@ -268,12 +265,17 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna teks pada "Pilih Toko Pengambilan"
               ),
             ),
             Text(
               '5 Cabang Resmi JNOVAMUSIC di Indonesia',
-              style: TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
+              style: TextStyle(
+                fontSize: 10,
+                color: Color(
+                  0xFF7E756F,
+                ), // Warna teks pada "5 Cabang Resmi JNOVAMUSIC di Indonesia"
+              ),
             ),
           ],
         ),
@@ -286,12 +288,14 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                     height: 18,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation(AppColors.primaryOrange),
+                      valueColor: AlwaysStoppedAnimation(
+                        AppColors.primaryOrange, // Warna ikon ikon untuk "Deteksi Lokasi Saya"
+                      ),
                     ),
                   )
                 : const Icon(
                     Icons.my_location_rounded,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "Deteksi Lokasi Saya"
                   ),
             onPressed: _detectUserLocation,
           ),
@@ -324,13 +328,24 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                     left: 16,
                     right: 16,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.92),
+                        color: Colors.white.withValues(
+                          // Warna latar kotak atau kartu pada bagian komponen ini
+
+                          alpha: 0.92,
+                        ),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
+                            color: Colors.black.withValues(
+                              // Warna latar kotak atau kartu pada bagian komponen ini
+
+                              alpha: 0.08,
+                            ),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
@@ -350,7 +365,9 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                               style: const TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF5A524D),
+                                color: Color(
+                                  0xFF5A524D,
+                                ), // Warna teks pada "GPS Aktif"
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -362,7 +379,9 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                               style: TextStyle(
                                 fontSize: 9.5,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF16A34A),
+                                color: Color(
+                                  0xFF16A34A,
+                                ), // Warna teks pada "GPS Aktif"
                               ),
                             ),
                         ],
@@ -376,11 +395,16 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                   right: 12,
                   child: FloatingActionButton.small(
                     heroTag: 'recenter_map',
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.primaryOrange,
+                    backgroundColor:
+                        Colors.white, // Warna ikon ikon untuk "recenter_map"
+                    foregroundColor: AppColors
+                        .primaryOrange, // Warna ikon ikon untuk "recenter_map"
                     elevation: 3,
                     onPressed: () => _animateToBranch(_currentSelectedBranch),
-                    child: const Icon(Icons.center_focus_strong_rounded, size: 20),
+                    child: const Icon(
+                      Icons.center_focus_strong_rounded,
+                      size: 20,
+                    ),
                   ),
                 ),
               ],
@@ -392,10 +416,12 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
             flex: 6,
             child: Container(
               decoration: const BoxDecoration(
-                color: Colors.white,
+                color: Colors.white, // Warna latar kotak atau kartu pada bagian komponen ini
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0x12000000),
+                    color: Color(
+                      0x12000000,
+                    ), // Warna latar kotak atau kartu pada bagian komponen ini
                     blurRadius: 10,
                     offset: Offset(0, -3),
                   ),
@@ -414,20 +440,24 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                           style: TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.textPrimaryDark,
+                            color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Pilih Toko untuk Pengambilan"
                           ),
                         ),
                         if (_userPosition != null)
                           const Row(
                             children: [
-                              Icon(Icons.sort_rounded, size: 13, color: AppColors.primaryOrange),
+                              Icon(
+                                Icons.sort_rounded,
+                                size: 13,
+                                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Urut Terdekat"
+                              ),
                               SizedBox(width: 3),
                               Text(
                                 'Urut Terdekat',
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w700,
-                                  color: AppColors.primaryOrange,
+                                  color: AppColors.primaryOrange, // Warna teks pada "Urut Terdekat"
                                 ),
                               ),
                             ],
@@ -442,9 +472,15 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                     child: Container(
                       height: 38,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF9F7),
+                        color: const Color(
+                          0xFFFAF9F7,
+                        ), // Warna border atau garis tepi bagian komponen ini
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: const Color(0xFFEBE8E3)),
+                        border: Border.all(
+                          color: const Color(
+                            0xFFEBE8E3,
+                          ), // Warna border atau garis tepi bagian komponen ini
+                        ),
                       ),
                       child: TextField(
                         controller: _searchController,
@@ -453,14 +489,28 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                             _searchQuery = val.trim().toLowerCase();
                           });
                         },
-                        style: const TextStyle(fontSize: 11, color: AppColors.textPrimaryDark),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: AppColors.textPrimaryDark, // Warna teks pada "Cari toko atau kota (Bali, Bandung,..."
+                        ),
                         decoration: InputDecoration(
                           hintText: 'Cari toko atau kota (Bali, Bandung, Jkt, Jogja, Solo)...',
-                          hintStyle: const TextStyle(fontSize: 10.5, color: Color(0xFF9E958F)),
-                          prefixIcon: const Icon(Icons.search_rounded, size: 16, color: Color(0xFF7E756F)),
+                          hintStyle: const TextStyle(
+                            fontSize: 10.5,
+                            color: Color(0xFF9E958F), // Warna ikon ikon untuk "Cari toko atau kota (Bali, Bandung,..."
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.search_rounded,
+                            size: 16,
+                            color: Color(0xFF7E756F), // Warna ikon ikon untuk "Cari toko atau kota (Bali, Bandung,..."
+                          ),
                           suffixIcon: _searchQuery.isNotEmpty
                               ? IconButton(
-                                  icon: const Icon(Icons.clear_rounded, size: 15, color: Color(0xFF7E756F)),
+                                  icon: const Icon(
+                                    Icons.clear_rounded,
+                                    size: 15,
+                                    color: Color(0xFF7E756F), // Warna ikon ikon untuk "Cari toko atau kota (Bali, Bandung,..."
+                                  ),
                                   onPressed: () {
                                     _searchController.clear();
                                     setState(() {
@@ -470,7 +520,9 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                                 )
                               : null,
                           border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 9),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 9,
+                          ),
                         ),
                       ),
                     ),
@@ -498,7 +550,7 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                                   const Icon(
                                     Icons.storefront_outlined,
                                     size: 40,
-                                    color: Color(0xFFB0AAA4),
+                                    color: Color(0xFFB0AAA4), // Warna ikon ikon untuk "Toko Tidak Ditemukan"
                                   ),
                                   const SizedBox(height: 10),
                                   const Text(
@@ -506,7 +558,7 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                                     style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w800,
-                                      color: AppColors.textPrimaryDark,
+                                      color: AppColors.textPrimaryDark, // Warna teks pada "Toko Tidak Ditemukan"
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -515,7 +567,7 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 10,
-                                      color: Color(0xFF8E837D),
+                                      color: Color(0xFF8E837D), // Warna teks pada "Tidak ada cabang yang cocok dengan..."
                                     ),
                                   ),
                                   const SizedBox(height: 12),
@@ -531,7 +583,7 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                                       style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w700,
-                                        color: AppColors.primaryOrange,
+                                        color: AppColors.primaryOrange, // Warna teks pada "Reset Pencarian"
                                       ),
                                     ),
                                   ),
@@ -542,14 +594,19 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                         }
 
                         return ListView.separated(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
                           physics: const BouncingScrollPhysics(),
                           itemCount: filteredList.length,
-                          separatorBuilder: (context, index) => const SizedBox(height: 8),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8),
                           itemBuilder: (context, index) {
                             final item = filteredList[index];
                             final b = item.branch;
-                            final isSelected = b.id == _currentSelectedBranch.id;
+                            final isSelected =
+                                b.id == _currentSelectedBranch.id;
                             final distanceText = item.distanceMeters != null
                                 ? _formatDistance(item.distanceMeters)
                                 : b.distance;
@@ -557,174 +614,214 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                             return Container(
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? const Color(0xFFFFF9F5)
-                                    : const Color(0xFFFAF9F7),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: isSelected
-                                  ? AppColors.primaryOrange
-                                  : const Color(0xFFEBE8E3),
-                              width: isSelected ? 1.5 : 1.0,
-                            ),
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                _currentSelectedBranch = b;
-                              });
-                              _animateToBranch(b);
-                            },
-                            borderRadius: BorderRadius.circular(12),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
+                                    ? const Color(0xFFFFF9F5) // Warna latar kotak atau kartu pada bagian komponen ini
+                                    : const Color(0xFFFAF9F7), // Warna border atau garis tepi bagian komponen ini
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? AppColors
+                                            .primaryOrange // Warna border atau garis tepi bagian komponen ini
+                                      : const Color(0xFFEBE8E3), // Warna border atau garis tepi bagian komponen ini
+                                  width: isSelected ? 1.5 : 1.0,
+                                ),
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _currentSelectedBranch = b;
+                                  });
+                                  _animateToBranch(b);
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Icon(
-                                        Icons.storefront_rounded,
-                                        size: 16,
-                                        color: isSelected
-                                            ? AppColors.primaryOrange
-                                            : const Color(0xFF7E756F),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          b.name,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w800,
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.storefront_rounded,
+                                            size: 16,
                                             color: isSelected
-                                                ? AppColors.primaryOrange
-                                                : AppColors.textPrimaryDark,
+                                                ? AppColors
+                                                      .primaryOrange // Warna ikon ikon pada bagian komponen ini
+                                                : const Color(0xFF7E756F), // Warna ikon ikon pada bagian komponen ini
                                           ),
-                                        ),
-                                      ),
-                                      Icon(
-                                        isSelected
-                                            ? Icons.check_circle_rounded
-                                            : Icons.radio_button_unchecked_rounded,
-                                        size: 18,
-                                        color: isSelected
-                                            ? AppColors.primaryOrange
-                                            : const Color(0xFFB0AAA4),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 3),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 5,
-                                          vertical: 1.5,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFFFFEFE5),
-                                          borderRadius: BorderRadius.circular(4),
-                                        ),
-                                        child: Text(
-                                          distanceText,
-                                          style: const TextStyle(
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.w700,
-                                            color: Color(0xFFC2410C),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              b.name,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w800,
+                                                color: isSelected
+                                                    ? AppColors
+                                                          .primaryOrange // Warna ikon ikon pada bagian komponen ini
+                                                    : AppColors.textPrimaryDark, // Warna ikon ikon pada bagian komponen ini
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          Icon(
+                                            isSelected
+                                                ? Icons.check_circle_rounded
+                                                : Icons
+                                                      .radio_button_unchecked_rounded,
+                                            size: 18,
+                                            color: isSelected
+                                                ? AppColors
+                                                      .primaryOrange // Warna area atau kotak pada bagian komponen ini
+                                                : const Color(0xFFB0AAA4), // Warna latar kotak atau kartu pada bagian komponen ini
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(width: 6),
+                                      const SizedBox(height: 3),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 5,
+                                              vertical: 1.5,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFFFEFE5), // Warna latar kotak atau kartu pada bagian komponen ini
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                            child: Text(
+                                              distanceText,
+                                              style: const TextStyle(
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.w700,
+                                                color: Color(0xFFC2410C), // Warna teks pada "Buka: ${b.operatingHours}"
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            'Buka: ${b.operatingHours}',
+                                            style: const TextStyle(
+                                              fontSize: 9,
+                                              color: Color(0xFF7E756F), // Warna teks pada "Buka: ${b.operatingHours}"
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 3),
                                       Text(
-                                        'Buka: ${b.operatingHours}',
+                                        b.address,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                          fontSize: 9,
-                                          color: Color(0xFF7E756F),
+                                          fontSize: 9.5,
+                                          color: Color(0xFF6E6560), // Warna teks pada "Buka: ${b.operatingHours}"
+                                          height: 1.25,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 3),
-                                  Text(
-                                    b.address,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 9.5,
-                                      color: Color(0xFF6E6560),
-                                      height: 1.25,
-                                    ),
-                                  ),
-                                  if (isSelected) ...[
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: OutlinedButton.icon(
-                                            onPressed: () => _openGoogleMapsRoute(b),
-                                            icon: const Icon(Icons.directions_rounded, size: 14),
-                                            label: const Text('Rute Maps'),
-                                            style: OutlinedButton.styleFrom(
-                                              foregroundColor: AppColors.primaryOrange,
-                                              side: const BorderSide(
-                                                color: AppColors.primaryOrange,
-                                              ),
-                                              visualDensity: VisualDensity.compact,
-                                              padding: const EdgeInsets.symmetric(vertical: 6),
-                                              textStyle: const TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(6),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: OutlinedButton.icon(
-                                            onPressed: () => _callStore(b.phone),
-                                            icon: const Icon(Icons.phone_rounded, size: 14),
-                                            label: const Text('Telepon Toko'),
-                                            style: OutlinedButton.styleFrom(
-                                              foregroundColor: const Color(0xFF2E2825),
-                                              side: const BorderSide(
-                                                color: Color(0xFFD4D0C8),
-                                              ),
-                                              visualDensity: VisualDensity.compact,
-                                              padding: const EdgeInsets.symmetric(vertical: 6),
-                                              textStyle: const TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(6),
+                                      if (isSelected) ...[
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: OutlinedButton.icon(
+                                                onPressed: () =>
+                                                    _openGoogleMapsRoute(b),
+                                                icon: const Icon(
+                                                  Icons.directions_rounded,
+                                                  size: 14,
+                                                ),
+                                                label: const Text('Rute Maps'),
+                                                style: OutlinedButton.styleFrom(
+                                                  foregroundColor:
+                                                      AppColors.primaryOrange, // Warna border atau garis tepi untuk "Rute Maps"
+                                                  side: const BorderSide(
+                                                    color:
+                                                        AppColors.primaryOrange, // Warna border atau garis tepi untuk "Rute Maps"
+                                                  ),
+                                                  visualDensity:
+                                                      VisualDensity.compact,
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        vertical: 6,
+                                                      ),
+                                                  textStyle: const TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          6,
+                                                        ),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: OutlinedButton.icon(
+                                                onPressed: () =>
+                                                    _callStore(b.phone),
+                                                icon: const Icon(
+                                                  Icons.phone_rounded,
+                                                  size: 14,
+                                                ),
+                                                label: const Text(
+                                                  'Telepon Toko',
+                                                ),
+                                                style: OutlinedButton.styleFrom(
+                                                  foregroundColor: const Color(
+                                                    0xFF2E2825,
+                                                  ), // Warna border atau garis tepi untuk "Telepon Toko"
+                                                  side: const BorderSide(
+                                                    color: Color(0xFFD4D0C8), // Warna border atau garis tepi untuk "Telepon Toko"
+                                                  ),
+                                                  visualDensity:
+                                                      VisualDensity.compact,
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        vertical: 6,
+                                                      ),
+                                                  textStyle: const TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          6,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
-                                    ),
-                                  ],
-                                ],
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                ),
-              ),
+                    ),
+                  ),
 
                   // Tombol Aksi Konfirmasi Toko Terpilih
                   Container(
                     padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
                     decoration: const BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.white, // Warna border atau garis tepi bagian komponen ini
                       border: Border(
-                        top: BorderSide(color: Color(0xFFF2F0ED), width: 1),
+                        top: BorderSide(
+                          color: Color(
+                            0xFFF2F0ED,
+                          ), // Warna border atau garis tepi bagian komponen ini
+                          width: 1,
+                        ),
                       ),
                     ),
                     child: SizedBox(
@@ -746,7 +843,7 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w800,
-                            color: Colors.white,
+                            color: Colors.white, // Warna teks pada "Pilih ${_currentSelectedBranch.name}"
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -765,4 +862,3 @@ class _SelectPickupStorePageState extends State<SelectPickupStorePage> {
 }
 
 typedef SelectPickupStoreScreen = SelectPickupStorePage;
-

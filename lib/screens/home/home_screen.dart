@@ -75,7 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Maaf, stok produk ini sedang habis.'),
-          backgroundColor: Color(0xFF2E2E2E),
+          backgroundColor: Color(
+            0xFF2E2E2E,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
           duration: Duration(seconds: 2),
         ),
       );
@@ -86,13 +88,17 @@ class _HomeScreenState extends State<HomeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${product.name} ditambahkan ke keranjang.'),
-        backgroundColor: const Color(0xFF2E2E2E),
+        backgroundColor: const Color(
+          0xFF2E2E2E,
+        ), // Warna latar pesan pemberitahuan pada bagian komponen ini
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         action: SnackBarAction(
           label: 'Lihat',
-          textColor: const Color(0xFFFF5500),
+          textColor: const Color(
+            0xFFFF5500,
+          ), // Warna visual pada bagian komponen ini
           onPressed: () {
             if (mounted) {
               Navigator.pushNamed(context, '/cart');
@@ -112,7 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
         .toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          Colors.white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -187,9 +194,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: Colors.white, // Warna border atau garis tepi untuk "/profile"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/profile"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -199,7 +211,9 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: const Color(0xFFFF5500),
+              color: const Color(
+                0xFFFF5500,
+              ), // Warna latar kotak atau kartu untuk "/profile"
               borderRadius: BorderRadius.circular(8),
             ),
             child: Center(
@@ -232,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1E1E1E),
+                  color: Color(0xFF1E1E1E), // Warna teks pada "JNÓVAMUSIC"
                   letterSpacing: 0.3,
                 ),
               ),
@@ -241,7 +255,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 8.5,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF757575),
+                  color: Color(
+                    0xFF757575,
+                  ), // Warna teks pada "TOKO ALAT MUSIK RESMI"
                   letterSpacing: 0.5,
                 ),
               ),
@@ -261,7 +277,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: const Icon(
                     Icons.favorite_border_rounded,
                     size: 22,
-                    color: Color(0xFF2E2E2E),
+                    color: Color(
+                      0xFF2E2E2E,
+                    ), // Warna ikon ikon untuk "/favorite"
                   ),
                 ),
                 if (favCount > 0)
@@ -271,7 +289,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(3.5),
                       decoration: const BoxDecoration(
-                        color: Color(0xFFFF5500),
+                        color: Color(
+                          0xFFFF5500,
+                        ), // Warna latar kotak atau kartu untuk "/favorite"
                         shape: BoxShape.circle,
                       ),
                       constraints: const BoxConstraints(
@@ -282,7 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         '$favCount',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Colors.white, // Warna teks pada "$favCount"
                           fontSize: 8.5,
                           fontWeight: FontWeight.w800,
                           height: 1.0,
@@ -307,7 +327,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: const Icon(
                     Icons.shopping_bag_outlined,
                     size: 22,
-                    color: Color(0xFF2E2E2E),
+                    color: Color(0xFF2E2E2E), // Warna ikon ikon untuk "/cart"
                   ),
                 ),
                 if (cartCount > 0)
@@ -317,7 +337,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(3.5),
                       decoration: const BoxDecoration(
-                        color: Color(0xFFFF5500),
+                        color: Color(
+                          0xFFFF5500,
+                        ), // Warna latar kotak atau kartu untuk "/cart"
                         shape: BoxShape.circle,
                       ),
                       constraints: const BoxConstraints(
@@ -328,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         '$cartCount',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Colors.white, // Warna teks pada "$cartCount"
                           fontSize: 8.5,
                           fontWeight: FontWeight.w800,
                           height: 1.0,
@@ -351,12 +373,18 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFFFFF9F5), Color(0xFFFDEEE3)],
+          colors: [
+            Color(0xFFFFF9F5), // Warna latar kotak atau kartu pada banner
+            Color(0xFFFDEEE3), // Warna border atau garis tepi banner
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFFFE2CF), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFFFE2CF), // Warna border atau garis tepi banner
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,7 +394,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFE8D8),
+                  color: const Color(
+                    0xFFFFE8D8,
+                  ), // Warna latar kotak atau kartu untuk "VIP MEMBER"
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Row(
@@ -378,7 +408,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 8.5,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFFFF5500),
+                        color: Color(
+                          0xFFFF5500,
+                        ), // Warna teks pada "VIP MEMBER"
                         letterSpacing: 0.3,
                       ),
                     ),
@@ -388,14 +420,20 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(width: 8),
               const Row(
                 children: [
-                  Icon(Icons.auto_awesome, size: 12, color: Color(0xFFFF5500)),
+                  Icon(
+                    Icons.auto_awesome,
+                    size: 12,
+                    color: Color(
+                      0xFFFF5500,
+                    ), // Warna ikon ikon untuk "Eksklusif"
+                  ),
                   SizedBox(width: 3),
                   Text(
                     'Eksklusif',
                     style: TextStyle(
                       fontSize: 9.5,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFFFF5500),
+                      color: Color(0xFFFF5500), // Warna teks pada "Eksklusif"
                     ),
                   ),
                 ],
@@ -408,13 +446,20 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(
               fontSize: 14.5,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF1E1E1E),
+              color: Color(
+                0xFF1E1E1E,
+              ), // Warna teks pada "JNOVAMUSIC Membership"
             ),
           ),
           const SizedBox(height: 2),
           const Text(
             'Nikmati keuntungan khusus untuk member.',
-            style: TextStyle(fontSize: 11, color: Color(0xFF7E7E7E)),
+            style: TextStyle(
+              fontSize: 11,
+              color: Color(
+                0xFF7E7E7E,
+              ), // Warna teks pada "Nikmati keuntungan khusus untuk mem..."
+            ),
           ),
           const SizedBox(height: 10),
           Row(
@@ -433,7 +478,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: TextStyle(
                             fontSize: 11.5,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFFFF5500),
+                            color: Color(0xFFFF5500), // Warna ikon ikon untuk "Lihat Keuntungan Member"
                           ),
                         ),
                       ),
@@ -441,7 +486,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icon(
                         Icons.arrow_forward_rounded,
                         size: 13,
-                        color: Color(0xFFFF5500),
+                        color: Color(
+                          0xFFFF5500,
+                        ), // Warna ikon ikon untuk "Lihat Keuntungan Member"
                       ),
                     ],
                   ),
@@ -456,7 +503,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     vertical: 5,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFE8D8),
+                    color: const Color(
+                      0xFFFFE8D8,
+                    ), // Warna latar kotak atau kartu untuk "Daftar Gratis"
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Text(
@@ -464,7 +513,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 10.5,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFFFF5500),
+                      color: Color(
+                        0xFFFF5500,
+                      ), // Warna teks pada "Daftar Gratis"
                     ),
                   ),
                 ),
@@ -484,23 +535,45 @@ class _HomeScreenState extends State<HomeScreen> {
         height: 42,
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         decoration: BoxDecoration(
-          color: const Color(0xFFF7F7F8),
+          color: const Color(
+            0xFFF7F7F8,
+          ), // Warna border atau garis tepi untuk "/search"
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFEBEBEB), width: 1.0),
+          border: Border.all(
+            color: const Color(0xFFEBEBEB), // Warna ikon ikon untuk "/search"
+            width: 1.0,
+          ),
         ),
         child: const Row(
           children: [
-            Icon(Icons.search_rounded, size: 19, color: Color(0xFF9E9E9E)),
+            Icon(
+              Icons.search_rounded,
+              size: 19,
+              color: Color(
+                0xFF9E9E9E,
+              ), // Warna ikon ikon untuk "Cari alat musik favoritmu..."
+            ),
             SizedBox(width: 8),
             Expanded(
               child: Text(
                 'Cari alat musik favoritmu...',
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 12, color: Color(0xFFA8A8A8)),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Color(
+                    0xFFA8A8A8,
+                  ), // Warna ikon ikon untuk "Cari alat musik favoritmu..."
+                ),
               ),
             ),
             SizedBox(width: 8),
-            Icon(Icons.tune_rounded, size: 17, color: Color(0xFF757575)),
+            Icon(
+              Icons.tune_rounded,
+              size: 17,
+              color: Color(
+                0xFF757575,
+              ), // Warna ikon ikon untuk "Cari alat musik favoritmu..."
+            ),
           ],
         ),
       ),
@@ -524,14 +597,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 14.5,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1E1E1E),
+                      color: Color(
+                        0xFF1E1E1E,
+                      ), // Warna teks pada "Jelajahi Kategori"
                     ),
                   ),
                   SizedBox(height: 1),
                   Text(
                     'Pilihan lengkap instrumen & perlengkapan audio',
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Color(0xFF8E837D), // Warna teks pada "Pilihan lengkap instrumen & perleng..."
+                    ),
                   ),
                 ],
               ),
@@ -544,7 +622,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFFFF5500),
+                  color: Color(0xFFFF5500), // Warna teks pada "Lihat Semua >"
                 ),
               ),
             ),
@@ -573,10 +651,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.white, // Warna border atau garis tepi untuk "/all-products"
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: const Color(0xFFF2F0ED),
+                    color: const Color(
+                      0xFFF2F0ED,
+                    ), // Warna border atau garis tepi untuk "/all-products"
                     width: 1.0,
                   ),
                 ),
@@ -587,12 +667,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 36,
                       height: 36,
                       decoration: const BoxDecoration(
-                        color: Color(0xFFFFF4EC),
+                        color: Color(
+                          0xFFFFF4EC,
+                        ), // Warna ikon ikon untuk "/all-products"
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         cat.icon,
-                        color: const Color(0xFFFF5500),
+                        color: const Color(
+                          0xFFFF5500,
+                        ), // Warna ikon ikon untuk "/all-products"
                         size: 19,
                       ),
                     ),
@@ -602,7 +686,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: const TextStyle(
                         fontSize: 10.5,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF2E2E2E),
+                        color: Color(
+                          0xFF2E2E2E,
+                        ), // Warna teks pada "/all-products"
                       ),
                     ),
                   ],
@@ -628,7 +714,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 Icon(
                   Icons.auto_awesome,
                   size: 15,
-                  color: Color(0xFFFF5500),
+                  color: Color(
+                    0xFFFF5500,
+                  ), // Warna ikon ikon untuk "Asisten Pintar AI"
                 ),
                 SizedBox(width: 6),
                 Text(
@@ -636,7 +724,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1E1E1E),
+                    color: Color(
+                      0xFF1E1E1E,
+                    ), // Warna teks pada "Asisten Pintar AI"
                     letterSpacing: -0.2,
                   ),
                 ),
@@ -645,7 +735,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF0E5),
+                color: const Color(
+                  0xFFFFF0E5,
+                ), // Warna latar kotak atau kartu untuk "VISION & CHAT"
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Text(
@@ -653,7 +745,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 8.5,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFFFF5500),
+                  color: Color(0xFFFF5500), // Warna teks pada "VISION & CHAT"
                   letterSpacing: 0.3,
                 ),
               ),
@@ -678,12 +770,22 @@ class _HomeScreenState extends State<HomeScreen> {
         width: double.infinity,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color:
+              Colors.white, // Warna border atau garis tepi untuk "/ai-scanner"
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFFFD5B8), width: 1.2),
+          border: Border.all(
+            color: const Color(
+              0xFFFFD5B8,
+            ), // Warna border atau garis tepi untuk "/ai-scanner"
+            width: 1.2,
+          ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFFF5500).withValues(alpha: 0.05),
+              color:
+                  const Color(
+                        0xFFFF5500,
+                      ) // Warna latar kotak atau kartu untuk "/ai-scanner"
+                      .withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),
@@ -698,12 +800,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 38,
                   height: 38,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF0E5),
+                    color: const Color(
+                      0xFFFFF0E5,
+                    ), // Warna ikon ikon pada pemindai AI
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
                     Icons.document_scanner_rounded,
-                    color: Color(0xFFFF5500),
+                    color: Color(
+                      0xFFFF5500,
+                    ), // Warna ikon ikon untuk "AI Scanner"
                     size: 20,
                   ),
                 ),
@@ -719,7 +825,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF1E1E1E),
+                              color: Color(
+                                0xFF1E1E1E,
+                              ), // Warna teks pada "AI Scanner"
                             ),
                           ),
                           const SizedBox(width: 6),
@@ -729,7 +837,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFF5500),
+                              color: const Color(
+                                0xFFFF5500,
+                              ), // Warna latar kotak atau kartu untuk "BARU"
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: const Text(
@@ -737,7 +847,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(
                                 fontSize: 8,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white,
+                                color: Colors.white, // Warna teks pada "BARU"
                                 letterSpacing: 0.2,
                               ),
                             ),
@@ -750,7 +860,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 10.5,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF888888),
+                          color: Color(
+                            0xFF888888,
+                          ), // Warna teks pada "Multimodal AI Vision"
                         ),
                       ),
                     ],
@@ -763,7 +875,9 @@ class _HomeScreenState extends State<HomeScreen> {
               'Kenali alat musik dan berbagai barang menggunakan AI.',
               style: TextStyle(
                 fontSize: 11.5,
-                color: Color(0xFF555555),
+                color: Color(
+                  0xFF555555,
+                ), // Warna teks pada "Kenali alat musik dan berbagai bara..."
                 height: 1.35,
               ),
             ),
@@ -776,7 +890,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icon(
                       Icons.camera_alt_outlined,
                       size: 13,
-                      color: Color(0xFFFF5500),
+                      color: Color(
+                        0xFFFF5500,
+                      ), // Warna ikon ikon untuk "Kamera & Galeri Foto"
                     ),
                     SizedBox(width: 4),
                     Text(
@@ -784,7 +900,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 10.5,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFFFF5500),
+                        color: Color(
+                          0xFFFF5500,
+                        ), // Warna teks pada "Kamera & Galeri Foto"
                       ),
                     ),
                   ],
@@ -795,11 +913,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFF5500),
+                    color: const Color(0xFFFF5500), // Warna latar kotak atau kartu untuk "Kamera & Galeri Foto"
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: const [
                       BoxShadow(
-                        color: Color(0x33FF5500),
+                        color: Color(0x33FF5500), // Warna latar kotak atau kartu untuk "Kamera & Galeri Foto"
                         blurRadius: 6,
                         offset: Offset(0, 2),
                       ),
@@ -813,14 +931,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color: Colors
+                              .white, // Warna ikon ikon untuk "Scan Sekarang"
                         ),
                       ),
                       SizedBox(width: 4),
                       Icon(
                         Icons.arrow_forward_rounded,
                         size: 12,
-                        color: Colors.white,
+                        color: Colors
+                            .white, // Warna ikon ikon untuk "Scan Sekarang"
                       ),
                     ],
                   ),
@@ -841,12 +961,21 @@ class _HomeScreenState extends State<HomeScreen> {
         width: double.infinity,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white, // Warna border atau garis tepi untuk "/ai-chat"
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFEEEEEE), width: 1.2),
+          border: Border.all(
+            color: const Color(
+              0xFFEEEEEE,
+            ), // Warna border atau garis tepi untuk "/ai-chat"
+            width: 1.2,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
+              color: Colors.black.withValues(
+                // Warna border atau garis tepi untuk "/ai-chat"
+
+                alpha: 0.03,
+              ),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -861,12 +990,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 38,
                   height: 38,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF7F7F7),
+                    color: const Color(
+                      0xFFF7F7F7,
+                    ), // Warna ikon ikon pada area chat
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
                     Icons.smart_toy_rounded,
-                    color: Color(0xFFFF5500),
+                    color: Color(
+                      0xFFFF5500,
+                    ), // Warna ikon ikon untuk "AI Chatbot"
                     size: 20,
                   ),
                 ),
@@ -882,7 +1015,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF1E1E1E),
+                              color: Color(
+                                0xFF1E1E1E,
+                              ), // Warna teks pada "AI Chatbot"
                             ),
                           ),
                           SizedBox(width: 6),
@@ -891,7 +1026,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF10B981),
+                              color: Color(
+                                0xFF10B981,
+                              ), // Warna teks pada "ONLINE"
                               letterSpacing: 0.2,
                             ),
                           ),
@@ -903,7 +1040,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 10.5,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF888888),
+                          color: Color(
+                            0xFF888888,
+                          ), // Warna teks pada "Jnova Music AI Assistant"
                         ),
                       ),
                     ],
@@ -916,7 +1055,9 @@ class _HomeScreenState extends State<HomeScreen> {
               'Konsultasi musik pribadi & rekomendasi produk pintar.',
               style: TextStyle(
                 fontSize: 11.5,
-                color: Color(0xFF555555),
+                color: Color(
+                  0xFF555555,
+                ), // Warna teks pada "Konsultasi musik pribadi & rekomend..."
                 height: 1.35,
               ),
             ),
@@ -929,7 +1070,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icon(
                       Icons.chat_bubble_outline_rounded,
                       size: 13,
-                      color: Color(0xFF777777),
+                      color: Color(
+                        0xFF777777,
+                      ), // Warna ikon ikon untuk "Tanya Seputar Musik & Gear"
                     ),
                     SizedBox(width: 4),
                     Text(
@@ -937,7 +1080,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 10.5,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF777777),
+                        color: Color(
+                          0xFF777777,
+                        ), // Warna teks pada "Tanya Seputar Musik & Gear"
                       ),
                     ),
                   ],
@@ -948,10 +1093,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.white, // Warna border atau garis tepi untuk "Tanya Seputar Musik & Gear"
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: const Color(0xFFFF5500),
+                      color: const Color(0xFFFF5500), // Warna border atau garis tepi untuk "Tanya Seputar Musik & Gear"
                       width: 1.1,
                     ),
                   ),
@@ -963,14 +1108,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFFFF5500),
+                          color: Color(
+                            0xFFFF5500,
+                          ), // Warna ikon ikon untuk "Mulai Chat"
                         ),
                       ),
                       SizedBox(width: 4),
                       Icon(
                         Icons.arrow_forward_rounded,
                         size: 12,
-                        color: Color(0xFFFF5500),
+                        color: Color(
+                          0xFFFF5500,
+                        ), // Warna ikon ikon untuk "Mulai Chat"
                       ),
                     ],
                   ),
@@ -990,14 +1139,21 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF1E1612), Color(0xFF2E1F18)],
+          colors: [
+            Color(0xFF1E1612), // Warna latar kotak atau kartu pada game
+            Color(0xFF2E1F18), // Warna latar kotak atau kartu pada game
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
+            color: Colors.black.withValues(
+              // Warna latar kotak atau kartu pada game
+
+              alpha: 0.12,
+            ),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1012,7 +1168,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFF5500),
+                  color: const Color(
+                    0xFFFF5500,
+                  ), // Warna latar kotak atau kartu pada game
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Row(
@@ -1021,7 +1179,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icon(
                       Icons.sports_esports_rounded,
                       size: 11,
-                      color: Colors.white,
+                      color: Colors
+                          .white, // Warna ikon ikon untuk "GAME RITME RESMI"
                     ),
                     SizedBox(width: 4),
                     Text(
@@ -1029,7 +1188,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 8.5,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color:
+                            Colors.white, // Warna teks pada "GAME RITME RESMI"
                         letterSpacing: 0.4,
                       ),
                     ),
@@ -1038,14 +1198,20 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const Row(
                 children: [
-                  Icon(Icons.auto_awesome, size: 11, color: Color(0xFFFFB088)),
+                  Icon(
+                    Icons.auto_awesome,
+                    size: 11,
+                    color: Color(
+                      0xFFFFB088,
+                    ), // Warna ikon ikon untuk "Audio Beats"
+                  ),
                   SizedBox(width: 3),
                   Text(
                     'Audio Beats',
                     style: TextStyle(
                       fontSize: 9.5,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFFFFB088),
+                      color: Color(0xFFFFB088), // Warna teks pada "Audio Beats"
                     ),
                   ),
                 ],
@@ -1066,7 +1232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 15.5,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: Colors.white, // Warna teks pada "JNOVA GAMES"
                         letterSpacing: 0.3,
                       ),
                     ),
@@ -1075,7 +1241,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Ikuti irama. Pecahkan skor\ntertinggi!',
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: Color(0xFFD6CBC4),
+                        color: Color(0xFFD6CBC4), // Warna teks pada "Ikuti irama. Pecahkan skor\ntertinggi!"
                         height: 1.3,
                       ),
                     ),
@@ -1092,11 +1258,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     vertical: 9,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFF5500),
+                    color: const Color(
+                      0xFFFF5500,
+                    ), // Warna latar kotak atau kartu untuk "/games"
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: const [
                       BoxShadow(
-                        color: Color(0x44FF5500),
+                        color: Color(
+                          0x44FF5500,
+                        ), // Warna latar kotak atau kartu untuk "/games"
                         blurRadius: 10,
                         offset: Offset(0, 3),
                       ),
@@ -1107,7 +1277,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Icon(
                         Icons.play_arrow_rounded,
-                        color: Colors.white,
+                        color: Colors
+                            .white, // Warna ikon ikon untuk "MAIN SEKARANG"
                         size: 15,
                       ),
                       SizedBox(width: 4),
@@ -1116,7 +1287,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color:
+                              Colors.white, // Warna teks pada "MAIN SEKARANG"
                           letterSpacing: 0.4,
                         ),
                       ),
@@ -1148,14 +1320,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 14.5,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1E1E1E),
+                      color: Color(
+                        0xFF1E1E1E,
+                      ), // Warna teks pada "Produk Pilihan"
                     ),
                   ),
                   SizedBox(height: 1),
                   Text(
                     'Instrumen original bergaransi resmi distributor',
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Color(0xFF8E837D), // Warna teks pada "Instrumen original bergaransi resmi..."
+                    ),
                   ),
                 ],
               ),
@@ -1168,7 +1345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFFFF5500),
+                  color: Color(0xFFFF5500), // Warna teks pada "Semua Produk >"
                 ),
               ),
             ),
@@ -1215,7 +1392,8 @@ class _HomeScreenState extends State<HomeScreen> {
       width: 2.0,
       height: height,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors
+            .white, // Warna latar kotak atau kartu pada bagian komponen ini
         borderRadius: BorderRadius.circular(1.5),
       ),
     );

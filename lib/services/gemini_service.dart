@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import '../core/config/app_config.dart';
 import '../core/network/network_info.dart';
 import '../data/datasources/remote/supabase_client_service.dart';
@@ -139,7 +138,7 @@ class GeminiService {
         supabase.isInitialized &&
         supabase.client != null) {
       try {
-        final response = await supabase.client!.functions
+        final response = await supabase.client!.functions // manggil supabase 
             .invoke(
               'gemini-chat',
               body: {

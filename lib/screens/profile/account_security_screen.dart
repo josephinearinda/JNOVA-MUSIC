@@ -65,7 +65,12 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         title: const Row(
           children: [
-            Icon(Icons.mail_outline_rounded, color: AppColors.primaryOrange, size: 20),
+            Icon(
+              Icons.mail_outline_rounded,
+              color: AppColors
+                  .primaryOrange, // Warna ikon ikon untuk "Email Autentikasi"
+              size: 20,
+            ),
             SizedBox(width: 8),
             Text(
               'Email Autentikasi',
@@ -84,7 +89,10 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
             onPressed: () => Navigator.pop(ctx),
             child: const Text(
               'Tutup',
-              style: TextStyle(color: AppColors.primaryOrange, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: AppColors.primaryOrange, // Warna teks pada "Tutup"
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -101,10 +109,16 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       builder: (ctx) => StatefulBuilder(
         builder: (context, setDialogState) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
             title: const Row(
               children: [
-                Icon(Icons.phone_outlined, color: AppColors.primaryOrange, size: 20),
+                Icon(
+                  Icons.phone_outlined,
+                  color: AppColors.primaryOrange, // Warna ikon ikon untuk "Ubah Nomor Telepon"
+                  size: 20,
+                ),
                 SizedBox(width: 8),
                 Text(
                   'Ubah Nomor Telepon',
@@ -118,7 +132,13 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
               children: [
                 const Text(
                   'Nomor telepon ini tersinkron langsung dengan Profil akun JNOVAMUSIC Anda dan digunakan untuk verifikasi keamanan.',
-                  style: TextStyle(fontSize: 11.5, color: Color(0xFF6E6560), height: 1.3),
+                  style: TextStyle(
+                    fontSize: 11.5,
+                    color: Color(
+                      0xFF6E6560,
+                    ), // Warna teks pada "Contoh: +62 812-3456-7890"
+                    height: 1.3,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextField(
@@ -127,9 +147,17 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   style: const TextStyle(fontSize: 12),
                   decoration: InputDecoration(
                     hintText: 'Contoh: +62 812-3456-7890',
-                    prefixIcon: const Icon(Icons.phone_iphone_rounded, size: 18),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    prefixIcon: const Icon(
+                      Icons.phone_iphone_rounded,
+                      size: 18,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
                   ),
                 ),
               ],
@@ -137,12 +165,19 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
             actions: [
               TextButton(
                 onPressed: isSaving ? null : () => Navigator.pop(ctx),
-                child: const Text('Batal', style: TextStyle(color: Color(0xFF7E756F))),
+                child: const Text(
+                  'Batal',
+                  style: TextStyle(
+                    color: Color(0xFF7E756F), // Warna teks pada "Batal"
+                  ),
+                ),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryOrange,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian komponen ini
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: isSaving
                     ? null
@@ -150,22 +185,26 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                         final newPhone = phoneController.text.trim();
                         final messenger = ScaffoldMessenger.of(context);
                         setDialogState(() => isSaving = true);
-                        final success = await _profileService.updateProfile(phoneNumber: newPhone);
+                        final success = await _profileService.updateProfile(
+                          phoneNumber: newPhone,
+                        );
                         if (ctx.mounted) {
                           Navigator.pop(ctx);
                         }
                         if (success) {
                           messenger.showSnackBar(
                             const SnackBar(
-                              content: Text('Nomor telepon berhasil diperbarui & tersinkron.'),
-                              backgroundColor: Color(0xFF15803D),
+                              content: Text(
+                                'Nomor telepon berhasil diperbarui & tersinkron.',
+                              ),
+                              backgroundColor: Color(0xFF15803D), // Warna latar pesan pemberitahuan pada bagian komponen ini
                             ),
                           );
                         } else {
                           messenger.showSnackBar(
                             const SnackBar(
                               content: Text('Gagal menyimpan nomor telepon.'),
-                              backgroundColor: Color(0xFFDC2626),
+                              backgroundColor: Color(0xFFDC2626), // Warna indikator loading pada bagian komponen ini
                             ),
                           );
                         }
@@ -174,9 +213,18 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                     ? const SizedBox(
                         width: 14,
                         height: 14,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white, // Warna teks pada "Simpan"
+                        ),
                       )
-                    : const Text('Simpan', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    : const Text(
+                        'Simpan',
+                        style: TextStyle(
+                          color: Colors.white, // Warna teks pada "Simpan"
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ],
           );
@@ -204,7 +252,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Semua kolom kata sandi wajib diisi.'),
-          backgroundColor: Color(0xFFDC2626),
+          backgroundColor: Color(
+            0xFFDC2626,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
         ),
       );
       return;
@@ -214,7 +264,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Kata sandi baru minimal 6 karakter.'),
-          backgroundColor: Color(0xFFDC2626),
+          backgroundColor: Color(
+            0xFFDC2626,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
         ),
       );
       return;
@@ -224,7 +276,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Konfirmasi kata sandi tidak cocok.'),
-          backgroundColor: Color(0xFFDC2626),
+          backgroundColor: Color(
+            0xFFDC2626,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
         ),
       );
       return;
@@ -244,7 +298,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Kata sandi berhasil diperbarui secara aman!'),
-        backgroundColor: Color(0xFF15803D),
+        backgroundColor: Color(
+          0xFF15803D,
+        ), // Warna latar pesan pemberitahuan pada bagian komponen ini
       ),
     );
   }
@@ -253,15 +309,18 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     final profile = _profileService.profile;
 
     if (!val) {
-      final res =
-          await AuthService.instance.disableBiometricsForUser(profile.email);
+      final res = await AuthService.instance.disableBiometricsForUser(
+        profile.email,
+      );
       await _profileService.toggleBiometric(false);
       if (!mounted) return;
       setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(res.message),
-          backgroundColor: const Color(0xFF2E2E2E),
+          backgroundColor: const Color(
+            0xFF2E2E2E,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
         ),
       );
       return;
@@ -274,10 +333,17 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
           title: const Row(
             children: [
-              Icon(Icons.warning_amber_rounded, color: Color(0xFFDC2626)),
+              Icon(
+                Icons.warning_amber_rounded,
+                color: Color(
+                  0xFFDC2626,
+                ), // Warna ikon ikon untuk "Perangkat Tidak Mendukung"
+              ),
               SizedBox(width: 8),
               Text(
                 'Perangkat Tidak Mendukung',
@@ -295,7 +361,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
               child: const Text(
                 'Tutup',
                 style: TextStyle(
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna teks pada "Tutup"
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -313,10 +379,15 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
           title: const Row(
             children: [
-              Icon(Icons.fingerprint_rounded, color: AppColors.primaryOrange),
+              Icon(
+                Icons.fingerprint_rounded,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Sidik Jari Belum Ada"
+              ),
               SizedBox(width: 8),
               Text(
                 'Sidik Jari Belum Ada',
@@ -334,7 +405,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
               child: const Text(
                 'Mengerti',
                 style: TextStyle(
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna teks pada "Mengerti"
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -360,7 +431,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: const Color(0xFF15803D),
+          backgroundColor: const Color(
+            0xFF15803D,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
         ),
       );
     } else {
@@ -370,7 +443,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(result.message),
-          backgroundColor: const Color(0xFFDC2626),
+          backgroundColor: const Color(
+            0xFFDC2626,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
         ),
       );
     }
@@ -381,7 +456,8 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     final profile = _profileService.profile;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -452,9 +528,15 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/order-detail"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/order-detail"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -467,7 +549,8 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                 height: 20,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.graphic_eq_rounded,
-                  color: AppColors.primaryOrange,
+                  color:
+                      AppColors.primaryOrange, // Warna ikon ikon untuk "Profil"
                   size: 20,
                 ),
               ),
@@ -477,7 +560,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Profil"
                 ),
               ),
             ],
@@ -486,7 +569,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
           IconButton(
             icon: const Icon(Icons.notifications_none_rounded, size: 22),
             onPressed: () => Navigator.pushNamed(context, '/notifications'),
-            color: const Color(0xFF4A403A),
+            color: const Color(
+              0xFF4A403A,
+            ), // Warna ikon ikon untuk "/notifications"
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -496,12 +581,14 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
             height: 28,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFB45309),
+              color: Color(
+                0xFFB45309,
+              ), // Warna ikon ikon untuk "/notifications"
             ),
             child: const Icon(
               Icons.person_rounded,
               size: 17,
-              color: Colors.white,
+              color: Colors.white, // Warna ikon ikon untuk "/notifications"
             ),
           ),
         ],
@@ -513,9 +600,15 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/notifications"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/notifications"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -527,14 +620,22 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFFF7F6F4),
+                color: const Color(
+                  0xFFF7F6F4,
+                ), // Warna border atau garis tepi untuk "/notifications"
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+                border: Border.all(
+                  color: const Color(
+                    0xFFEBE8E3,
+                  ), // Warna ikon ikon untuk "/notifications"
+                  width: 1.0,
+                ),
               ),
               child: const Icon(
                 Icons.arrow_back_rounded,
                 size: 18,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "/notifications"
               ),
             ),
           ),
@@ -548,12 +649,18 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada "Keamanan Akun"
                   ),
                 ),
                 Text(
                   'Kelola proteksi dan akses JNOVAMUSIC',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Color(
+                      0xFF8E837D,
+                    ), // Warna teks pada "Kelola proteksi dan akses JNOVAMUSIC"
+                  ),
                 ),
               ],
             ),
@@ -562,13 +669,15 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEDDF),
+              color: const Color(
+                0xFFFFEDDF,
+              ), // Warna ikon ikon untuk "Kelola proteksi dan akses JNOVAMUSIC"
               borderRadius: BorderRadius.circular(6),
             ),
             child: const Icon(
               Icons.verified_user_rounded,
               size: 16,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "Kelola proteksi dan akses JNOVAMUSIC"
             ),
           ),
         ],
@@ -581,9 +690,11 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Kelola proteksi dan akses JNOVAMUSIC"
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3)),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Kelola proteksi dan akses JNOVAMUSIC"
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -594,19 +705,23 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEDDF),
+                  color: const Color(0xFFFFEDDF), // Warna latar kotak atau kartu untuk "Kelola proteksi dan akses JNOVAMUSIC"
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.circle, size: 6, color: AppColors.primaryOrange),
+                    Icon(
+                      Icons.circle,
+                      size: 6,
+                      color: AppColors.primaryOrange, // Warna ikon ikon untuk "Tingkat Keamanan: Kuat"
+                    ),
                     SizedBox(width: 4),
                     Text(
                       'Tingkat Keamanan: Kuat',
                       style: TextStyle(
                         fontSize: 9,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna teks pada "Tingkat Keamanan: Kuat"
                       ),
                     ),
                   ],
@@ -616,13 +731,17 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEDDF),
+                  color: const Color(
+                    0xFFFFEDDF,
+                  ), // Warna ikon ikon untuk "Tingkat Keamanan: Kuat"
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
                   Icons.shield_rounded,
                   size: 18,
-                  color: Color(0xFF9A3412),
+                  color: Color(
+                    0xFF9A3412,
+                  ), // Warna ikon ikon untuk "Tingkat Keamanan: Kuat"
                 ),
               ),
             ],
@@ -639,16 +758,23 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
           const SizedBox(height: 2),
           const Text(
             'Semua parameter proteksi ganda aktif dan terverifikasi.',
-            style: TextStyle(fontSize: 9.5, color: Color(0xFF6E6560)),
+            style: TextStyle(
+              fontSize: 9.5,
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "Semua parameter proteksi ganda akti..."
+            ),
           ),
           const SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: const LinearProgressIndicator(
               value: 0.88,
-              backgroundColor: Color(0xFFEBE8E3),
+              backgroundColor: Color(
+                0xFFEBE8E3,
+              ), // Warna indikator loading pada kartu
               valueColor: AlwaysStoppedAnimation<Color>(
-                AppColors.primaryOrange,
+                AppColors.primaryOrange, // Warna indikator loading pada kartu
               ),
               minHeight: 5,
             ),
@@ -671,9 +797,13 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "Metode Pemulihan & Verifikasi"
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3)),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Metode Pemulihan & Verifikasi"
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -686,11 +816,13 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                 style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Metode Pemulihan & Verifikasi"
                 ),
               ),
               IconButton(
-                onPressed: _isRefreshingRecovery ? null : _handleRefreshRecovery,
+                onPressed: _isRefreshingRecovery
+                    ? null
+                    : _handleRefreshRecovery,
                 icon: _isRefreshingRecovery
                     ? const SizedBox(
                         width: 14,
@@ -701,7 +833,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                         ),
                       )
                     : const Icon(Icons.refresh_rounded, size: 16),
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon pada kartu
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
               ),
@@ -713,16 +845,22 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white, // Warna border atau garis tepi kartu
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFEBE8E3)),
+              border: Border.all(
+                color: const Color(
+                  0xFFEBE8E3,
+                ), // Warna border atau garis tepi kartu
+              ),
             ),
             child: Row(
               children: [
                 const Icon(
                   Icons.mail_outline_rounded,
                   size: 16,
-                  color: Color(0xFF7E756F),
+                  color: Color(
+                    0xFF7E756F,
+                  ), // Warna ikon ikon untuk "Email Terdaftar"
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -731,15 +869,28 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                     children: [
                       const Text(
                         'Email Terdaftar',
-                        style: TextStyle(fontSize: 9, color: Color(0xFF8E837D)),
+                        style: TextStyle(
+                          fontSize: 9,
+                          color: Color(
+                            0xFF8E837D,
+                          ), // Warna teks pada "Email Terdaftar"
+                        ),
                       ),
                       Text(
                         hasEmail ? email : 'Belum tersedia',
                         style: TextStyle(
                           fontSize: 11,
-                          fontWeight: hasEmail ? FontWeight.w700 : FontWeight.normal,
-                          fontStyle: hasEmail ? FontStyle.normal : FontStyle.italic,
-                          color: hasEmail ? AppColors.textPrimaryDark : const Color(0xFF8E837D),
+                          fontWeight: hasEmail
+                              ? FontWeight.w700
+                              : FontWeight.normal,
+                          fontStyle: hasEmail
+                              ? FontStyle.normal
+                              : FontStyle.italic,
+                          color: hasEmail
+                              ? AppColors.textPrimaryDark
+                              : const Color(
+                                  0xFF8E837D,
+                                ), // Warna visual pada kartu
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -758,9 +909,12 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   onTap: () => _showEmailInfoDialog(email),
                   borderRadius: BorderRadius.circular(6),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF2F0ED),
+                      color: const Color(0xFFF2F0ED), // Warna teks pada "Info"
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: const Text(
@@ -768,7 +922,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                       style: TextStyle(
                         fontSize: 9.5,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF5A524D),
+                        color: Color(0xFF5A524D), // Warna teks pada "Info"
                       ),
                     ),
                   ),
@@ -782,16 +936,20 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white, // Warna border atau garis tepi untuk "Info"
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFEBE8E3)),
+              border: Border.all(
+                color: const Color(
+                  0xFFEBE8E3,
+                ), // Warna border atau garis tepi untuk "Info"
+              ),
             ),
             child: Row(
               children: [
                 const Icon(
                   Icons.phone_outlined,
                   size: 16,
-                  color: Color(0xFF7E756F),
+                  color: Color(0xFF7E756F), // Warna ikon ikon untuk "Info"
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -800,15 +958,28 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                     children: [
                       const Text(
                         'Nomor Telepon',
-                        style: TextStyle(fontSize: 9, color: Color(0xFF8E837D)),
+                        style: TextStyle(
+                          fontSize: 9,
+                          color: Color(
+                            0xFF8E837D,
+                          ), // Warna teks pada "Nomor Telepon"
+                        ),
                       ),
                       Text(
                         hasPhone ? phone : 'Belum tersedia',
                         style: TextStyle(
                           fontSize: 11,
-                          fontWeight: hasPhone ? FontWeight.w700 : FontWeight.normal,
-                          fontStyle: hasPhone ? FontStyle.normal : FontStyle.italic,
-                          color: hasPhone ? AppColors.textPrimaryDark : const Color(0xFF8E837D),
+                          fontWeight: hasPhone
+                              ? FontWeight.w700
+                              : FontWeight.normal,
+                          fontStyle: hasPhone
+                              ? FontStyle.normal
+                              : FontStyle.italic,
+                          color: hasPhone
+                              ? AppColors.textPrimaryDark
+                              : const Color(
+                                  0xFF8E837D,
+                                ), // Warna visual pada kartu
                         ),
                       ),
                     ],
@@ -826,9 +997,12 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   onTap: () => _showEditPhoneDialog(phone),
                   borderRadius: BorderRadius.circular(6),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF2F0ED),
+                      color: const Color(0xFFF2F0ED), // Warna teks pada "Ubah"
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: const Text(
@@ -836,7 +1010,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                       style: TextStyle(
                         fontSize: 9.5,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF5A524D),
+                        color: Color(0xFF5A524D), // Warna teks pada "Ubah"
                       ),
                     ),
                   ),
@@ -849,9 +1023,15 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFFBF7),
+              color: const Color(
+                0xFFFFFBF7,
+              ), // Warna border atau garis tepi untuk "Ubah"
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFFFEDD5)),
+              border: Border.all(
+                color: const Color(
+                  0xFFFFEDD5,
+                ), // Warna border atau garis tepi untuk "Ubah"
+              ),
             ),
             child: const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -859,7 +1039,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                 Icon(
                   Icons.info_outline_rounded,
                   size: 14,
-                  color: Color(0xFFB45309),
+                  color: Color(0xFFB45309), // Warna ikon ikon untuk "Ubah"
                 ),
                 SizedBox(width: 8),
                 Expanded(
@@ -867,7 +1047,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                     'Data ini digunakan untuk pengiriman kode verifikasi OTP dan perlindungan akun JNOVAMUSIC Anda saat login di perangkat baru.',
                     style: TextStyle(
                       fontSize: 9.5,
-                      color: Color(0xFF78350F),
+                      color: Color(0xFF78350F), // Warna teks pada "Ubah"
                       height: 1.3,
                     ),
                   ),
@@ -884,9 +1064,15 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi bagian komponen ini
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3)),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi bagian komponen ini
+        ),
       ),
       child: Column(
         children: [
@@ -905,13 +1091,15 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                     width: 30,
                     height: 30,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFEDDF),
+                      color: const Color(
+                        0xFFFFEDDF,
+                      ), // Warna ikon ikon pada bagian komponen ini
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
                       Icons.key_rounded,
                       size: 16,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna ikon ikon untuk "Ubah Kata Sandi"
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -924,14 +1112,14 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                           style: TextStyle(
                             fontSize: 11.5,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.textPrimaryDark,
+                            color: AppColors.textPrimaryDark, // Warna teks pada "Ubah Kata Sandi"
                           ),
                         ),
                         Text(
                           'Perbarui kata sandi akunmu secara berkala',
                           style: TextStyle(
                             fontSize: 9.5,
-                            color: Color(0xFF7E756F),
+                            color: Color(0xFF7E756F), // Warna ikon ikon untuk "Perbarui kata sandi akunmu secara b..."
                           ),
                         ),
                       ],
@@ -942,7 +1130,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                         ? Icons.keyboard_arrow_up_rounded
                         : Icons.keyboard_arrow_down_rounded,
                     size: 18,
-                    color: const Color(0xFF8E837D),
+                    color: const Color(0xFF8E837D), // Warna ikon ikon untuk "Perbarui kata sandi akunmu secara b..."
                   ),
                 ],
               ),
@@ -980,7 +1168,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                           ? null
                           : _handleChangePassword,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryOrange,
+                        backgroundColor: AppColors.primaryOrange, // Warna indikator loading pada bagian komponen ini
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -991,13 +1179,13 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                               height: 14,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.white,
+                                color: Colors.white, // Warna teks pada "Simpan Kata Sandi"
                               ),
                             )
                           : const Text(
                               'Simpan Kata Sandi',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.white, // Warna teks pada "Simpan Kata Sandi"
                                 fontSize: 11.5,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -1010,8 +1198,12 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
             ),
           ],
 
-          const Divider(color: Color(0xFFEBE8E3), height: 1),
-
+          const Divider(
+            color: Color(
+              0xFFEBE8E3,
+            ), // Warna garis pemisah pada bagian komponen ini
+            height: 1,
+          ),
           // Verifikasi 2 Langkah
           InkWell(
             onTap: () {
@@ -1032,13 +1224,13 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                     width: 30,
                     height: 30,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE0F2FE),
+                      color: const Color(0xFFE0F2FE), // Warna ikon ikon untuk "Verifikasi 2 Langkah sudah aktif de..."
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
                       Icons.shield_outlined,
                       size: 16,
-                      color: Color(0xFF0284C7),
+                      color: Color(0xFF0284C7), // Warna ikon ikon untuk "Verifikasi 2 Langkah sudah aktif de..."
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -1053,7 +1245,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                               style: TextStyle(
                                 fontSize: 11.5,
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimaryDark,
+                                color: AppColors.textPrimaryDark, // Warna teks pada "Verifikasi 2 Langkah"
                               ),
                             ),
                             const SizedBox(width: 6),
@@ -1064,9 +1256,13 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                               style: TextStyle(
                                 fontSize: 8.5,
                                 fontWeight: FontWeight.w800,
-                                color: (profile.phoneNumber as String? ?? '').isNotEmpty
-                                    ? const Color(0xFF15803D)
-                                    : const Color(0xFFDC2626),
+                                color:
+                                    (profile.phoneNumber as String? ?? '')
+                                        .isNotEmpty
+                                    ? const Color(
+                                        0xFF15803D,
+                                      ) // Warna teks pada "Nonaktif"
+                                    : const Color(0xFFDC2626), // Warna visual pada bagian komponen ini
                               ),
                             ),
                           ],
@@ -1077,7 +1273,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                               : 'Tambahkan nomor HP di Profil untuk mengaktifkan OTP',
                           style: const TextStyle(
                             fontSize: 9.5,
-                            color: Color(0xFF7E756F),
+                            color: Color(0xFF7E756F), // Warna ikon ikon untuk "Tambahkan nomor HP di Profil untuk..."
                           ),
                         ),
                       ],
@@ -1086,15 +1282,19 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   const Icon(
                     Icons.chevron_right_rounded,
                     size: 18,
-                    color: Color(0xFF8E837D),
+                    color: Color(0xFF8E837D), // Warna ikon ikon untuk "Tambahkan nomor HP di Profil untuk..."
                   ),
                 ],
               ),
             ),
           ),
 
-          const Divider(color: Color(0xFFEBE8E3), height: 1),
-
+          const Divider(
+            color: Color(
+              0xFFEBE8E3,
+            ), // Warna garis pemisah pada bagian komponen ini
+            height: 1,
+          ),
           // Login Biometrik
           Padding(
             padding: const EdgeInsets.all(12.0),
@@ -1105,16 +1305,23 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   height: 30,
                   decoration: BoxDecoration(
                     color: profile.isBiometricEnabled
-                        ? const Color(0xFFFFEDDF)
-                        : const Color(0xFFEDEBE7),
+                        ? const Color(
+                            0xFFFFEDDF,
+                          ) // Warna ikon ikon pada bagian komponen ini
+                        : const Color(
+                            0xFFEDEBE7,
+                          ), // Warna ikon ikon pada bagian komponen ini
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     Icons.fingerprint_rounded,
                     size: 16,
                     color: profile.isBiometricEnabled
-                        ? AppColors.primaryOrange
-                        : const Color(0xFF5A524D),
+                        ? AppColors
+                              .primaryOrange // Warna ikon ikon untuk "Login dengan Sidik Jari"
+                        : const Color(
+                            0xFF5A524D,
+                          ), // Warna ikon ikon untuk "Login dengan Sidik Jari"
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -1127,14 +1334,14 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                         style: TextStyle(
                           fontSize: 11.5,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna teks pada "Login dengan Sidik Jari"
                         ),
                       ),
                       Text(
                         'Gunakan sidik jari untuk masuk akun lebih cepat dan aman',
                         style: TextStyle(
                           fontSize: 9.5,
-                          color: Color(0xFF7E756F),
+                          color: Color(0xFF7E756F), // Warna teks pada "Gunakan sidik jari untuk masuk akun..."
                         ),
                       ),
                     ],
@@ -1143,8 +1350,11 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                 Switch(
                   value: profile.isBiometricEnabled,
                   onChanged: (val) => _handleBiometricToggle(val),
-                  activeThumbColor: AppColors.primaryOrange,
+                  activeThumbColor: AppColors
+                      .primaryOrange, // Warna visual pada bagian komponen ini
                   activeTrackColor: AppColors.primaryOrange.withValues(
+                    // Warna visual pada bagian komponen ini
+
                     alpha: 0.5,
                   ),
                 ),
@@ -1165,16 +1375,21 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
           style: const TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF5A524D),
+            color: Color(0xFF5A524D), // Warna teks pada bagian komponen ini
           ),
         ),
         const SizedBox(height: 3),
         Container(
           height: 36,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors
+                .white, // Warna border atau garis tepi bagian komponen ini
             borderRadius: BorderRadius.circular(6),
-            border: Border.all(color: const Color(0xFFE5E2DC)),
+            border: Border.all(
+              color: const Color(
+                0xFFE5E2DC,
+              ), // Warna border atau garis tepi bagian komponen ini
+            ),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: TextField(
@@ -1197,9 +1412,15 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi bagian komponen ini
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3)),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi bagian komponen ini
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1210,13 +1431,17 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEDEBE7),
+                  color: const Color(
+                    0xFFEDEBE7,
+                  ), // Warna ikon ikon pada bagian komponen ini
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: const Icon(
                   Icons.devices_rounded,
                   size: 16,
-                  color: Color(0xFF4A403A),
+                  color: Color(
+                    0xFF4A403A,
+                  ), // Warna ikon ikon untuk "Perangkat & Sesi Login"
                 ),
               ),
               const SizedBox(width: 8),
@@ -1229,12 +1454,17 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                       style: TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimaryDark, // Warna teks pada "Perangkat & Sesi Login"
                       ),
                     ),
                     Text(
                       '2 perangkat saat ini terhubung',
-                      style: TextStyle(fontSize: 9.5, color: Color(0xFF7E756F)),
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        color: Color(
+                          0xFF7E756F,
+                        ), // Warna teks pada "2 perangkat saat ini terhubung"
+                      ),
                     ),
                   ],
                 ),
@@ -1247,16 +1477,18 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white, // Warna border atau garis tepi untuk "2 perangkat saat ini terhubung"
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFEBE8E3)),
+              border: Border.all(
+                color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "2 perangkat saat ini terhubung"
+              ),
             ),
             child: Row(
               children: [
                 const Icon(
                   Icons.smartphone_rounded,
                   size: 18,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna ikon ikon untuk "2 perangkat saat ini terhubung"
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -1270,7 +1502,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimaryDark,
+                              color: AppColors.textPrimaryDark, // Warna teks pada "Samsung Galaxy S25 FE"
                             ),
                           ),
                           const SizedBox(width: 6),
@@ -1280,7 +1512,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                               vertical: 1,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFFEDDF),
+                              color: const Color(0xFFFFEDDF), // Warna latar kotak atau kartu untuk "Perangkat Ini"
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: const Text(
@@ -1288,7 +1520,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                               style: TextStyle(
                                 fontSize: 8,
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.primaryOrange,
+                                color: AppColors.primaryOrange, // Warna teks pada "Perangkat Ini"
                               ),
                             ),
                           ),
@@ -1297,13 +1529,17 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                       const SizedBox(height: 2),
                       const Row(
                         children: [
-                          Icon(Icons.circle, size: 5, color: Color(0xFF16A34A)),
+                          Icon(
+                            Icons.circle,
+                            size: 5,
+                            color: Color(0xFF16A34A), // Warna ikon ikon untuk "Jakarta, ID • Aktif sekarang"
+                          ),
                           SizedBox(width: 4),
                           Text(
                             'Jakarta, ID • Aktif sekarang',
                             style: TextStyle(
                               fontSize: 9.5,
-                              color: Color(0xFF6E6560),
+                              color: Color(0xFF6E6560), // Warna teks pada "Jakarta, ID • Aktif sekarang"
                             ),
                           ),
                         ],
@@ -1320,16 +1556,23 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors
+                  .white, // Warna border atau garis tepi bagian komponen ini
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFEBE8E3)),
+              border: Border.all(
+                color: const Color(
+                  0xFFEBE8E3,
+                ), // Warna border atau garis tepi bagian komponen ini
+              ),
             ),
             child: Row(
               children: [
                 const Icon(
                   Icons.laptop_chromebook_rounded,
                   size: 18,
-                  color: Color(0xFF7E756F),
+                  color: Color(
+                    0xFF7E756F,
+                  ), // Warna ikon ikon untuk "Chrome di Windows 11"
                 ),
                 const SizedBox(width: 8),
                 const Expanded(
@@ -1341,7 +1584,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna teks pada "Chrome di Windows 11"
                         ),
                       ),
                       SizedBox(height: 2),
@@ -1349,7 +1592,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                         'Yogyakarta, ID • Aktif 2 hari lalu',
                         style: TextStyle(
                           fontSize: 9.5,
-                          color: Color(0xFF7E756F),
+                          color: Color(0xFF7E756F), // Warna teks pada "Yogyakarta, ID • Aktif 2 hari lalu"
                         ),
                       ),
                     ],
@@ -1369,7 +1612,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   icon: const Icon(
                     Icons.logout_rounded,
                     size: 16,
-                    color: Color(0xFFDC2626),
+                    color: Color(0xFFDC2626), // Warna ikon ikon untuk "Sesi Chrome di Windows 11 berhasil..."
                   ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -1395,7 +1638,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                 );
               },
               style: TextButton.styleFrom(
-                backgroundColor: const Color(0xFFEDEBE7),
+                backgroundColor: const Color(
+                  0xFFEDEBE7,
+                ), // Warna latar pesan pemberitahuan pada bagian komponen ini
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -1406,7 +1651,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   Icon(
                     Icons.power_settings_new_rounded,
                     size: 14,
-                    color: Color(0xFF4A403A),
+                    color: Color(
+                      0xFF4A403A,
+                    ), // Warna ikon ikon untuk "Keluar dari Sesi Lainnya"
                   ),
                   SizedBox(width: 6),
                   Text(
@@ -1414,7 +1661,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                     style: TextStyle(
                       fontSize: 10.5,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF4A403A),
+                      color: Color(
+                        0xFF4A403A,
+                      ), // Warna teks pada "Keluar dari Sesi Lainnya"
                     ),
                   ),
                 ],
@@ -1431,9 +1680,11 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBF7),
+        color: const Color(0xFFFFFBF7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFFFEDD5)),
+        border: Border.all(
+          color: const Color(0xFFFFEDD5), // Warna border atau garis tepi kartu
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1443,12 +1694,13 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
             height: 26,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "Tips Keamanan JNOVAMUSIC"
             ),
             child: const Icon(
               Icons.lightbulb_outline_rounded,
               size: 14,
-              color: Colors.white,
+              color: Colors
+                  .white, // Warna ikon ikon untuk "Tips Keamanan JNOVAMUSIC"
             ),
           ),
           const SizedBox(width: 10),
@@ -1461,7 +1713,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   style: TextStyle(
                     fontSize: 10.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF9A3412),
+                    color: Color(
+                      0xFF9A3412,
+                    ), // Warna teks pada "Tips Keamanan JNOVAMUSIC"
                   ),
                 ),
                 SizedBox(height: 2),
@@ -1469,7 +1723,9 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
                   'Jangan pernah membagikan kode OTP atau kata sandi Anda kepada siapa pun. Tim resmi JNOVAMUSIC tidak akan pernah meminta kata sandi Anda melalui telepon maupun pesan chat.',
                   style: TextStyle(
                     fontSize: 9.5,
-                    color: Color(0xFF7C2D12),
+                    color: Color(
+                      0xFF7C2D12,
+                    ), // Warna teks pada "Tips Keamanan JNOVAMUSIC"
                     height: 1.35,
                   ),
                 ),
@@ -1485,20 +1741,26 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFFDCFCE7),
+        color: const Color(
+          0xFFDCFCE7,
+        ), // Warna latar kotak atau kartu untuk "Terverifikasi"
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.check_circle_rounded, size: 9, color: Color(0xFF15803D)),
+          const Icon(
+            Icons.check_circle_rounded,
+            size: 9,
+            color: Color(0xFF15803D), // Warna ikon ikon untuk "Terverifikasi"
+          ),
           const SizedBox(width: 3),
           Text(
             label,
             style: const TextStyle(
               fontSize: 8.5,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF15803D),
+              color: Color(0xFF15803D), // Warna teks pada "Terverifikasi"
             ),
           ),
         ],
@@ -1510,20 +1772,28 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFFFEF3C7),
+        color: const Color(
+          0xFFFEF3C7,
+        ), // Warna latar kotak atau kartu untuk "Belum Terverifikasi"
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.info_outline_rounded, size: 9, color: Color(0xFFB45309)),
+          const Icon(
+            Icons.info_outline_rounded,
+            size: 9,
+            color: Color(
+              0xFFB45309,
+            ), // Warna ikon ikon untuk "Belum Terverifikasi"
+          ),
           const SizedBox(width: 3),
           Text(
             label,
             style: const TextStyle(
               fontSize: 8.5,
               fontWeight: FontWeight.w700,
-              color: Color(0xFFB45309),
+              color: Color(0xFFB45309), // Warna teks pada "Belum Terverifikasi"
             ),
           ),
         ],
@@ -1535,7 +1805,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: const Color(0xFFEDEBE7),
+        color: const Color(0xFFEDEBE7), // Warna teks pada "Belum Ada"
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -1543,7 +1813,7 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
         style: const TextStyle(
           fontSize: 8.5,
           fontWeight: FontWeight.w700,
-          color: Color(0xFF7E756F),
+          color: Color(0xFF7E756F), // Warna teks pada "Belum Ada"
         ),
       ),
     );
@@ -1551,4 +1821,3 @@ class _AccountSecurityPageState extends State<AccountSecurityPage> {
 }
 
 typedef AccountSecurityScreen = AccountSecurityPage;
-

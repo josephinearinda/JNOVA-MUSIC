@@ -23,7 +23,8 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
   int _selectedFilterIndex = 0; // 0: Semua, 1: Pembelian, 2: Aktivitas Game
   bool _isLoading = false;
   String? _errorMessage;
-  List<PointHistoryModel> _historyList = PointHistoryRepository.instance.defaultData;
+  List<PointHistoryModel> _historyList =
+      PointHistoryRepository.instance.defaultData;
 
   @override
   void initState() {
@@ -102,11 +103,13 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
   void _showTransactionDetail(PointHistoryModel item) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors
+          .transparent, // Warna latar kotak atau kartu untuk "Riwayat Poin"
       builder: (ctx) => Container(
         padding: const EdgeInsets.all(20),
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color:
+              Colors.white, // Warna latar kotak atau kartu untuk "Riwayat Poin"
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
@@ -123,7 +126,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                   width: 36,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD4CFC9),
+                    color: const Color(0xFFD4CFC9), // Warna latar kotak atau kartu untuk "Detail Transaksi Poin"
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -137,7 +140,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna teks pada "Detail Transaksi Poin"
                     ),
                   ),
                   Container(
@@ -146,7 +149,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                       vertical: 3,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFFEDDF),
+                      color: const Color(0xFFFFEDDF), // Warna latar kotak atau kartu untuk "Detail Transaksi Poin"
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
@@ -154,7 +157,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                       style: const TextStyle(
                         fontSize: 9,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna teks pada "Detail Transaksi Poin"
                       ),
                     ),
                   ),
@@ -166,35 +169,47 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Detail Transaksi Poin"
                 ),
               ),
               const SizedBox(height: 6),
               Text(
                 item.date,
-                style: const TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: Color(
+                    0xFF7E756F,
+                  ), // Warna teks pada "Detail Transaksi Poin"
+                ),
               ),
               const SizedBox(height: 14),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFAF9F7),
+                  color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Detail Transaksi Poin"
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFFEBE8E3)),
+                  border: Border.all(
+                    color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Detail Transaksi Poin"
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       'Poin yang Didapat:',
-                      style: TextStyle(fontSize: 11, color: Color(0xFF5A524D)),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Color(
+                          0xFF5A524D,
+                        ), // Warna teks pada "Poin yang Didapat:"
+                      ),
                     ),
                     Text(
                       item.formattedPoints,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna teks pada "Poin yang Didapat:"
                       ),
                     ),
                   ],
@@ -207,14 +222,19 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                   children: [
                     const Text(
                       'Nomor Pesanan:',
-                      style: TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Color(
+                          0xFF7E756F,
+                        ), // Warna teks pada "Nomor Pesanan:"
+                      ),
                     ),
                     Text(
                       item.orderId!,
                       style: const TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimaryDark, // Warna teks pada "Nomor Pesanan:"
                       ),
                     ),
                   ],
@@ -226,7 +246,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                 height: 38,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryOrange,
+                    backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian komponen ini
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -237,7 +257,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: Colors.white, // Warna teks pada "Tutup"
                     ),
                   ),
                 ),
@@ -253,13 +273,14 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Colors.white, // Warna ikon ikon untuk "Informasi Poin Membership"
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
             Icon(
               Icons.info_outline_rounded,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "Informasi Poin Membership"
               size: 22,
             ),
             SizedBox(width: 8),
@@ -268,7 +289,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna teks pada "Informasi Poin Membership"
               ),
             ),
           ],
@@ -278,7 +299,13 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
           '2. Poin ekstra dapat diperoleh melalui event mingguan dan mini game JNova Rhythm.\n\n'
           '3. Poin diakumulasikan sepanjang tahun aktif untuk menentukan status dan benefit tier Anda.\n\n'
           'Untuk informasi lebih lengkap, silakan cek Syarat & Ketentuan.',
-          style: TextStyle(fontSize: 11, color: Color(0xFF5A524D), height: 1.4),
+          style: TextStyle(
+            fontSize: 11,
+            color: Color(
+              0xFF5A524D,
+            ), // Warna teks pada "Untuk informasi lebih lengkap, sila..."
+            height: 1.4,
+          ),
         ),
         actions: [
           TextButton(
@@ -286,7 +313,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
             child: const Text(
               'Mengerti',
               style: TextStyle(
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna teks pada "Mengerti"
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -304,7 +331,8 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
     final progress = (points / targetPoints).clamp(0.0, 1.0);
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -375,9 +403,14 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "/profile"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/profile"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -391,12 +424,18 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color:
+                      AppColors.textPrimaryDark, // Warna teks pada "Membership"
                 ),
               ),
               Text(
                 'More Points, More Music Benefits',
-                style: TextStyle(fontSize: 9.5, color: Color(0xFF8E837D)),
+                style: TextStyle(
+                  fontSize: 9.5,
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "More Points, More Music Benefits"
+                ),
               ),
             ],
           ),
@@ -409,7 +448,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                   children: [
                     const Icon(
                       Icons.notifications_none_rounded,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "/notifications"
                       size: 21,
                     ),
                     Positioned(
@@ -419,7 +458,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                         width: 7,
                         height: 7,
                         decoration: const BoxDecoration(
-                          color: AppColors.primaryOrange,
+                          color: AppColors.primaryOrange, // Warna latar kotak atau kartu untuk "/notifications"
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -437,12 +476,14 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                   width: 30,
                   height: 30,
                   decoration: const BoxDecoration(
-                    color: Color(0xFF8D4315),
+                    color: Color(
+                      0xFF8D4315,
+                    ), // Warna ikon ikon untuk "/profile"
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.person_rounded,
-                    color: Colors.white,
+                    color: Colors.white, // Warna ikon ikon untuk "/profile"
                     size: 17,
                   ),
                 ),
@@ -467,8 +508,15 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               height: 34,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFF5F3EF),
-                border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+                color: const Color(
+                  0xFFF5F3EF,
+                ), // Warna border atau garis tepi bagian komponen ini
+                border: Border.all(
+                  color: const Color(
+                    0xFFEBE8E3,
+                  ), // Warna ikon ikon pada bagian komponen ini
+                  width: 1.0,
+                ),
               ),
               child: const Icon(
                 Icons.arrow_back_rounded,
@@ -484,7 +532,8 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna teks pada bagian komponen ini
               ),
             ),
           ),
@@ -496,13 +545,21 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               height: 28,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFF5F3EF),
-                border: Border.all(color: const Color(0xFFE8E5DF)),
+                color: const Color(
+                  0xFFF5F3EF,
+                ), // Warna border atau garis tepi bagian komponen ini
+                border: Border.all(
+                  color: const Color(
+                    0xFFE8E5DF,
+                  ), // Warna ikon ikon pada bagian komponen ini
+                ),
               ),
               child: const Icon(
                 Icons.info_outline_rounded,
                 size: 15,
-                color: Color(0xFF6E6560),
+                color: Color(
+                  0xFF6E6560,
+                ), // Warna ikon ikon pada bagian komponen ini
               ),
             ),
           ),
@@ -515,12 +572,19 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
     return Container(
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFFFD8BF), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFFFD8BF), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryOrange.withValues(alpha: 0.04),
+            color: AppColors.primaryOrange.withValues(
+              // Warna border atau garis tepi kartu
+
+              alpha: 0.04,
+            ),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -539,7 +603,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                     width: 7,
                     height: 7,
                     decoration: const BoxDecoration(
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna latar kotak atau kartu untuk "Poin Membership"
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -549,7 +613,9 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF6E6560),
+                      color: Color(
+                        0xFF6E6560,
+                      ), // Warna teks pada "Poin Membership"
                     ),
                   ),
                 ],
@@ -557,7 +623,9 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEDDF),
+                  color: const Color(
+                    0xFFFFEDDF,
+                  ), // Warna latar kotak atau kartu untuk "ACOUSTIC TIER"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
@@ -566,7 +634,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                     fontSize: 8.5,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.3,
-                    color: Color(0xFFC2410C),
+                    color: Color(0xFFC2410C), // Warna teks pada "ACOUSTIC TIER"
                   ),
                 ),
               ),
@@ -584,7 +652,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "${points.toString().replaceAllMappe..."
                   letterSpacing: -0.5,
                 ),
               ),
@@ -600,7 +668,9 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
-                      color: const Color(0xFFFFD8BF),
+                      color: const Color(
+                        0xFFFFD8BF,
+                      ), // Warna teks pada "Lihat Membership >"
                       width: 1.0,
                     ),
                   ),
@@ -609,7 +679,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna teks pada "Lihat Membership >"
                     ),
                   ),
                 ),
@@ -627,7 +697,9 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                 style: TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF6E6560),
+                  color: Color(
+                    0xFF6E6560,
+                  ), // Warna teks pada "Progress Menuju Electric Tier"
                 ),
               ),
               Text(
@@ -635,7 +707,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                 style: const TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "$points / 3.000 Poin"
                 ),
               ),
             ],
@@ -645,9 +717,11 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: progress,
-              backgroundColor: const Color(0xFFFFEDDF),
+              backgroundColor: const Color(
+                0xFFFFEDDF,
+              ), // Warna indikator loading pada kartu
               valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primaryOrange,
+                AppColors.primaryOrange, // Warna indikator loading pada kartu
               ),
               minHeight: 5,
             ),
@@ -658,7 +732,9 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
             'Tinggal $pointsNeeded Poin lagi untuk naik ke Electric Tier!',
             style: const TextStyle(
               fontSize: 9,
-              color: Color(0xFF78350F),
+              color: Color(
+                0xFF78350F,
+              ), // Warna teks pada "Tinggal $pointsNeeded Poin lagi unt..."
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -687,13 +763,19 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.primaryOrange
-                    : const Color(0xFFFAF9F7),
+                    ? AppColors
+                          .primaryOrange // Warna border atau garis tepi bagian komponen ini
+                    : const Color(
+                        0xFFFAF9F7,
+                      ), // Warna border atau garis tepi bagian komponen ini
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isSelected
-                      ? AppColors.primaryOrange
-                      : const Color(0xFFEBE8E3),
+                      ? AppColors
+                            .primaryOrange // Warna border atau garis tepi bagian komponen ini
+                      : const Color(
+                          0xFFEBE8E3,
+                        ), // Warna border atau garis tepi bagian komponen ini
                 ),
               ),
               child: Text(
@@ -701,7 +783,11 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                 style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                  color: isSelected ? Colors.white : const Color(0xFF5A524D),
+                  color: isSelected
+                      ? Colors.white
+                      : const Color(
+                          0xFF5A524D,
+                        ), // Warna teks pada bagian komponen ini
                 ),
               ),
             ),
@@ -725,14 +811,19 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               child: CircularProgressIndicator(
                 strokeWidth: 2,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  AppColors.primaryOrange,
+                  AppColors.primaryOrange, // Warna indikator loading pada bagian komponen ini
                 ),
               ),
             ),
             SizedBox(height: 10),
             Text(
               'Memuat riwayat poin...',
-              style: TextStyle(fontSize: 10.5, color: Color(0xFF8E837D)),
+              style: TextStyle(
+                fontSize: 10.5,
+                color: Color(
+                  0xFF8E837D,
+                ), // Warna teks pada "Memuat riwayat poin..."
+              ),
             ),
           ],
         ),
@@ -743,15 +834,23 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
       return Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: const Color(0xFFFEF2F2),
+          color: const Color(
+            0xFFFEF2F2,
+          ), // Warna border atau garis tepi untuk "Memuat riwayat poin..."
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFFCA5A5)),
+          border: Border.all(
+            color: const Color(
+              0xFFFCA5A5,
+            ), // Warna ikon ikon untuk "Memuat riwayat poin..."
+          ),
         ),
         child: Column(
           children: [
             const Icon(
               Icons.error_outline_rounded,
-              color: Color(0xFFDC2626),
+              color: Color(
+                0xFFDC2626,
+              ), // Warna ikon ikon untuk "Gagal memuat riwayat poin"
               size: 28,
             ),
             const SizedBox(height: 8),
@@ -760,19 +859,26 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF991B1B),
+                color: Color(
+                  0xFF991B1B,
+                ), // Warna teks pada "Gagal memuat riwayat poin"
               ),
             ),
             const SizedBox(height: 4),
             Text(
               _errorMessage!,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 10, color: Color(0xFFB91C1C)),
+              style: const TextStyle(
+                fontSize: 10,
+                color: Color(
+                  0xFFB91C1C,
+                ), // Warna teks pada "Gagal memuat riwayat poin"
+              ),
             ),
             const SizedBox(height: 12),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian komponen ini
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6),
@@ -788,7 +894,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                 style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: Colors.white, // Warna teks pada "Coba Lagi"
                 ),
               ),
             ),
@@ -804,16 +910,24 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
         padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: const Color(0xFFFAF9F7),
+          color: const Color(
+            0xFFFAF9F7,
+          ), // Warna border atau garis tepi bagian komponen ini
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFEBE8E3)),
+          border: Border.all(
+            color: const Color(
+              0xFFEBE8E3,
+            ), // Warna border atau garis tepi untuk "Belum ada riwayat poin"
+          ),
         ),
         child: const Column(
           children: [
             Icon(
               Icons.history_toggle_off_rounded,
               size: 36,
-              color: Color(0xFFB0AAA4),
+              color: Color(
+                0xFFB0AAA4,
+              ), // Warna ikon ikon untuk "Belum ada riwayat poin"
             ),
             SizedBox(height: 8),
             Text(
@@ -821,13 +935,18 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna teks pada "Belum ada riwayat poin"
               ),
             ),
             SizedBox(height: 4),
             Text(
               'Transaksi poin kamu akan muncul di sini.',
-              style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+              style: TextStyle(
+                fontSize: 10,
+                color: Color(
+                  0xFF8E837D,
+                ), // Warna teks pada "Transaksi poin kamu akan muncul di..."
+              ),
             ),
           ],
         ),
@@ -863,9 +982,14 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
         margin: const EdgeInsets.only(bottom: 8.0),
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
         decoration: BoxDecoration(
-          color: const Color(0xFFFAF9F7),
+          color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFEFECE8), width: 1.0),
+          border: Border.all(
+            color: const Color(
+              0xFFEFECE8,
+            ), // Warna border atau garis tepi kartu
+            width: 1.0,
+          ),
         ),
         child: Row(
           children: [
@@ -874,10 +998,14 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFFFFEDDF),
+                color: const Color(0xFFFFEDDF), // Warna ikon ikon pada kartu
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(iconData, size: 16, color: AppColors.primaryOrange),
+              child: Icon(
+                iconData,
+                size: 16,
+                color: AppColors.primaryOrange, // Warna ikon ikon pada kartu
+              ),
             ),
             const SizedBox(width: 10),
 
@@ -893,7 +1021,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna teks pada kartu
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -903,7 +1031,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                         item.date,
                         style: const TextStyle(
                           fontSize: 9,
-                          color: Color(0xFF8E837D),
+                          color: Color(0xFF8E837D), // Warna teks pada kartu
                         ),
                       ),
                       const SizedBox(width: 6),
@@ -911,7 +1039,9 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                         width: 3,
                         height: 3,
                         decoration: const BoxDecoration(
-                          color: Color(0xFFB0AAA4),
+                          color: Color(
+                            0xFFB0AAA4,
+                          ), // Warna latar kotak atau kartu pada kartu
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -921,7 +1051,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
                         style: const TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF6E6560),
+                          color: Color(0xFF6E6560), // Warna teks pada kartu
                         ),
                       ),
                     ],
@@ -937,7 +1067,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               style: const TextStyle(
                 fontSize: 11.5,
                 fontWeight: FontWeight.w800,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna teks pada kartu
               ),
             ),
           ],
@@ -950,9 +1080,15 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
     return Container(
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9F7F5),
+        color: const Color(
+          0xFFF9F7F5,
+        ), // Warna border atau garis tepi bagian komponen ini
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFECE9E4)),
+        border: Border.all(
+          color: const Color(
+            0xFFECE9E4,
+          ), // Warna border atau garis tepi bagian komponen ini
+        ),
       ),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -960,7 +1096,8 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
           Icon(
             Icons.info_outline_rounded,
             size: 14,
-            color: AppColors.primaryOrange,
+            color: AppColors
+                .primaryOrange, // Warna ikon ikon pada bagian komponen ini
           ),
           SizedBox(width: 8),
           Expanded(
@@ -968,7 +1105,7 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
               'Poin membership diakumulasikan sepanjang tahun aktif untuk menentukan status dan benefit tier Anda. Untuk informasi lebih lanjut, silakan cek Syarat & Ketentuan.',
               style: TextStyle(
                 fontSize: 9.5,
-                color: Color(0xFF6E6560),
+                color: Color(0xFF6E6560), // Warna teks pada bagian komponen ini
                 height: 1.35,
               ),
             ),
@@ -980,4 +1117,3 @@ class _PointHistoryPageState extends State<PointHistoryPage> {
 }
 
 typedef PointHistoryScreen = PointHistoryPage;
-

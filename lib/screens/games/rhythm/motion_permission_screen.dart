@@ -35,7 +35,8 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
       _isChecking = true;
     });
 
-    final isAvailable = await GameSensorService.instance.checkSensorAvailability();
+    final isAvailable = await GameSensorService.instance
+        .checkSensorAvailability();
 
     if (!mounted) return;
     setState(() {
@@ -62,7 +63,7 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "/game-home"
       body: SafeArea(
         child: Column(
           children: [
@@ -90,7 +91,7 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimaryDark, // Warna teks pada "Siap Mengumpulkan Poin?"
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -99,7 +100,9 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 11,
-                        color: Color(0xFF6E6560),
+                        color: Color(
+                          0xFF6E6560,
+                        ), // Warna teks pada "Siap Mengumpulkan Poin?"
                         height: 1.35,
                       ),
                     ),
@@ -110,22 +113,19 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
                     _buildInfoCard(
                       icon: Icons.vibration_rounded,
                       title: 'Sensor Akselerometer HP',
-                      desc:
-                          'Mendeteksi frekuensi dan tempo goyangan tangan secara real-time.',
+                      desc: 'Mendeteksi frekuensi dan tempo goyangan tangan secara real-time.',
                     ),
                     const SizedBox(height: 8),
                     _buildInfoCard(
                       icon: Icons.pan_tool_outlined,
                       title: 'Panduan Keamanan',
-                      desc:
-                          'Pegang ponsel dengan erat menggunakan kedua tangan agar tidak tergelincir saat digoyangkan.',
+                      desc: 'Pegang ponsel dengan erat menggunakan kedua tangan agar tidak tergelincir saat digoyangkan.',
                     ),
                     const SizedBox(height: 8),
                     _buildInfoCard(
                       icon: Icons.graphic_eq_rounded,
                       title: 'Validasi Studio Cerdas',
-                      desc:
-                          'Sistem memvalidasi goyangan ritmis dan mengabaikan getaran kecil.',
+                      desc: 'Sistem memvalidasi goyangan ritmis dan mengabaikan getaran kecil.',
                     ),
 
                     const SizedBox(height: 12),
@@ -158,9 +158,15 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color:
+            AppColors.white, // Warna border atau garis tepi bagian komponen ini
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi bagian komponen ini
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -173,7 +179,7 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
               child: Icon(
                 Icons.arrow_back_rounded,
                 size: 22,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "Izin Sensor Gerak"
               ),
             ),
           ),
@@ -192,12 +198,14 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
             height: 30,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFB45309),
+              color: Color(
+                0xFFB45309,
+              ), // Warna ikon ikon untuk "Izin Sensor Gerak"
             ),
             child: const Icon(
               Icons.person_rounded,
               size: 18,
-              color: Colors.white,
+              color: Colors.white, // Warna ikon ikon untuk "Izin Sensor Gerak"
             ),
           ),
         ],
@@ -217,7 +225,9 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
               height: 120,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFFFFF0E5),
+                color: Color(
+                  0xFFFFF0E5,
+                ), // Warna latar kotak atau kartu pada bagian komponen ini
               ),
             ),
 
@@ -226,12 +236,23 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
               width: 54,
               height: 92,
               decoration: BoxDecoration(
-                color: const Color(0xFF1E1A18),
+                color: const Color(
+                  0xFF1E1A18,
+                ), // Warna border atau garis tepi bagian komponen ini
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFF4A403A), width: 2),
+                border: Border.all(
+                  color: const Color(
+                    0xFF4A403A,
+                  ), // Warna border atau garis tepi bagian komponen ini
+                  width: 2,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
+                    color: Colors.black.withValues(
+                      // Warna border atau garis tepi bagian komponen ini
+
+                      alpha: 0.15,
+                    ),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -245,7 +266,7 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
                     width: 14,
                     height: 2.5,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF555555),
+                      color: const Color(0xFF555555), // Warna latar kotak atau kartu pada bagian komponen ini
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -256,13 +277,16 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
                     height: 26,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.primaryOrange, width: 1.5),
+                      border: Border.all(
+                        color: AppColors.primaryOrange, // Warna ikon ikon pada bagian komponen ini
+                        width: 1.5,
+                      ),
                     ),
                     child: const Center(
                       child: Icon(
                         Icons.track_changes_rounded,
                         size: 16,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna ikon ikon pada bagian komponen ini
                       ),
                     ),
                   ),
@@ -277,13 +301,19 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF0E5),
+            color: const Color(
+              0xFFFFF0E5,
+            ), // Warna latar kotak atau kartu pada bagian komponen ini
             borderRadius: BorderRadius.circular(12),
           ),
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.circle, size: 6, color: AppColors.primaryOrange),
+              Icon(
+                Icons.circle,
+                size: 6,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "AKSES ACCELEROMETER DIPERLUKAN"
+              ),
               SizedBox(width: 5),
               Text(
                 'AKSES ACCELEROMETER DIPERLUKAN',
@@ -291,7 +321,7 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
                   fontSize: 8.5,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.3,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna teks pada "AKSES ACCELEROMETER DIPERLUKAN"
                 ),
               ),
             ],
@@ -309,9 +339,12 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
     return Container(
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,10 +353,14 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEDDF),
+              color: const Color(0xFFFFEDDF), // Warna ikon ikon pada kartu
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, size: 18, color: AppColors.primaryOrange),
+            child: Icon(
+              icon,
+              size: 18,
+              color: AppColors.primaryOrange, // Warna ikon ikon pada kartu
+            ),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -335,7 +372,7 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
                   style: const TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada kartu
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -343,7 +380,7 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
                   desc,
                   style: const TextStyle(
                     fontSize: 10,
-                    color: Color(0xFF5A524D),
+                    color: Color(0xFF5A524D), // Warna teks pada kartu
                     height: 1.3,
                   ),
                 ),
@@ -359,21 +396,28 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
     return Container(
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFBF7),
+        color: const Color(0xFFFFFBF7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFFFEDD5), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFFFEDD5), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.info_outline_rounded, size: 15, color: Color(0xFFB45309)),
+          Icon(
+            Icons.info_outline_rounded,
+            size: 15,
+            color: Color(0xFFB45309), // Warna ikon ikon pada kartu
+          ),
           SizedBox(width: 8),
           Expanded(
             child: Text(
               'Jika sensor gerak tidak terdeteksi atau tidak didukung pada browser/perangkat Anda, skor tidak akan terhitung palsu dan Anda dapat kembali ke katalog JNOVAMUSIC.',
               style: TextStyle(
                 fontSize: 9.5,
-                color: Color(0xFF78350F),
+                color: Color(0xFF78350F), // Warna teks pada kartu
                 height: 1.3,
               ),
             ),
@@ -403,7 +447,8 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
                     width: 18,
                     height: 18,
                     child: CircularProgressIndicator(
-                      color: Colors.white,
+                      color:
+                          Colors.white, // Warna indikator loading pada tombol
                       strokeWidth: 2,
                     ),
                   )
@@ -413,13 +458,19 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
                       Text(
                         'IZINKAN & MULAI',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors
+                              .white, // Warna ikon ikon untuk "IZINKAN & MULAI"
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
                       SizedBox(width: 6),
-                      Icon(Icons.check, size: 16, color: Colors.white),
+                      Icon(
+                        Icons.check,
+                        size: 16,
+                        color: Colors
+                            .white, // Warna ikon ikon untuk "IZINKAN & MULAI"
+                      ),
                     ],
                   ),
           ),
@@ -432,7 +483,9 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF6E6560),
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "Kembali ke Beranda JNOVAMUSIC"
             ),
           ),
         ),
@@ -444,13 +497,21 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
     return const Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.lock_outline_rounded, size: 12, color: Color(0xFF8E837D)),
+        Icon(
+          Icons.lock_outline_rounded,
+          size: 12,
+          color: Color(
+            0xFF8E837D,
+          ), // Warna ikon ikon untuk "Privasi Terjaga • Data sensor dipro..."
+        ),
         SizedBox(width: 4),
         Text(
           'Privasi Terjaga • Data sensor diproses lokal di perangkat.',
           style: TextStyle(
             fontSize: 9.5,
-            color: Color(0xFF8E837D),
+            color: Color(
+              0xFF8E837D,
+            ), // Warna teks pada "Privasi Terjaga • Data sensor dipro..."
           ),
         ),
       ],
@@ -459,4 +520,3 @@ class _MotionPermissionPageState extends State<MotionPermissionPage> {
 }
 
 typedef MotionPermissionScreen = MotionPermissionPage;
-

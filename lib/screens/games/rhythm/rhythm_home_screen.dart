@@ -59,7 +59,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "/game-play"
       body: SafeArea(
         child: Column(
           children: [
@@ -124,7 +124,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                           style: TextStyle(
                             fontSize: 10.5,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF7E756F),
+                            color: Color(0xFF7E756F), // Warna teks pada "Pelajari Aturan & Keamanan Sensor >"
                           ),
                         ),
                       ),
@@ -145,9 +145,15 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color:
+            AppColors.white, // Warna border atau garis tepi bagian komponen ini
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi bagian komponen ini
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -160,7 +166,8 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
               child: Icon(
                 Icons.arrow_back_rounded,
                 size: 22,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "JNova Rhythm"
               ),
             ),
           ),
@@ -170,7 +177,8 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
+              color:
+                  AppColors.textPrimaryDark, // Warna teks pada "JNova Rhythm"
             ),
           ),
           const Spacer(),
@@ -179,12 +187,12 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
             height: 30,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFB45309),
+              color: Color(0xFFB45309), // Warna ikon ikon untuk "JNova Rhythm"
             ),
             child: const Icon(
               Icons.person_rounded,
               size: 18,
-              color: Colors.white,
+              color: Colors.white, // Warna ikon ikon untuk "JNova Rhythm"
             ),
           ),
         ],
@@ -205,7 +213,9 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
               Icon(
                 Icons.arrow_back_ios_new_rounded,
                 size: 11,
-                color: Color(0xFF6E6560),
+                color: Color(
+                  0xFF6E6560,
+                ), // Warna ikon ikon untuk "Kembali ke JNOVAMUSIC"
               ),
               SizedBox(width: 4),
               Text(
@@ -213,7 +223,9 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF6E6560),
+                  color: Color(
+                    0xFF6E6560,
+                  ), // Warna teks pada "Kembali ke JNOVAMUSIC"
                 ),
               ),
             ],
@@ -222,9 +234,16 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF0E5),
+            color: const Color(
+              0xFFFFF0E5,
+            ), // Warna border atau garis tepi untuk "Kembali ke JNOVAMUSIC"
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFFFD8BF), width: 1.0),
+            border: Border.all(
+              color: const Color(
+                0xFFFFD8BF,
+              ), // Warna border atau garis tepi untuk "Kembali ke JNOVAMUSIC"
+              width: 1.0,
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -232,7 +251,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
               const Icon(
                 Icons.flash_on_rounded,
                 size: 12,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "${points.toString().replaceAllMappe..."
               ),
               const SizedBox(width: 3),
               Text(
@@ -240,7 +259,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                 style: const TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna teks pada "${points.toString().replaceAllMappe..."
                 ),
               ),
             ],
@@ -263,7 +282,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
           child: const Text(
             'MINI-GAME MEMBERSHIP',
             style: TextStyle(
-              color: Colors.white,
+              color: Colors.white, // Warna teks pada "MINI-GAME MEMBERSHIP"
               fontSize: 8,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.4,
@@ -276,7 +295,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w800,
-            color: AppColors.textPrimaryDark,
+            color: AppColors.textPrimaryDark, // Warna teks pada "JNova Rhythm"
             letterSpacing: -0.3,
           ),
         ),
@@ -287,7 +306,9 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
             fontSize: 11.5,
             fontStyle: FontStyle.italic,
             fontWeight: FontWeight.w700,
-            color: Color(0xFFB45309),
+            color: Color(
+              0xFFB45309,
+            ), // Warna teks pada "Feel the Rhythm, Move with the Music!"
           ),
         ),
         const SizedBox(height: 4),
@@ -295,7 +316,9 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
           'Goyangkan HP selama 10 detik dan kumpulkan poin membership sebanyak-banyaknya!',
           style: TextStyle(
             fontSize: 11,
-            color: Color(0xFF6E6560),
+            color: Color(
+              0xFF6E6560,
+            ), // Warna teks pada "Goyangkan HP selama 10 detik dan ku..."
             height: 1.35,
           ),
         ),
@@ -308,9 +331,12 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Goyangkan HP selama 10 detik dan ku..."
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Goyangkan HP selama 10 detik dan ku..."
+          width: 1.0,
+        ),
       ),
       child: Column(
         children: [
@@ -323,7 +349,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna teks pada "((("
                   letterSpacing: -2,
                 ),
               ),
@@ -334,15 +360,22 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                 width: 58,
                 height: 98,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color:
+                      Colors.white, // Warna border atau garis tepi untuk "((("
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: const Color(0xFFD4D0C8),
+                    color: const Color(
+                      0xFFD4D0C8,
+                    ), // Warna border atau garis tepi untuk "((("
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
+                      color: Colors.black.withValues(
+                        // Warna border atau garis tepi untuk "((("
+
+                        alpha: 0.05,
+                      ),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),
@@ -378,7 +411,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna teks pada ")))"
                   letterSpacing: -2,
                 ),
               ),
@@ -390,11 +423,23 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.circle, size: 4, color: AppColors.placeholder),
+              Icon(
+                Icons.circle,
+                size: 4,
+                color: AppColors.placeholder, // Warna ikon ikon pada kartu
+              ),
               SizedBox(width: 4),
-              Icon(Icons.circle, size: 4, color: AppColors.primaryOrange),
+              Icon(
+                Icons.circle,
+                size: 4,
+                color: AppColors.primaryOrange, // Warna ikon ikon pada kartu
+              ),
               SizedBox(width: 4),
-              Icon(Icons.circle, size: 4, color: AppColors.placeholder),
+              Icon(
+                Icons.circle,
+                size: 4,
+                color: AppColors.placeholder, // Warna ikon ikon pada kartu
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -403,20 +448,30 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3.5),
             decoration: BoxDecoration(
-              color: const Color(0xFFDCFCE7),
+              color: const Color(
+                0xFFDCFCE7,
+              ), // Warna latar kotak atau kartu pada kartu
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.circle, size: 6, color: Color(0xFF15803D)),
+                Icon(
+                  Icons.circle,
+                  size: 6,
+                  color: Color(
+                    0xFF15803D,
+                  ), // Warna ikon ikon untuk "Sensor Siap Digunakan"
+                ),
                 SizedBox(width: 5),
                 Text(
                   'Sensor Siap Digunakan',
                   style: TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF15803D),
+                    color: Color(
+                      0xFF15803D,
+                    ), // Warna teks pada "Sensor Siap Digunakan"
                   ),
                 ),
               ],
@@ -432,7 +487,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
       width: 3.5,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.primaryOrange,
+        color: AppColors.primaryOrange, // Warna latar kotak atau kartu pada bagian komponen ini
         borderRadius: BorderRadius.circular(2),
       ),
     );
@@ -444,9 +499,16 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
     return Container(
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "LAGU TANTANGAN HARI INI"
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "LAGU TANTANGAN HARI INI"
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -460,7 +522,9 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                   fontSize: 9,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.5,
-                  color: Color(0xFF8E837D),
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "LAGU TANTANGAN HARI INI"
                 ),
               ),
               Container(
@@ -469,7 +533,11 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                   vertical: 1.5,
                 ),
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFD4D0C8)),
+                  border: Border.all(
+                    color: const Color(
+                      0xFFD4D0C8,
+                    ), // Warna teks pada "180G VINYL CUT"
+                  ),
                   borderRadius: BorderRadius.circular(3),
                 ),
                 child: const Text(
@@ -477,7 +545,9 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                   style: TextStyle(
                     fontSize: 7.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF7E756F),
+                    color: Color(
+                      0xFF7E756F,
+                    ), // Warna teks pada "180G VINYL CUT"
                   ),
                 ),
               ),
@@ -491,14 +561,21 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF221F1D),
+                  color: const Color(
+                    0xFF221F1D,
+                  ), // Warna border atau garis tepi untuk "180G VINYL CUT"
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFFFD8BF), width: 2),
+                  border: Border.all(
+                    color: const Color(
+                      0xFFFFD8BF,
+                    ), // Warna border atau garis tepi untuk "180G VINYL CUT"
+                    width: 2,
+                  ),
                 ),
                 child: const Center(
                   child: Icon(
                     Icons.music_note_rounded,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "180G VINYL CUT"
                     size: 20,
                   ),
                 ),
@@ -515,14 +592,15 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color:
+                            AppColors.textPrimaryDark, // Warna teks pada kartu
                       ),
                     ),
                     Text(
                       _audioService.artistName,
                       style: const TextStyle(
                         fontSize: 10.5,
-                        color: Color(0xFF6E6560),
+                        color: Color(0xFF6E6560), // Warna teks pada kartu
                       ),
                     ),
                     const SizedBox(height: 3),
@@ -534,7 +612,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                             vertical: 1.5,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFECEAE6),
+                            color: const Color(0xFFECEAE6), // Warna latar kotak atau kartu untuk "${_audioService.bpm} BPM"
                             borderRadius: BorderRadius.circular(3),
                           ),
                           child: Text(
@@ -542,7 +620,9 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                             style: const TextStyle(
                               fontSize: 8.5,
                               fontWeight: FontWeight.w800,
-                              color: Color(0xFF5A524D),
+                              color: Color(
+                                0xFF5A524D,
+                              ), // Warna teks pada "${_audioService.bpm} BPM"
                             ),
                           ),
                         ),
@@ -551,7 +631,9 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                           '• ${_audioService.genre}',
                           style: const TextStyle(
                             fontSize: 9,
-                            color: Color(0xFF8E837D),
+                            color: Color(
+                              0xFF8E837D,
+                            ), // Warna teks pada "• ${_audioService.genre}"
                           ),
                         ),
                       ],
@@ -582,7 +664,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                       ? Icons.pause_circle_filled_rounded
                       : Icons.play_circle_fill_rounded,
                   size: 36,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna ikon ikon untuk "Musik gagal diputar: ${_audioServic..."
                 ),
               ),
             ],
@@ -591,7 +673,10 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
             const SizedBox(height: 6),
             Text(
               'Musik gagal diputar: ${_audioService.errorMessage}',
-              style: const TextStyle(color: Colors.redAccent, fontSize: 10),
+              style: const TextStyle(
+                color: Colors.redAccent, // Warna teks pada "Musik gagal diputar: ${_audioServic..."
+                fontSize: 10,
+              ),
             ),
           ],
         ],
@@ -603,9 +688,12 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
     return Container(
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Musik gagal diputar: ${_audioServic..."
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Musik gagal diputar: ${_audioServic..."
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -615,7 +703,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
               Icon(
                 Icons.menu_book_rounded,
                 size: 14,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Cara Bermain Singkat"
               ),
               SizedBox(width: 6),
               Text(
@@ -623,7 +711,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
                 style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Cara Bermain Singkat"
                 ),
               ),
             ],
@@ -641,20 +729,24 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
           Container(
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
-              color: const Color(0xFFEDEBE7),
+              color: const Color(0xFFEDEBE7), // Warna ikon ikon untuk "Goyangkan HP secepat & sekonsisten..."
               borderRadius: BorderRadius.circular(6),
             ),
             child: const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.shield_outlined, size: 12, color: Color(0xFF5A524D)),
+                Icon(
+                  Icons.shield_outlined,
+                  size: 12,
+                  color: Color(0xFF5A524D), // Warna ikon ikon untuk "Goyangkan HP secepat & sekonsisten..."
+                ),
                 SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     'Sensor accelerometer memvalidasi goyangan ritmis nyata dan menyaring getaran palsu untuk skor yang adil.',
                     style: TextStyle(
                       fontSize: 9,
-                      color: Color(0xFF5A524D),
+                      color: Color(0xFF5A524D), // Warna teks pada "Goyangkan HP secepat & sekonsisten..."
                       height: 1.25,
                     ),
                   ),
@@ -676,7 +768,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
           height: 16,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: Color(0xFFECEAE6),
+            color: Color(0xFFECEAE6), // Warna teks pada bagian komponen ini
           ),
           child: Center(
             child: Text(
@@ -684,7 +776,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
               style: const TextStyle(
                 fontSize: 9,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF5A524D),
+                color: Color(0xFF5A524D), // Warna teks pada bagian komponen ini
               ),
             ),
           ),
@@ -695,7 +787,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
             text,
             style: const TextStyle(
               fontSize: 10,
-              color: Color(0xFF5A524D),
+              color: Color(0xFF5A524D), // Warna teks pada bagian komponen ini
               height: 1.3,
             ),
           ),
@@ -711,7 +803,7 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
       child: ElevatedButton(
         onPressed: _handleStartGame,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryOrange,
+          backgroundColor: AppColors.primaryOrange, // Warna visual pada tombol
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -723,14 +815,18 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
             Text(
               'MULAI GOYANG',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.white, // Warna teks pada "MULAI GOYANG"
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0.5,
               ),
             ),
             SizedBox(width: 6),
-            Icon(Icons.flash_on_rounded, size: 16, color: Colors.white),
+            Icon(
+              Icons.flash_on_rounded,
+              size: 16,
+              color: Colors.white, // Warna ikon ikon untuk "MULAI GOYANG"
+            ),
           ],
         ),
       ),
@@ -739,4 +835,3 @@ class _JNovaRhythmHomePageState extends State<JNovaRhythmHomePage> {
 }
 
 typedef RhythmHomeScreen = JNovaRhythmHomePage;
-

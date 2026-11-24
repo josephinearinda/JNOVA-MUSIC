@@ -74,18 +74,27 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Colors.white, // Warna ikon ikon untuk "Verifikasi Serial Number"
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
-            Icon(Icons.shield_outlined, color: Color(0xFFFF5500), size: 22),
+            Icon(
+              Icons.shield_outlined,
+              color: Color(
+                0xFFFF5500,
+              ), // Warna ikon ikon untuk "Verifikasi Serial Number"
+              size: 22,
+            ),
             SizedBox(width: 8),
             Text(
               'Verifikasi Serial Number',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF1E1E1E),
+                color: Color(
+                  0xFF1E1E1E,
+                ), // Warna teks pada "Verifikasi Serial Number"
               ),
             ),
           ],
@@ -96,7 +105,12 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
           children: [
             const Text(
               'Masukkan nomor seri fisik instrumen atau Token ID untuk memvalidasi keaslian di blockchain JNOVA:',
-              style: TextStyle(fontSize: 11.5, color: Color(0xFF6B6560)),
+              style: TextStyle(
+                fontSize: 11.5,
+                color: Color(
+                  0xFF6B6560,
+                ), // Warna teks pada "Contoh: SN-FENDER-014051-88421"
+              ),
             ),
             const SizedBox(height: 12),
             TextField(
@@ -106,25 +120,35 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                 hintText: 'Contoh: SN-FENDER-014051-88421',
                 hintStyle: const TextStyle(
                   fontSize: 11,
-                  color: Color(0xFFAAA39D),
+                  color: Color(
+                    0xFFAAA39D,
+                  ), // Warna teks pada "Contoh: SN-FENDER-014051-88421"
                 ),
                 filled: true,
-                fillColor: const Color(0xFFF7F6F3),
+                fillColor: const Color(
+                  0xFFF7F6F3,
+                ), // Warna latar field input pada bagian komponen ini
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 10,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Color(0xFFE2DFD8)),
+                  borderSide: const BorderSide(
+                    color: Color(0xFFE2DFD8), // Warna border atau garis tepi untuk "Contoh: SN-FENDER-014051-88421"
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Color(0xFFE2DFD8)),
+                  borderSide: const BorderSide(
+                    color: Color(0xFFE2DFD8), // Warna border atau garis tepi untuk "Contoh: SN-FENDER-014051-88421"
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Color(0xFFFF5500)),
+                  borderSide: const BorderSide(
+                    color: Color(0xFFFF5500), // Warna border atau garis tepi untuk "Contoh: SN-FENDER-014051-88421"
+                  ),
                 ),
               ),
             ),
@@ -137,7 +161,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                     'Coba Serial Demo',
                     style: TextStyle(fontSize: 9.5),
                   ),
-                  backgroundColor: const Color(0xFFFFF0E6),
+                  backgroundColor: const Color(
+                    0xFFFFF0E6,
+                  ), // Warna teks pada "Coba Serial Demo"
                   onPressed: () {
                     if (_certificates.isNotEmpty) {
                       verifyController.text = _certificates.first.serialNumber;
@@ -153,7 +179,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
             onPressed: () => Navigator.pop(ctx),
             child: const Text(
               'Batal',
-              style: TextStyle(color: Color(0xFF7E756F)),
+              style: TextStyle(
+                color: Color(0xFF7E756F), // Warna teks pada "Batal"
+              ),
             ),
           ),
           ElevatedButton(
@@ -163,7 +191,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
               _handleVerifyResult(query);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFF5500),
+              backgroundColor: const Color(
+                0xFFFF5500,
+              ), // Warna latar tombol pada bagian komponen ini
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -172,7 +202,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
             child: const Text(
               'Validasi On-Chain',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.white, // Warna teks pada "Validasi On-Chain"
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -200,13 +230,20 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor:
+              Colors.white, // Warna ikon ikon untuk "Tidak Terdaftar"
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
           title: const Row(
             children: [
-              Icon(Icons.cancel_rounded, color: Color(0xFFDC2626), size: 24),
+              Icon(
+                Icons.cancel_rounded,
+                color: Color(
+                  0xFFDC2626,
+                ), // Warna ikon ikon untuk "Tidak Terdaftar"
+                size: 24,
+              ),
               SizedBox(width: 8),
               Text(
                 'Tidak Terdaftar',
@@ -216,14 +253,19 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
           ),
           content: Text(
             'Nomor seri "$query" tidak ditemukan pada buku besar blockchain JNOVA. Harap pastikan instrumen dibeli dari toko resmi JNOVAMUSIC.',
-            style: const TextStyle(fontSize: 12, color: Color(0xFF5A524D)),
+            style: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFF5A524D), // Warna teks pada "Nomor seri"
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
               child: const Text(
                 'Tutup',
-                style: TextStyle(color: Color(0xFFFF5500)),
+                style: TextStyle(
+                  color: Color(0xFFFF5500), // Warna teks pada "Tutup"
+                ),
               ),
             ),
           ],
@@ -237,16 +279,22 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
     final filtered = _filteredCertificates;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F8F6),
+      backgroundColor: const Color(
+        0xFFF9F8F6,
+      ), // Warna latar kotak atau kartu pada bagian komponen ini
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Colors.white, // Warna ikon ikon pada bagian komponen ini
         elevation: 0,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor:
+            Colors.transparent, // Warna ikon ikon untuk "Sertifikat Blockchain"
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
             size: 18,
-            color: Color(0xFF1E1E1E),
+            color: Color(
+              0xFF1E1E1E,
+            ), // Warna ikon ikon untuk "Sertifikat Blockchain"
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -258,12 +306,19 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF1E1E1E),
+                color: Color(
+                  0xFF1E1E1E,
+                ), // Warna teks pada "Sertifikat Blockchain"
               ),
             ),
             Text(
               'Portofolio instrumen original terverifikasi',
-              style: TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
+              style: TextStyle(
+                fontSize: 10,
+                color: Color(
+                  0xFF7E756F,
+                ), // Warna teks pada "Portofolio instrumen original terve..."
+              ),
             ),
           ],
         ),
@@ -272,7 +327,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
             tooltip: 'Validasi Serial Number',
             icon: const Icon(
               Icons.qr_code_scanner_rounded,
-              color: Color(0xFFFF5500),
+              color: Color(
+                0xFFFF5500,
+              ), // Warna ikon ikon untuk "Validasi Serial Number"
             ),
             onPressed: _openVerifyDialog,
           ),
@@ -285,9 +342,14 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: const BoxDecoration(
-              color: Color(0xFFFFF7F2),
+              color: Color(
+                0xFFFFF7F2,
+              ), // Warna border atau garis tepi untuk "Validasi Serial Number"
               border: Border(
-                bottom: BorderSide(color: Color(0xFFFFD1B3), width: 1.0),
+                bottom: BorderSide(
+                  color: Color(0xFFFFD1B3), // Warna border atau garis tepi untuk "Validasi Serial Number"
+                  width: 1.0,
+                ),
               ),
             ),
             child: Row(
@@ -295,17 +357,21 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF2EB),
+                    color: const Color(0xFFFFF2EB), // Warna border atau garis tepi untuk "Validasi Serial Number"
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: const Color(0xFFFFD1B3),
+                      color: const Color(
+                        0xFFFFD1B3,
+                      ), // Warna ikon ikon untuk "Validasi Serial Number"
                       width: 0.8,
                     ),
                   ),
                   child: const Icon(
                     Icons.security_rounded,
                     size: 20,
-                    color: Color(0xFFFF6B00),
+                    color: Color(
+                      0xFFFF6B00,
+                    ), // Warna ikon ikon untuk "Validasi Serial Number"
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -318,7 +384,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF944508),
+                          color: Color(0xFF944508), // Warna teks pada "Jaminan Keaslian On-Chain JNOVA"
                         ),
                       ),
                       SizedBox(height: 2),
@@ -326,7 +392,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         'Daftar sertifikat keaslian dan kepemilikan digital resmi instrumen musik Anda di blockchain Polygon.',
                         style: TextStyle(
                           fontSize: 9.5,
-                          color: Color(0xFF7A3906),
+                          color: Color(0xFF7A3906), // Warna teks pada "Jaminan Keaslian On-Chain JNOVA"
                           height: 1.3,
                         ),
                       ),
@@ -347,12 +413,12 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                 hintText: 'Cari merek, tipe, nomor seri, atau Token ID...',
                 hintStyle: const TextStyle(
                   fontSize: 11.5,
-                  color: Color(0xFFA09891),
+                  color: Color(0xFFA09891), // Warna ikon ikon untuk "Cari merek, tipe, nomor seri, atau..."
                 ),
                 prefixIcon: const Icon(
                   Icons.search_rounded,
                   size: 20,
-                  color: Color(0xFF8E837D),
+                  color: Color(0xFF8E837D), // Warna ikon ikon untuk "Cari merek, tipe, nomor seri, atau..."
                 ),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
@@ -364,22 +430,35 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                       )
                     : null,
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Colors
+                    .white, // Warna latar field input pada bagian komponen ini
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 0,
                   horizontal: 12,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFFEBE7DF)),
+                  borderSide: const BorderSide(
+                    color: Color(
+                      0xFFEBE7DF,
+                    ), // Warna border atau garis tepi bagian komponen ini
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFFEBE7DF)),
+                  borderSide: const BorderSide(
+                    color: Color(
+                      0xFFEBE7DF,
+                    ), // Warna border atau garis tepi bagian komponen ini
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFFFF5500)),
+                  borderSide: const BorderSide(
+                    color: Color(
+                      0xFFFF5500,
+                    ), // Warna border atau garis tepi bagian komponen ini
+                  ),
                 ),
               ),
             ),
@@ -406,8 +485,11 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                             ? FontWeight.w800
                             : FontWeight.w600,
                         color: isSelected
-                            ? Colors.white
-                            : const Color(0xFF4A423D),
+                            ? Colors
+                                  .white // Warna teks pada bagian komponen ini
+                            : const Color(
+                                0xFF4A423D,
+                              ), // Warna visual pada bagian komponen ini
                       ),
                     ),
                     selected: isSelected,
@@ -416,8 +498,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         _selectedCategory = cat;
                       });
                     },
-                    backgroundColor: Colors.white,
-                    selectedColor: const Color(0xFFFF5500),
+                    backgroundColor: Colors.white, // Warna latar kotak atau kartu pada bagian komponen ini
+                    selectedColor: const Color(
+                      0xFFFF5500,
+                    ), // Warna visual pada bagian komponen ini
                     showCheckmark: false,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 4,
@@ -427,8 +511,8 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                       borderRadius: BorderRadius.circular(20),
                       side: BorderSide(
                         color: isSelected
-                            ? const Color(0xFFFF5500)
-                            : const Color(0xFFE5E0D8),
+                            ? const Color(0xFFFF5500) // Warna border atau garis tepi bagian komponen ini
+                            : const Color(0xFFE5E0D8), // Warna border atau garis tepi bagian komponen ini
                       ),
                     ),
                   ),
@@ -449,7 +533,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         const Icon(
                           Icons.verified_outlined,
                           size: 48,
-                          color: Color(0xFFC7BFB8),
+                          color: Color(0xFFC7BFB8), // Warna ikon ikon untuk "Tidak ada sertifikat yang cocok"
                         ),
                         const SizedBox(height: 12),
                         const Text(
@@ -457,7 +541,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF5A524D),
+                            color: Color(0xFF5A524D), // Warna teks pada "Tidak ada sertifikat yang cocok"
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -465,7 +549,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                           'Coba ganti filter kategori atau kata kunci pencarian.',
                           style: TextStyle(
                             fontSize: 11,
-                            color: Color(0xFF8E837D),
+                            color: Color(0xFF8E837D), // Warna teks pada "Coba ganti filter kategori atau kat..."
                           ),
                         ),
                       ],
@@ -493,12 +577,19 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white, // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFEDE9E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEDE9E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Colors.black.withValues(
+              // Warna border atau garis tepi kartu
+
+              alpha: 0.03,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -510,10 +601,15 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: const BoxDecoration(
-              color: Color(0xFFFFF9F5),
+              color: Color(0xFFFFF9F5), // Warna border atau garis tepi kartu
               borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
               border: Border(
-                bottom: BorderSide(color: Color(0xFFFFE0CC), width: 1.0),
+                bottom: BorderSide(
+                  color: Color(
+                    0xFFFFE0CC,
+                  ), // Warna border atau garis tepi kartu
+                  width: 1.0,
+                ),
               ),
             ),
             child: Row(
@@ -525,7 +621,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                     const Icon(
                       Icons.token_rounded,
                       size: 13,
-                      color: Color(0xFFFF6B00),
+                      color: Color(
+                        0xFFFF6B00,
+                      ), // Warna ikon ikon untuk "TOKEN ${cert.tokenId}"
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -533,7 +631,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                       style: const TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFFFF6B00),
+                        color: Color(
+                          0xFFFF6B00,
+                        ), // Warna teks pada "TOKEN ${cert.tokenId}"
                       ),
                     ),
                   ],
@@ -547,13 +647,13 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: cert.isClaimed
-                          ? const Color(0xFFECFDF5)
-                          : const Color(0xFFFFF2EB),
+                          ? const Color(0xFFECFDF5) // Warna latar kotak atau kartu untuk "TOKEN ${cert.tokenId}"
+                          : const Color(0xFFFFF2EB), // Warna border atau garis tepi untuk "TOKEN ${cert.tokenId}"
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(
                         color: cert.isClaimed
-                            ? const Color(0xFFA7F3D0)
-                            : const Color(0xFFFFD1B3),
+                            ? const Color(0xFFA7F3D0) // Warna border atau garis tepi untuk "TOKEN ${cert.tokenId}"
+                            : const Color(0xFFFFD1B3), // Warna border atau garis tepi untuk "TOKEN ${cert.tokenId}"
                         width: 0.8,
                       ),
                     ),
@@ -565,8 +665,12 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         fontSize: 8.5,
                         fontWeight: FontWeight.w900,
                         color: cert.isClaimed
-                            ? const Color(0xFF059669)
-                            : const Color(0xFFFF6B00),
+                            ? const Color(
+                                0xFF059669,
+                              ) // Warna teks pada "TERVERIFIKASI"
+                            : const Color(
+                                0xFFFF6B00,
+                              ), // Warna visual pada kartu
                       ),
                     ),
                   ),
@@ -584,9 +688,15 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                   width: 70,
                   height: 70,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF9F7),
+                    color: const Color(
+                      0xFFFAF9F7,
+                    ), // Warna border atau garis tepi kartu
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFEBE8E3)),
+                    border: Border.all(
+                      color: const Color(
+                        0xFFEBE8E3,
+                      ), // Warna border atau garis tepi kartu
+                    ),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(9),
@@ -603,7 +713,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFFFF5500),
+                          color: Color(0xFFFF5500), // Warna teks pada kartu
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -614,7 +724,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF1E1E1E),
+                          color: Color(0xFF1E1E1E), // Warna teks pada kartu
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -623,7 +733,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF4A423D),
+                          color: Color(
+                            0xFF4A423D,
+                          ), // Warna teks pada "Serial: ${cert.serialNumber}"
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -632,7 +744,9 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                         style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF6B6560),
+                          color: Color(
+                            0xFF6B6560,
+                          ), // Warna teks pada "monospace"
                           fontFamily: 'monospace',
                         ),
                       ),
@@ -645,8 +759,8 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                           fontSize: 9.5,
                           fontWeight: FontWeight.w600,
                           color: cert.isClaimed
-                              ? const Color(0xFF059669)
-                              : const Color(0xFFB45309),
+                              ? const Color(0xFF059669) // Warna teks pada "Pemilik: ${cert.ownerName}"
+                              : const Color(0xFFB45309), // Warna teks pada "Pemilik: ${cert.ownerName}"
                           fontStyle: cert.isClaimed
                               ? FontStyle.normal
                               : FontStyle.italic,
@@ -659,8 +773,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
             ),
           ),
 
-          const Divider(height: 1, color: Color(0xFFF0ECE6)),
-
+          const Divider(
+            height: 1,
+            color: Color(0xFFF0ECE6), // Warna garis pemisah pada kartu
+          ),
           // Tombol Buka Sertifikat
           InkWell(
             onTap: () {
@@ -687,7 +803,7 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                   Icon(
                     Icons.verified_user_rounded,
                     size: 14,
-                    color: Color(0xFFFF5500),
+                    color: Color(0xFFFF5500), // Warna ikon ikon untuk "Lihat Sertifikat Keaslian Digital"
                   ),
                   SizedBox(width: 6),
                   Text(
@@ -695,14 +811,14 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFFFF5500),
+                      color: Color(0xFFFF5500), // Warna ikon ikon untuk "Lihat Sertifikat Keaslian Digital"
                     ),
                   ),
                   SizedBox(width: 4),
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 11,
-                    color: Color(0xFFFF5500),
+                    color: Color(0xFFFF5500), // Warna ikon ikon untuk "Lihat Sertifikat Keaslian Digital"
                   ),
                 ],
               ),
@@ -716,7 +832,10 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
   Widget _buildProductImage(String imagePath) {
     final isNetworkImage =
         imagePath.startsWith('https://') || imagePath.startsWith('http://');
-    const fallback = Icon(Icons.music_note_rounded, color: Color(0xFFFF5500));
+    const fallback = Icon(
+      Icons.music_note_rounded,
+      color: Color(0xFFFF5500), // Warna ikon ikon untuk "https://"
+    );
 
     return isNetworkImage
         ? Image.network(
@@ -733,4 +852,3 @@ class _MyCertificatesScreenState extends State<MyCertificatesScreen> {
 }
 
 typedef CertificateListScreen = MyCertificatesScreen;
-

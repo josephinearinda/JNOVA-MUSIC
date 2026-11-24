@@ -220,7 +220,14 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF16213E), Color(0xFF1A1A2E)],
+            colors: [
+              Color(
+                0xFF16213E,
+              ), // Warna latar kotak atau kartu pada bagian komponen ini
+              Color(
+                0xFF1A1A2E,
+              ), // Warna latar kotak atau kartu pada bagian komponen ini
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -238,14 +245,17 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                     IconButton(
                       tooltip: 'Kembali ke pilihan game',
                       onPressed: () => Navigator.maybePop(context),
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white, // Warna ikon ikon untuk "Kembali ke pilihan game"
+                      ),
                     ),
                     const Expanded(
                       child: Text(
                         'JNova Dodge',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.white, // Warna teks pada "JNova Dodge"
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
                         ),
@@ -263,7 +273,7 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                     Text(
                       'SKOR: $_score',
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: Colors.white, // Warna teks pada "SKOR: $_score"
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -274,8 +284,9 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                         (index) => Icon(
                           Icons.favorite,
                           color: index < _lives
-                              ? Colors.redAccent
-                              : Colors.white30,
+                              ? Colors
+                                    .redAccent // Warna ikon ikon untuk "SKOR: $_score"
+                              : Colors.white30, // Warna ikon ikon untuk "SKOR: $_score"
                         ),
                       ),
                     ),
@@ -289,7 +300,8 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                     _statusError!,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Colors.orangeAccent,
+                      color: Colors
+                          .orangeAccent, // Warna teks pada "SKOR: $_score"
                       fontSize: 11,
                     ),
                   ),
@@ -315,7 +327,11 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                                 borderRadius: BorderRadius.circular(4),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.red.withValues(alpha: 0.5),
+                                    color: Colors.red.withValues(
+                                      // Warna latar kotak atau kartu pada bagian komponen ini
+
+                                      alpha: 0.5,
+                                    ),
                                     blurRadius: 8,
                                   ),
                                 ],
@@ -333,7 +349,11 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                               color: Colors.cyanAccent,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.cyan.withValues(alpha: 0.8),
+                                  color: Colors.cyan.withValues(
+                                    // Warna latar kotak atau kartu pada bagian komponen ini
+
+                                    alpha: 0.8,
+                                  ),
                                   blurRadius: 15,
                                 ),
                               ],
@@ -343,7 +363,7 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                         if (!_isPlaying)
                           Positioned.fill(
                             child: Container(
-                              color: Colors.black87,
+                              color: Colors.black87, // Warna area atau kotak untuk "GAME OVER"
                               child: Center(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -351,7 +371,7 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                                     const Text(
                                       'GAME OVER',
                                       style: TextStyle(
-                                        color: Colors.redAccent,
+                                        color: Colors.redAccent, // Warna teks pada "GAME OVER"
                                         fontSize: 38,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -360,7 +380,7 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                                     Text(
                                       'Skor Akhir: $_score',
                                       style: const TextStyle(
-                                        color: Colors.white,
+                                        color: Colors.white, // Warna teks pada "Skor Akhir: $_score"
                                         fontSize: 22,
                                       ),
                                     ),
@@ -369,7 +389,7 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                                       Text(
                                         '+$_score POIN MEMBERSHIP',
                                         style: const TextStyle(
-                                          color: Colors.cyanAccent,
+                                          color: Colors.cyanAccent, // Warna teks pada "+$_score POIN MEMBERSHIP"
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -379,8 +399,8 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                                     ElevatedButton(
                                       onPressed: _restartGame,
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.cyanAccent,
-                                        foregroundColor: Colors.black,
+                                        backgroundColor: Colors.cyanAccent, // Warna latar tombol pada bagian komponen ini
+                                        foregroundColor: Colors.black, // Warna teks atau ikon tombol pada bagian komponen ini
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 36,
                                           vertical: 14,
@@ -407,7 +427,10 @@ class _JNovaDodgeGamePageState extends State<JNovaDodgeGamePage> {
                 padding: EdgeInsets.only(bottom: 14),
                 child: Text(
                   'Miringkan HP ke kiri dan kanan untuk menghindar',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                  style: TextStyle(
+                    color: Colors.white70, // Warna teks pada "Miringkan HP ke kiri dan kanan untu..."
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ],
@@ -426,4 +449,3 @@ class _FallingBlock {
 }
 
 typedef DodgeGameScreen = JNovaDodgeGamePage;
-

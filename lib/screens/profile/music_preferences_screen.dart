@@ -81,7 +81,9 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
         content: Text(
           '${_selectedCategories.length} preferensi musik berhasil disimpan!',
         ),
-        backgroundColor: const Color(0xFF1E1A18),
+        backgroundColor: const Color(
+          0xFF1E1A18,
+        ), // Warna latar pesan pemberitahuan pada bagian komponen ini
         duration: const Duration(seconds: 2),
       ),
     );
@@ -91,7 +93,7 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "${_selectedCategories.length} prefe..."
       body: SafeArea(
         child: Column(
           children: [
@@ -115,9 +117,13 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFAF9F7),
+                          color: const Color(
+                            0xFFFAF9F7,
+                          ), // Warna border atau garis tepi bagian komponen ini
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFEBE8E3)),
+                          border: Border.all(
+                            color: const Color(0xFFEBE8E3), // Warna border atau garis tepi bagian komponen ini
+                          ),
                         ),
                         child: const Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +131,7 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                             Icon(
                               Icons.tune_rounded,
                               size: 16,
-                              color: AppColors.primaryOrange,
+                              color: AppColors.primaryOrange, // Warna ikon ikon pada bagian komponen ini
                             ),
                             SizedBox(width: 8),
                             Expanded(
@@ -133,7 +139,9 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                                 'Pilih kategori instrumen dan musik favorit Anda untuk mendapatkan rekomendasi produk yang lebih personal di katalog JNOVAMUSIC.',
                                 style: TextStyle(
                                   fontSize: 10,
-                                  color: Color(0xFF5A524D),
+                                  color: Color(
+                                    0xFF5A524D,
+                                  ), // Warna teks pada bagian komponen ini
                                   height: 1.35,
                                 ),
                               ),
@@ -167,13 +175,14 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? const Color(0xFFFFFBF7)
-                                    : const Color(0xFFFAF9F7),
+                                    ? const Color(0xFFFFFBF7) // Warna latar kotak atau kartu pada bagian komponen ini
+                                    : const Color(0xFFFAF9F7), // Warna border atau garis tepi bagian komponen ini
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color: isSelected
-                                      ? AppColors.primaryOrange
-                                      : const Color(0xFFEBE8E3),
+                                      ? AppColors
+                                            .primaryOrange // Warna border atau garis tepi bagian komponen ini
+                                      : const Color(0xFFEBE8E3), // Warna border atau garis tepi bagian komponen ini
                                   width: isSelected ? 1.5 : 1.0,
                                 ),
                               ),
@@ -184,16 +193,17 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                                     height: 36,
                                     decoration: BoxDecoration(
                                       color: isSelected
-                                          ? const Color(0xFFFFEDDF)
-                                          : const Color(0xFFEDEBE7),
+                                          ? const Color(0xFFFFEDDF) // Warna latar kotak atau kartu pada bagian komponen ini
+                                          : const Color(0xFFEDEBE7), // Warna ikon ikon pada bagian komponen ini
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Icon(
                                       cat.icon,
                                       size: 18,
                                       color: isSelected
-                                          ? AppColors.primaryOrange
-                                          : const Color(0xFF5A524D),
+                                          ? AppColors
+                                                .primaryOrange // Warna ikon ikon pada bagian komponen ini
+                                          : const Color(0xFF5A524D), // Warna ikon ikon pada bagian komponen ini
                                     ),
                                   ),
                                   const SizedBox(width: 12),
@@ -207,7 +217,7 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                                           style: const TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w800,
-                                            color: AppColors.textPrimaryDark,
+                                            color: AppColors.textPrimaryDark, // Warna teks pada bagian komponen ini
                                           ),
                                         ),
                                         const SizedBox(height: 2),
@@ -215,7 +225,7 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                                           cat.subtitle,
                                           style: const TextStyle(
                                             fontSize: 9.5,
-                                            color: Color(0xFF7E756F),
+                                            color: Color(0xFF7E756F), // Warna teks pada bagian komponen ini
                                           ),
                                         ),
                                       ],
@@ -227,12 +237,14 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: isSelected
-                                          ? AppColors.primaryOrange
-                                          : Colors.transparent,
+                                          ? AppColors
+                                                .primaryOrange // Warna border atau garis tepi bagian komponen ini
+                                          : Colors.transparent, // Warna border atau garis tepi bagian komponen ini
                                       border: Border.all(
                                         color: isSelected
-                                            ? AppColors.primaryOrange
-                                            : const Color(0xFFD4D0C8),
+                                            ? AppColors
+                                                  .primaryOrange // Warna border atau garis tepi bagian komponen ini
+                                            : const Color(0xFFD4D0C8), // Warna border atau garis tepi bagian komponen ini
                                         width: 1.5,
                                       ),
                                     ),
@@ -240,7 +252,7 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                                         ? const Icon(
                                             Icons.check,
                                             size: 14,
-                                            color: Colors.white,
+                                            color: Colors.white, // Warna ikon ikon pada bagian komponen ini
                                           )
                                         : null,
                                   ),
@@ -260,7 +272,7 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                         child: ElevatedButton(
                           onPressed: _handleSave,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryOrange,
+                            backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian komponen ini
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -269,12 +281,12 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.check, size: 16, color: Colors.white),
+                              Icon(Icons.check, size: 16, color: Colors.white), // Warna ikon ikon untuk "Simpan Preferensi Musik"
                               SizedBox(width: 6),
                               Text(
                                 'Simpan Preferensi Musik',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.white, // Warna ikon ikon untuk "Simpan Preferensi Musik"
                                   fontSize: 13,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -316,9 +328,15 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/order-detail"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/order-detail"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -331,7 +349,8 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                 height: 20,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.graphic_eq_rounded,
-                  color: AppColors.primaryOrange,
+                  color:
+                      AppColors.primaryOrange, // Warna ikon ikon untuk "Profil"
                   size: 20,
                 ),
               ),
@@ -341,7 +360,7 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Profil"
                 ),
               ),
             ],
@@ -350,7 +369,9 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
           IconButton(
             icon: const Icon(Icons.notifications_none_rounded, size: 22),
             onPressed: () => Navigator.pushNamed(context, '/notifications'),
-            color: const Color(0xFF4A403A),
+            color: const Color(
+              0xFF4A403A,
+            ), // Warna ikon ikon untuk "/notifications"
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -360,12 +381,14 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
             height: 28,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFB45309),
+              color: Color(
+                0xFFB45309,
+              ), // Warna ikon ikon untuk "/notifications"
             ),
             child: const Icon(
               Icons.person_rounded,
               size: 17,
-              color: Colors.white,
+              color: Colors.white, // Warna ikon ikon untuk "/notifications"
             ),
           ),
         ],
@@ -377,9 +400,15 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/notifications"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/notifications"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -391,14 +420,22 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFFF7F6F4),
+                color: const Color(
+                  0xFFF7F6F4,
+                ), // Warna border atau garis tepi untuk "/notifications"
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+                border: Border.all(
+                  color: const Color(
+                    0xFFEBE8E3,
+                  ), // Warna ikon ikon untuk "/notifications"
+                  width: 1.0,
+                ),
               ),
               child: const Icon(
                 Icons.arrow_back_rounded,
                 size: 18,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "/notifications"
               ),
             ),
           ),
@@ -412,12 +449,15 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Preferensi Musik & Lagu"
                   ),
                 ),
                 Text(
                   'Pilih genre dan kategori instrumen favorit Anda.',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF8E837D), // Warna teks pada "Pilih genre dan kategori instrumen..."
+                  ),
                 ),
               ],
             ),
@@ -429,4 +469,3 @@ class _MusicPreferencesPageState extends State<MusicPreferencesPage> {
 }
 
 typedef MusicPreferencesScreen = MusicPreferencesPage;
-

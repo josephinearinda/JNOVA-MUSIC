@@ -8,10 +8,11 @@ class GameSelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "Pilih Game"
       appBar: AppBar(
-        backgroundColor: AppColors.white,
-        foregroundColor: AppColors.textPrimaryDark,
+        backgroundColor: AppColors.white, // Warna teks pada "Pilih Game"
+        foregroundColor:
+            AppColors.textPrimaryDark, // Warna teks pada "Pilih Game"
         title: const Text(
           'Pilih Game',
           style: TextStyle(fontWeight: FontWeight.w800),
@@ -34,7 +35,7 @@ class GameSelectionPage extends StatelessWidget {
             const Text(
               'Mainkan game, kumpulkan poin!',
               style: TextStyle(
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna teks pada "Mainkan game, kumpulkan poin!"
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
               ),
@@ -42,10 +43,10 @@ class GameSelectionPage extends StatelessWidget {
             const SizedBox(height: 20),
             _GameCard(
               title: 'JNova Rhythm',
-              description:
-                  'Ikuti irama musik dan kumpulkan poin dengan menggoyangkan HP.',
+              description: 'Ikuti irama musik dan kumpulkan poin dengan menggoyangkan HP.',
               icon: Icons.graphic_eq_rounded,
-              color: AppColors.primaryOrange,
+              color: AppColors
+                  .primaryOrange, // Warna visual pada bagian komponen ini
               onTap: () => Navigator.pushNamed(context, '/game-permission'),
             ),
             const SizedBox(height: 14),
@@ -53,7 +54,9 @@ class GameSelectionPage extends StatelessWidget {
               title: 'JNova Dodge',
               description: 'Miringkan HP untuk menghindari balok dan raih skor tertinggi.',
               icon: Icons.sports_esports_rounded,
-              color: const Color(0xFF06B6D4),
+              color: const Color(
+                0xFF06B6D4,
+              ), // Warna visual pada bagian komponen ini
               onTap: () => Navigator.pushNamed(context, '/game2'),
             ),
           ],
@@ -81,7 +84,8 @@ class _GameCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.white,
+      color: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       borderRadius: BorderRadius.circular(18),
       child: InkWell(
         onTap: onTap,
@@ -89,7 +93,9 @@ class _GameCard extends StatelessWidget {
         child: Ink(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.borderLight),
+            border: Border.all(
+              color: AppColors.borderLight, // Warna border atau garis tepi bagian komponen ini
+            ),
             borderRadius: BorderRadius.circular(18),
           ),
           child: Row(
@@ -129,7 +135,11 @@ class _GameCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(Icons.chevron_right, color: AppColors.textMuted),
+              const Icon(
+                Icons.chevron_right,
+                color: AppColors
+                    .textMuted, // Warna ikon ikon pada bagian komponen ini
+              ),
             ],
           ),
         ),
@@ -139,4 +149,3 @@ class _GameCard extends StatelessWidget {
 }
 
 typedef GameSelectionScreen = GameSelectionPage;
-

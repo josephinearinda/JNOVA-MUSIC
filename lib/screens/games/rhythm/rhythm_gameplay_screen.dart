@@ -106,7 +106,8 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor:
+              Colors.white, // Warna ikon ikon untuk "Permainan Dijeda"
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -114,7 +115,8 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
             children: [
               Icon(
                 Icons.pause_circle_rounded,
-                color: AppColors.primaryOrange,
+                color: AppColors
+                    .primaryOrange, // Warna ikon ikon untuk "Permainan Dijeda"
                 size: 24,
               ),
               SizedBox(width: 8),
@@ -123,7 +125,8 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors
+                      .textPrimaryDark, // Warna teks pada "Permainan Dijeda"
                 ),
               ),
             ],
@@ -132,7 +135,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
             'Sisa waktu: $_secondsRemaining detik.\nSkor sementara: +${_sensorService.currentPoints} poin.',
             style: const TextStyle(
               fontSize: 12,
-              color: Color(0xFF6E6560),
+              color: Color(0xFF6E6560), // Warna teks pada "Permainan Dijeda"
               height: 1.35,
             ),
           ),
@@ -150,7 +153,9 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
               child: const Text(
                 'Akhiri Permainan',
                 style: TextStyle(
-                  color: Color(0xFF8E837D),
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "Akhiri Permainan"
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -163,7 +168,8 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                 _startCountdownTimer();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor: AppColors
+                    .primaryOrange, // Warna visual pada bagian komponen ini
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -171,7 +177,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
               child: const Text(
                 'Lanjutkan',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.white, // Warna teks pada "Lanjutkan"
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -192,7 +198,8 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
     final magnitude = _sensorService.currentMagnitude;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -211,7 +218,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                         'Musik gagal diputar: ${_audioService.errorMessage}',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          color: Colors.redAccent,
+                          color: Colors.redAccent, // Warna teks pada "Musik gagal diputar: ${_audioServic..."
                           fontSize: 10,
                         ),
                       ),
@@ -254,9 +261,12 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi game
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(0xFFF2F0ED), // Warna border atau garis tepi game
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -269,14 +279,19 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFFF7F6F4),
+                color: const Color(
+                  0xFFF7F6F4,
+                ), // Warna border atau garis tepi game
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+                border: Border.all(
+                  color: const Color(0xFFEBE8E3), // Warna ikon ikon pada game
+                  width: 1.0,
+                ),
               ),
               child: const Icon(
                 Icons.pause_rounded,
                 size: 18,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna ikon ikon pada game
               ),
             ),
           ),
@@ -292,7 +307,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                     Icon(
                       Icons.music_note_rounded,
                       size: 13,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna ikon ikon untuk "Mine Mine — Naykilla"
                     ),
                     SizedBox(width: 4),
                     Text(
@@ -300,7 +315,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                       style: TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimaryDark, // Warna teks pada "Mine Mine — Naykilla"
                       ),
                     ),
                   ],
@@ -309,7 +324,13 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.circle, size: 5, color: Color(0xFF16A34A)),
+                    Icon(
+                      Icons.circle,
+                      size: 5,
+                      color: Color(
+                        0xFF16A34A,
+                      ), // Warna ikon ikon untuk "ACCELEROMETER AKTIF (60Hz)"
+                    ),
                     SizedBox(width: 4),
                     Text(
                       'ACCELEROMETER AKTIF (60Hz)',
@@ -317,7 +338,9 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                         fontSize: 8.5,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.3,
-                        color: Color(0xFF7E756F),
+                        color: Color(
+                          0xFF7E756F,
+                        ), // Warna teks pada "ACCELEROMETER AKTIF (60Hz)"
                       ),
                     ),
                   ],
@@ -334,16 +357,21 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFFF7F6F4),
+                color: const Color(
+                  0xFFF7F6F4,
+                ), // Warna border atau garis tepi game
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+                border: Border.all(
+                  color: const Color(0xFFEBE8E3), // Warna ikon ikon pada game
+                  width: 1.0,
+                ),
               ),
               child: Icon(
                 _audioService.isMuted
                     ? Icons.volume_off_rounded
                     : Icons.volume_up_rounded,
                 size: 18,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "0${_secondsRemaining}s"
               ),
             ),
           ),
@@ -360,9 +388,16 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "${_secondsRemaining}s"
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "${_secondsRemaining}s"
+          width: 1.0,
+        ),
       ),
       child: Column(
         children: [
@@ -376,9 +411,11 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                 CircularProgressIndicator(
                   value: progress,
                   strokeWidth: 4.5,
-                  backgroundColor: const Color(0xFFFFEDDF),
+                  backgroundColor: const Color(
+                    0xFFFFEDDF,
+                  ), // Warna indikator loading pada kartu
                   valueColor: const AlwaysStoppedAnimation<Color>(
-                    AppColors.primaryOrange,
+                    AppColors.primaryOrange, // Warna teks pada kartu
                   ),
                 ),
                 Text(
@@ -387,7 +424,8 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada "SISA WAKTU"
                   ),
                 ),
               ],
@@ -400,7 +438,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
               fontSize: 9,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.5,
-              color: Color(0xFF8E837D),
+              color: Color(0xFF8E837D), // Warna teks pada "SISA WAKTU"
             ),
           ),
         ],
@@ -412,9 +450,16 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 10.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "SISA WAKTU"
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "SISA WAKTU"
+          width: 1.0,
+        ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -422,7 +467,8 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
           const Icon(
             Icons.flash_on_rounded,
             size: 18,
-            color: AppColors.primaryOrange,
+            color: AppColors
+                .primaryOrange, // Warna ikon ikon untuk "POIN REAL-TIME"
           ),
           const SizedBox(height: 2),
           const Text(
@@ -431,7 +477,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
               fontSize: 8.5,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.4,
-              color: Color(0xFF8E837D),
+              color: Color(0xFF8E837D), // Warna teks pada "POIN REAL-TIME"
             ),
           ),
           const SizedBox(height: 4),
@@ -440,7 +486,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
             style: const TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w900,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna teks pada "+$points"
               letterSpacing: -0.5,
             ),
           ),
@@ -448,13 +494,15 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E1A18),
+              color: const Color(
+                0xFF1E1A18,
+              ), // Warna latar kotak atau kartu untuk "• Streak ${streak}x"
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               '• Streak ${streak}x',
               style: const TextStyle(
-                color: Colors.white,
+                color: Colors.white, // Warna teks pada "• Streak ${streak}x"
                 fontSize: 8.5,
                 fontWeight: FontWeight.w800,
               ),
@@ -477,7 +525,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna teks pada "((("
                 letterSpacing: -3,
               ),
             ),
@@ -493,17 +541,22 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                 width: 68,
                 height: 114,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.white, // Warna border atau garis tepi bagian komponen ini
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color: intensity > 0.4
-                        ? AppColors.primaryOrange
-                        : const Color(0xFFD4D0C8),
+                        ? AppColors
+                              .primaryOrange // Warna border atau garis tepi bagian komponen ini
+                        : const Color(
+                            0xFFD4D0C8,
+                          ), // Warna border atau garis tepi bagian komponen ini
                     width: 2.0,
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.primaryOrange.withValues(
+                        // Warna latar kotak atau kartu untuk "RUSH!"
+
                         alpha: 0.15 + (intensity * 0.2),
                       ),
                       blurRadius: 14,
@@ -519,7 +572,8 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.primaryOrange,
+                        color: AppColors
+                            .primaryOrange, // Warna ikon ikon untuk "RUSH!"
                         letterSpacing: 1.0,
                       ),
                     ),
@@ -527,7 +581,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                     Icon(
                       Icons.vibration_rounded,
                       size: 16,
-                      color: Color(0xFF7E756F),
+                      color: Color(0xFF7E756F), // Warna ikon ikon untuk "RUSH!"
                     ),
                   ],
                 ),
@@ -540,7 +594,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna teks pada ")))"
                 letterSpacing: -3,
               ),
             ),
@@ -554,14 +608,19 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w800,
-            color: AppColors.textPrimaryDark,
+            color: AppColors.textPrimaryDark, // Warna teks pada "Goyangkan HP secepat mungkin!"
           ),
         ),
         const SizedBox(height: 4),
         const Text(
           'Ayunkan ponsel dengan bertenaga dan stabil seirama musik!',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 11, color: Color(0xFF6E6560)),
+          style: TextStyle(
+            fontSize: 11,
+            color: Color(
+              0xFF6E6560,
+            ), // Warna teks pada "Ayunkan ponsel dengan bertenaga dan..."
+          ),
         ),
       ],
     );
@@ -575,9 +634,12 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
     return Container(
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: Column(
         children: [
@@ -586,7 +648,11 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.circle, size: 7, color: AppColors.primaryOrange),
+                  Icon(
+                    Icons.circle,
+                    size: 7,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "GERAKAN TERDETEKSI"
+                  ),
                   SizedBox(width: 5),
                   Text(
                     'GERAKAN TERDETEKSI',
@@ -594,7 +660,9 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                       fontSize: 9,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.4,
-                      color: Color(0xFF7E756F),
+                      color: Color(
+                        0xFF7E756F,
+                      ), // Warna teks pada "GERAKAN TERDETEKSI"
                     ),
                   ),
                 ],
@@ -605,7 +673,7 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                   vertical: 2.5,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFECEAE6),
+                  color: const Color(0xFFECEAE6), // Warna latar kotak atau kartu untuk "$validShakes Goyangan Valid"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -613,7 +681,9 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                   style: const TextStyle(
                     fontSize: 9.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF5A524D),
+                    color: Color(
+                      0xFF5A524D,
+                    ), // Warna teks pada "$validShakes Goyangan Valid"
                   ),
                 ),
               ),
@@ -633,8 +703,11 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                   margin: EdgeInsets.only(right: index < 9 ? 4.0 : 0.0),
                   decoration: BoxDecoration(
                     color: isActive
-                        ? AppColors.primaryOrange
-                        : const Color(0xFFEBE8E3),
+                        ? AppColors
+                              .primaryOrange // Warna latar kotak atau kartu pada kartu
+                        : const Color(
+                            0xFFEBE8E3,
+                          ), // Warna latar kotak atau kartu pada kartu
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -649,14 +722,22 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.circle, size: 5, color: Color(0xFF16A34A)),
+                  Icon(
+                    Icons.circle,
+                    size: 5,
+                    color: Color(
+                      0xFF16A34A,
+                    ), // Warna ikon ikon untuk "Goyangan Optimal"
+                  ),
                   SizedBox(width: 4),
                   Text(
                     'Goyangan Optimal',
                     style: TextStyle(
                       fontSize: 9.5,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF6E6560),
+                      color: Color(
+                        0xFF6E6560,
+                      ), // Warna teks pada "Goyangan Optimal"
                     ),
                   ),
                 ],
@@ -666,7 +747,9 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
                 style: const TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF8E837D),
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "Threshold: ${magnitude > 0 ? magnit..."
                 ),
               ),
             ],
@@ -678,4 +761,3 @@ class _JNovaRhythmGameplayPageState extends State<JNovaRhythmGameplayPage> {
 }
 
 typedef RhythmGameplayScreen = JNovaRhythmGameplayPage;
-

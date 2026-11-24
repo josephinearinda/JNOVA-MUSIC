@@ -20,18 +20,42 @@ class BlockchainCertificatePage extends StatelessWidget {
   });
 
   // Palet Warna Resmi JNOVAMUSIC (White & Orange Theme)
-  static const Color _bgPrimary = Color(0xFFFFFFFF);
-  static const Color _bgCard = Color(0xFFFFFFFF);
-  static const Color _bgSection = Color(0xFFF8F8F8);
-  static const Color _primaryOrange = Color(0xFFFF6B00);
-  static const Color _orangeLight = Color(0xFFFFF2EB);
-  static const Color _orangeBorder = Color(0xFFFFD1B3);
-  static const Color _textPrimary = Color(0xFF222222);
-  static const Color _textSecondary = Color(0xFF777777);
-  static const Color _borderLight = Color(0xFFEAEAEA);
-  static const Color _verifiedGreen = Color(0xFF059669);
-  static const Color _verifiedGreenBg = Color(0xFFECFDF5);
-  static const Color _verifiedGreenBorder = Color(0xFFA7F3D0);
+  static const Color _bgPrimary = Color(
+    0xFFFFFFFF,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _bgCard = Color(
+    0xFFFFFFFF,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _bgSection = Color(
+    0xFFF8F8F8,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _primaryOrange = Color(
+    0xFFFF6B00,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _orangeLight = Color(
+    0xFFFFF2EB,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _orangeBorder = Color(
+    0xFFFFD1B3,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _textPrimary = Color(
+    0xFF222222,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _textSecondary = Color(
+    0xFF777777,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _borderLight = Color(
+    0xFFEAEAEA,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _verifiedGreen = Color(
+    0xFF059669,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _verifiedGreenBg = Color(
+    0xFFECFDF5,
+  ); // Warna visual pada bagian komponen ini
+  static const Color _verifiedGreenBorder = Color(
+    0xFFA7F3D0,
+  ); // Warna visual pada bagian komponen ini
 
   void _copyToClipboard(BuildContext context, String text, String label) {
     Clipboard.setData(ClipboardData(text: text));
@@ -39,7 +63,9 @@ class BlockchainCertificatePage extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('$label berhasil disalin ke clipboard!'),
-        backgroundColor: const Color(0xFF222222),
+        backgroundColor: const Color(
+          0xFF222222,
+        ), // Warna latar pesan pemberitahuan pada bagian komponen ini
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -56,7 +82,9 @@ class BlockchainCertificatePage extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Tautan PolygonScan sertifikat tidak valid.'),
-          backgroundColor: Color(0xFF222222),
+          backgroundColor: Color(
+            0xFF222222,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -69,7 +97,9 @@ class BlockchainCertificatePage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('PolygonScan tidak dapat dibuka.'),
-            backgroundColor: Color(0xFF222222),
+            backgroundColor: Color(
+              0xFF222222,
+            ), // Warna latar pesan pemberitahuan pada bagian komponen ini
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -79,7 +109,9 @@ class BlockchainCertificatePage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('PolygonScan tidak dapat dibuka.'),
-            backgroundColor: Color(0xFF222222),
+            backgroundColor: Color(
+              0xFF222222,
+            ), // Warna latar pesan pemberitahuan pada bagian komponen ini
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -92,7 +124,7 @@ class BlockchainCertificatePage extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: _bgCard,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent, // Warna border atau garis tepi untuk "Audit On-Chain Lolos"
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
           side: const BorderSide(color: _borderLight, width: 1),
@@ -241,7 +273,7 @@ class BlockchainCertificatePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: _bgPrimary,
         elevation: 0,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent, // Warna ikon ikon untuk "$day $month $year, $hour:$minute WIB"
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
@@ -323,7 +355,8 @@ class BlockchainCertificatePage extends StatelessWidget {
                     onPressed: () => _showVerificationSuccessDialog(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _primaryOrange,
-                      foregroundColor: Colors.white,
+                      foregroundColor: Colors
+                          .white, // Warna ikon ikon untuk "Verifikasi Keaslian"
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
@@ -352,12 +385,9 @@ class BlockchainCertificatePage extends StatelessWidget {
                       );
                     },
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.white, // Warna border atau garis tepi untuk "Detail Sertifikat"
                       foregroundColor: _primaryOrange,
-                      side: const BorderSide(
-                        color: _primaryOrange,
-                        width: 1.2,
-                      ),
+                      side: const BorderSide(color: _primaryOrange, width: 1.2),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -393,7 +423,7 @@ class BlockchainCertificatePage extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: () => _openPolygonScan(context),
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.white, // Warna ikon ikon untuk "Buka Alamat Kontrak di PolygonScan"
                   foregroundColor: _primaryOrange,
                   side: const BorderSide(color: _primaryOrange, width: 1.2),
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -408,10 +438,7 @@ class BlockchainCertificatePage extends StatelessWidget {
                 ),
                 label: const Text(
                   'Buka Alamat Kontrak di PolygonScan',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
                 ),
               ),
             ),
@@ -445,7 +472,11 @@ class BlockchainCertificatePage extends StatelessWidget {
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.workspace_premium_rounded, color: _primaryOrange, size: 20),
+          Icon(
+            Icons.workspace_premium_rounded,
+            color: _primaryOrange,
+            size: 20,
+          ),
           SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -456,7 +487,7 @@ class BlockchainCertificatePage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF944508),
+                    color: Color(0xFF944508), // Warna teks pada "Pratinjau Sertifikat Resmi JNOVAMUSIC"
                   ),
                 ),
                 SizedBox(height: 2),
@@ -464,7 +495,7 @@ class BlockchainCertificatePage extends StatelessWidget {
                   'Sertifikat digital NFT ERC-721 ini akan di-minting secara resmi di blockchain Polygon dan diterbitkan atas nama Anda saat instrumen ini telah selesai diproses.',
                   style: TextStyle(
                     fontSize: 10.5,
-                    color: Color(0xFF7A3906),
+                    color: Color(0xFF7A3906), // Warna teks pada "Pratinjau Sertifikat Resmi JNOVAMUSIC"
                     height: 1.35,
                   ),
                 ),
@@ -488,7 +519,7 @@ class BlockchainCertificatePage extends StatelessWidget {
         color: _bgCard,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFFF8A3D),
+          color: const Color(0xFFFF8A3D), // Warna border atau garis tepi kartu
           width: 1.2,
         ),
         boxShadow: [
@@ -499,7 +530,11 @@ class BlockchainCertificatePage extends StatelessWidget {
             offset: const Offset(0, 4),
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Colors.black.withValues(
+              // Warna bayangan pada kartu
+
+              alpha: 0.03,
+            ),
             blurRadius: 6,
             offset: const Offset(0, 1),
           ),
@@ -532,7 +567,7 @@ class BlockchainCertificatePage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 9.5,
                           fontWeight: FontWeight.w900,
-                          color: Colors.white,
+                          color: Colors.white, // Warna teks pada "JNOVAMUSIC"
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -547,10 +582,7 @@ class BlockchainCertificatePage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: _orangeLight,
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: _orangeBorder,
-                          width: 0.8,
-                        ),
+                        border: Border.all(color: _orangeBorder, width: 0.8),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -585,10 +617,7 @@ class BlockchainCertificatePage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: _orangeLight,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _orangeBorder,
-                        width: 0.8,
-                      ),
+                      border: Border.all(color: _orangeBorder, width: 0.8),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -597,8 +626,8 @@ class BlockchainCertificatePage extends StatelessWidget {
                           certificate.isClaimed
                               ? Icons.verified_user_rounded
                               : (isPreviewMode
-                                  ? Icons.visibility_rounded
-                                  : Icons.storefront_rounded),
+                                    ? Icons.visibility_rounded
+                                    : Icons.storefront_rounded),
                           size: 12,
                           color: _primaryOrange,
                         ),
@@ -608,8 +637,8 @@ class BlockchainCertificatePage extends StatelessWidget {
                             isPreviewMode
                                 ? 'PRATINJAU SERTIFIKAT'
                                 : (certificate.isClaimed
-                                    ? 'MILIK PEMBELI'
-                                    : 'STOK SHOWROOM'),
+                                      ? 'MILIK PEMBELI'
+                                      : 'STOK SHOWROOM'),
                             style: const TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w900,
@@ -641,12 +670,9 @@ class BlockchainCertificatePage extends StatelessWidget {
                   height: 90,
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.white, // Warna border atau garis tepi kartu
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: _borderLight,
-                      width: 1,
-                    ),
+                    border: Border.all(color: _borderLight, width: 1),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
@@ -846,7 +872,11 @@ class BlockchainCertificatePage extends StatelessWidget {
         border: Border.all(color: _borderLight, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: Colors.black.withValues(
+              // Warna border atau garis tepi bagian komponen ini
+
+              alpha: 0.02,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1029,7 +1059,11 @@ class BlockchainCertificatePage extends StatelessWidget {
         border: Border.all(color: _borderLight, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: Colors.black.withValues(
+              // Warna border atau garis tepi kartu
+
+              alpha: 0.02,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1070,7 +1104,9 @@ class BlockchainCertificatePage extends StatelessWidget {
             certificate.inspectionNotes,
             style: const TextStyle(
               fontSize: 11,
-              color: Color(0xFF555555),
+              color: Color(
+                0xFF555555,
+              ), // Warna teks pada "Auditor: ${certificate.inspectorName}"
               height: 1.45,
             ),
           ),
@@ -1122,7 +1158,11 @@ class BlockchainCertificatePage extends StatelessWidget {
         border: Border.all(color: _borderLight, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: Colors.black.withValues(
+              // Warna border atau garis tepi untuk "QR Code Verifikasi Fisik & Label Tag"
+
+              alpha: 0.02,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -1142,7 +1182,11 @@ class BlockchainCertificatePage extends StatelessWidget {
           const Text(
             'Pindai QR ini saat unboxing di showroom JNOVA atau saat jual kembali untuk memverifikasi keaslian instrumen.',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10.5, color: _textSecondary, height: 1.35),
+            style: TextStyle(
+              fontSize: 10.5,
+              color: _textSecondary,
+              height: 1.35,
+            ),
           ),
           const SizedBox(height: 16),
 
@@ -1150,7 +1194,7 @@ class BlockchainCertificatePage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white, // Warna border atau garis tepi untuk "ID Sertifikat: ${certificate.id}"
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: _primaryOrange, width: 1.8),
             ),
@@ -1178,4 +1222,3 @@ class BlockchainCertificatePage extends StatelessWidget {
 
 typedef CertificateDetailScreen = BlockchainCertificatePage;
 typedef BlockchainCertificateScreen = BlockchainCertificatePage;
-

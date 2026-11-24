@@ -116,19 +116,27 @@ class _SearchScreenState extends State<SearchScreen> {
 
       // Pencarian multi-kata (misal: "Gitar Fender" mencocokkan merek Fender & kategori Gitar)
       final words = q.split(RegExp(r'\s+'));
-      final matchAllWords = words.every((w) =>
-          product.name.toLowerCase().contains(w) ||
-          product.brand.toLowerCase().contains(w) ||
-          product.category.toLowerCase().contains(w) ||
-          product.variant.toLowerCase().contains(w));
+      final matchAllWords = words.every(
+        (w) =>
+            product.name.toLowerCase().contains(w) ||
+            product.brand.toLowerCase().contains(w) ||
+            product.category.toLowerCase().contains(w) ||
+            product.variant.toLowerCase().contains(w),
+      );
 
-      return matchName || matchBrand || matchCategory || matchVariant || matchAllWords;
+      return matchName ||
+          matchBrand ||
+          matchCategory ||
+          matchVariant ||
+          matchAllWords;
     }).toList();
 
     // Saring kategori jika tidak semua
     if (_selectedCategory.isNotEmpty && _selectedCategory != 'Semua') {
       final categoryFiltered = list
-          .where((p) => p.category.toLowerCase() == _selectedCategory.toLowerCase())
+          .where(
+            (p) => p.category.toLowerCase() == _selectedCategory.toLowerCase(),
+          )
           .toList();
       // Jika kategori memiliki hasil, prioritaskan
       if (categoryFiltered.isNotEmpty) {
@@ -185,7 +193,8 @@ class _SearchScreenState extends State<SearchScreen> {
     final searchResults = _getSearchResults();
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor:
+          AppColors.white, // Warna latar kotak untuk "/all-products"
       body: SafeArea(
         child: Column(
           children: [
@@ -274,9 +283,14 @@ class _SearchScreenState extends State<SearchScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "/profile"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/profile"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -290,7 +304,8 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Icon(
                 Icons.arrow_back_rounded,
                 size: 22,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "Semua Produk"
               ),
             ),
           ),
@@ -315,7 +330,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 Text(
                   'Temukan alat musik yang cocok...',
                   style: TextStyle(
-                    color: AppColors.textMuted,
+                    color: AppColors.textMuted, // Warna teks pada "Temukan alat musik yang cocok..."
                     fontSize: 11,
                     fontWeight: FontWeight.w400,
                   ),
@@ -336,7 +351,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   const Icon(
                     Icons.shopping_bag_outlined,
                     size: 23,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna ikon ikon pada bagian komponen ini
                   ),
                   if (cartCount > 0)
                     Positioned(
@@ -345,7 +360,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(3.5),
                         decoration: const BoxDecoration(
-                          color: AppColors.primaryOrange,
+                          color: AppColors.primaryOrange, // Warna latar kotak atau kartu untuk "$cartCount"
                           shape: BoxShape.circle,
                         ),
                         constraints: const BoxConstraints(
@@ -356,7 +371,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           '$cartCount',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: Colors.white, // Warna teks pada "$cartCount"
                             fontSize: 9,
                             fontWeight: FontWeight.w800,
                             height: 1.0,
@@ -381,12 +396,12 @@ class _SearchScreenState extends State<SearchScreen> {
               height: 32,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color(0xFFB45309),
+                color: Color(0xFFB45309), // Warna ikon ikon untuk "/profile"
               ),
               child: const Icon(
                 Icons.person_rounded,
                 size: 20,
-                color: Colors.white,
+                color: Colors.white, // Warna ikon ikon untuk "/profile"
               ),
             ),
           ),
@@ -405,9 +420,16 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Container(
               height: 42,
               decoration: BoxDecoration(
-                color: const Color(0xFFF6F5F3),
+                color: const Color(
+                  0xFFF6F5F3,
+                ), // Warna border atau garis tepi bagian komponen ini
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFECEAE6), width: 1.0),
+                border: Border.all(
+                  color: const Color(
+                    0xFFECEAE6,
+                  ), // Warna border atau garis tepi bagian komponen ini
+                  width: 1.0,
+                ),
               ),
               child: Row(
                 children: [
@@ -416,7 +438,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: Icon(
                       Icons.search_rounded,
                       size: 20,
-                      color: AppColors.placeholder,
+                      color: AppColors.placeholder, // Warna ikon ikon pada bagian komponen ini
                     ),
                   ),
                   Expanded(
@@ -437,13 +459,13 @@ class _SearchScreenState extends State<SearchScreen> {
                       },
                       style: const TextStyle(
                         fontSize: 13,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimaryDark, // Warna teks pada "Cari produk favoritmu..."
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: const InputDecoration(
                         hintText: 'Cari produk favoritmu...',
                         hintStyle: TextStyle(
-                          color: AppColors.placeholder,
+                          color: AppColors.placeholder, // Warna teks pada "Cari produk favoritmu..."
                           fontSize: 12.5,
                           fontWeight: FontWeight.w400,
                         ),
@@ -462,7 +484,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: Icon(
                           Icons.cancel_rounded,
                           size: 18,
-                          color: AppColors.placeholder,
+                          color: AppColors
+                              .placeholder, // Warna ikon ikon untuk "Batal"
                         ),
                       ),
                     ),
@@ -485,7 +508,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Text(
                 'Batal',
                 style: TextStyle(
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna teks pada "Batal"
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                 ),
@@ -523,7 +546,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     'Hapus Semua',
                     style: TextStyle(
                       fontSize: 11,
-                      color: AppColors.textMuted,
+                      color:
+                          AppColors.textMuted, // Warna teks pada "Hapus Semua"
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -537,11 +561,21 @@ class _SearchScreenState extends State<SearchScreen> {
             runSpacing: 8,
             children: _recentSearches.map((item) {
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF7F6F4),
+                  color: const Color(
+                    0xFFF7F6F4,
+                  ), // Warna border atau garis tepi bagian komponen ini
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+                  border: Border.all(
+                    color: const Color(
+                      0xFFEBE8E3,
+                    ), // Warna border atau garis tepi bagian komponen ini
+                    width: 1.0,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -549,7 +583,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     const Icon(
                       Icons.history_rounded,
                       size: 13.5,
-                      color: Color(0xFF8E837D),
+                      color: Color(
+                        0xFF8E837D,
+                      ), // Warna ikon ikon pada bagian komponen ini
                     ),
                     const SizedBox(width: 5),
                     InkWell(
@@ -558,7 +594,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         item,
                         style: const TextStyle(
                           fontSize: 11.5,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna teks pada bagian komponen ini
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -569,7 +605,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: const Icon(
                         Icons.close_rounded,
                         size: 13.5,
-                        color: Color(0xFF8E837D),
+                        color: Color(
+                          0xFF8E837D,
+                        ), // Warna ikon ikon pada bagian komponen ini
                       ),
                     ),
                   ],
@@ -603,7 +641,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 '11 Kategori',
                 style: TextStyle(
                   fontSize: 11,
-                  color: AppColors.textMuted,
+                  color: AppColors.textMuted, // Warna teks pada "11 Kategori"
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -639,13 +677,19 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? AppColors.primaryOrange
-                          : const Color(0xFFF7F6F4),
+                          ? AppColors
+                                .primaryOrange // Warna border atau garis tepi untuk "Gitar"
+                          : const Color(
+                              0xFFF7F6F4,
+                            ), // Warna border atau garis tepi untuk "Gitar"
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: isSelected
-                            ? AppColors.primaryOrange
-                            : const Color(0xFFEBE8E3),
+                            ? AppColors
+                                  .primaryOrange // Warna border atau garis tepi untuk "Gitar"
+                            : const Color(
+                                0xFFEBE8E3,
+                              ), // Warna border atau garis tepi untuk "Gitar"
                         width: 1.0,
                       ),
                     ),
@@ -656,7 +700,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           const Icon(
                             Icons.music_note_rounded,
                             size: 14,
-                            color: Colors.white,
+                            color:
+                                Colors.white, // Warna ikon ikon untuk "Gitar"
                           ),
                           const SizedBox(width: 4),
                         ],
@@ -664,8 +709,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           category,
                           style: TextStyle(
                             color: isSelected
-                                ? Colors.white
-                                : const Color(0xFF6E6560),
+                                ? Colors
+                                      .white // Warna teks pada "Gitar"
+                                : const Color(
+                                    0xFF6E6560,
+                                  ), // Warna teks pada "Gitar"
                             fontSize: 12,
                             fontWeight: isSelected
                                 ? FontWeight.w700
@@ -701,8 +749,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 hasQuery
                     ? 'Hasil Pencarian'
                     : (hasCategory
-                        ? 'Kategori $_selectedCategory'
-                        : 'Semua Produk'),
+                          ? 'Kategori $_selectedCategory'
+                          : 'Semua Produk'),
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -714,13 +762,14 @@ class _SearchScreenState extends State<SearchScreen> {
                 hasQuery
                     ? 'untuk "$_query"'
                     : (hasCategory
-                        ? 'Menampilkan alat musik kategori $_selectedCategory'
-                        : 'Jelajahi berbagai pilihan alat musik'),
+                          ? 'Menampilkan alat musik kategori $_selectedCategory'
+                          : 'Jelajahi berbagai pilihan alat musik'),
                 style: TextStyle(
                   fontSize: 11,
                   color: hasQuery
-                      ? AppColors.textSecondaryBrown
-                      : AppColors.textMuted,
+                      ? AppColors
+                            .textSecondaryBrown // Warna teks pada "Jelajahi berbagai pilihan alat musik"
+                      : AppColors.textMuted, // Warna teks pada "Jelajahi berbagai pilihan alat musik"
                   fontStyle: hasQuery ? FontStyle.italic : FontStyle.normal,
                 ),
               ),
@@ -772,13 +821,13 @@ class _SearchScreenState extends State<SearchScreen> {
                   Icon(
                     Icons.tune_rounded,
                     size: 14,
-                    color: AppColors.textSecondaryBrown,
+                    color: AppColors.textSecondaryBrown, // Warna ikon ikon untuk "Filter Spesifikasi"
                   ),
                   SizedBox(width: 5),
                   Text(
                     'Filter Spesifikasi',
                     style: TextStyle(
-                      color: AppColors.textSecondaryBrown,
+                      color: AppColors.textSecondaryBrown, // Warna teks pada "Filter Spesifikasi"
                       fontSize: 11.5,
                       fontWeight: FontWeight.w600,
                     ),
@@ -796,7 +845,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 _selectedSort = val;
               });
             },
-            color: Colors.white,
+            color: Colors.white, // Warna visual pada bagian komponen ini
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -805,7 +854,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 Text(
                   _selectedSort,
                   style: const TextStyle(
-                    color: AppColors.textSecondaryBrown,
+                    color: AppColors.textSecondaryBrown, // Warna ikon ikon untuk "Terpopuler"
                     fontSize: 11.5,
                     fontWeight: FontWeight.w600,
                   ),
@@ -813,7 +862,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 const Icon(
                   Icons.keyboard_arrow_down_rounded,
                   size: 16,
-                  color: AppColors.textSecondaryBrown,
+                  color: AppColors
+                      .textSecondaryBrown, // Warna ikon ikon untuk "Terpopuler"
                 ),
               ],
             ),
@@ -874,11 +924,13 @@ class _SearchScreenState extends State<SearchScreen> {
                     '${product.name} berhasil ditambahkan ke keranjang.',
                     style: const TextStyle(fontSize: 12),
                   ),
-                  backgroundColor: AppColors.textPrimaryDark,
+                  backgroundColor:
+                      AppColors.textPrimaryDark, // Warna teks pada "Lihat"
                   duration: const Duration(seconds: 2),
                   action: SnackBarAction(
                     label: 'Lihat',
-                    textColor: AppColors.primaryOrange,
+                    textColor: AppColors
+                        .primaryOrange, // Warna visual pada bagian produk
                     onPressed: _handleOpenCart,
                   ),
                 ),
@@ -900,13 +952,15 @@ class _SearchScreenState extends State<SearchScreen> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: const Color(0xFFF6F5F3),
+                color: const Color(
+                  0xFFF6F5F3,
+                ), // Warna ikon ikon untuk "Produk Tidak Ditemukan"
                 borderRadius: BorderRadius.circular(40),
               ),
               child: const Icon(
                 Icons.search_off_rounded,
                 size: 38,
-                color: AppColors.placeholder,
+                color: AppColors.placeholder, // Warna ikon ikon untuk "Produk Tidak Ditemukan"
               ),
             ),
             const SizedBox(height: 16),
@@ -915,7 +969,7 @@ class _SearchScreenState extends State<SearchScreen> {
               style: TextStyle(
                 fontSize: 15.5,
                 fontWeight: FontWeight.w800,
-                color: AppColors.textPrimaryDark,
+                color: AppColors.textPrimaryDark, // Warna teks pada "Produk Tidak Ditemukan"
               ),
             ),
             const SizedBox(height: 6),
@@ -938,8 +992,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian komponen ini
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -947,7 +1004,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: const Text(
                 'Lihat Semua Produk',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.white, // Warna teks pada "Lihat Semua Produk"
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                 ),
@@ -971,7 +1028,7 @@ class _SearchScreenState extends State<SearchScreen> {
               fontSize: 9.5,
               letterSpacing: 0.6,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF7E756F),
+              color: Color(0xFF7E756F), // Warna teks pada "UJI TAMPILAN UX"
             ),
           ),
           InkWell(
@@ -982,7 +1039,10 @@ class _SearchScreenState extends State<SearchScreen> {
             },
             borderRadius: BorderRadius.circular(4),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 4.0,
+                vertical: 2.0,
+              ),
               child: Text(
                 _simulateEmptyState
                     ? 'Kembalikan Hasil Pencarian'
@@ -990,7 +1050,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 style: const TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primaryOrange,
+                  color:
+                      AppColors.primaryOrange, // Warna teks pada "Simulasikan"
                 ),
               ),
             ),
@@ -1005,9 +1066,12 @@ class _SearchScreenState extends State<SearchScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9F8F6),
+        color: const Color(0xFFF9F8F6), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: Row(
         children: [
@@ -1015,13 +1079,13 @@ class _SearchScreenState extends State<SearchScreen> {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEDDF),
+              color: const Color(0xFFFFEDDF), // Warna ikon ikon pada kartu
               borderRadius: BorderRadius.circular(18),
             ),
             child: const Icon(
               Icons.local_shipping_outlined,
               size: 20,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "Pengiriman Cepat & Aman"
             ),
           ),
           const SizedBox(width: 12),
@@ -1032,7 +1096,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 Text(
                   'Pengiriman Cepat & Aman',
                   style: TextStyle(
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Pengiriman Cepat & Aman"
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                   ),
@@ -1041,7 +1105,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 Text(
                   'Packing kayu & asuransi resmi ke seluruh Indonesia.',
                   style: TextStyle(
-                    color: AppColors.textMuted,
+                    color: AppColors.textMuted, // Warna teks pada "Packing kayu & asuransi resmi ke se..."
                     fontSize: 10.5,
                     height: 1.25,
                   ),
@@ -1052,7 +1116,9 @@ class _SearchScreenState extends State<SearchScreen> {
           const Icon(
             Icons.verified_user_outlined,
             size: 18,
-            color: Color(0xFF7E756F),
+            color: Color(
+              0xFF7E756F,
+            ), // Warna ikon ikon untuk "Packing kayu & asuransi resmi ke se..."
           ),
         ],
       ),

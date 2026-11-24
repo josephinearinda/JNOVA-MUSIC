@@ -110,7 +110,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Silakan tulis pesan masukan Anda terlebih dahulu.'),
-          backgroundColor: Color(0xFFC2410C),
+          backgroundColor: Color(
+            0xFFC2410C,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
           duration: Duration(seconds: 2),
         ),
       );
@@ -141,7 +143,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Masukan berhasil disimpan.'),
-          backgroundColor: Color(0xFF16A34A),
+          backgroundColor: Color(
+            0xFF16A34A,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
           duration: Duration(seconds: 2),
         ),
       );
@@ -162,7 +166,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Gagal menyimpan masukan: $error'),
-          backgroundColor: const Color(0xFFC2410C),
+          backgroundColor: const Color(
+            0xFFC2410C,
+          ), // Warna latar pesan pemberitahuan pada bagian komponen ini
           duration: const Duration(seconds: 4),
         ),
       );
@@ -174,7 +180,8 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
     final profile = _profileService.profile;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -262,7 +269,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                 style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF8E837D),
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "${_submittedFeedback.length} kiriman"
                 ),
               ),
           ],
@@ -272,7 +281,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
           const Center(
             child: Padding(
               padding: EdgeInsets.all(14),
-              child: CircularProgressIndicator(color: AppColors.primaryOrange),
+              child: CircularProgressIndicator(
+                color: AppColors.primaryOrange, // Warna latar kotak atau kartu untuk "${_submittedFeedback.length} kiriman"
+              ),
             ),
           )
         else if (_feedbackLoadError != null)
@@ -280,9 +291,11 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
             width: double.infinity,
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF9F5),
+              color: const Color(0xFFFFF9F5), // Warna border atau garis tepi untuk "${_submittedFeedback.length} kiriman"
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFFFD8BF)),
+              border: Border.all(
+                color: const Color(0xFFFFD8BF), // Warna border atau garis tepi untuk "${_submittedFeedback.length} kiriman"
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,7 +304,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   'Masukan tidak dapat dimuat: $_feedbackLoadError',
                   style: const TextStyle(
                     fontSize: 11,
-                    color: Color(0xFFC2410C),
+                    color: Color(0xFFC2410C), // Warna teks pada "Masukan tidak dapat dimuat: $_feedb..."
                   ),
                 ),
                 TextButton(
@@ -309,13 +322,22 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
             width: double.infinity,
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFFFAF9F7),
+              color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Masukan yang dikirim akan muncul di..."
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFEBE8E3)),
+              border: Border.all(
+                color: const Color(
+                  0xFFEBE8E3,
+                ), // Warna teks pada "Masukan yang dikirim akan muncul di..."
+              ),
             ),
             child: const Text(
               'Masukan yang dikirim akan muncul di sini.',
-              style: TextStyle(fontSize: 11, color: Color(0xFF8E837D)),
+              style: TextStyle(
+                fontSize: 11,
+                color: Color(
+                  0xFF8E837D,
+                ), // Warna teks pada "Masukan yang dikirim akan muncul di..."
+              ),
             ),
           )
         else
@@ -342,12 +364,14 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white, // Warna border atau garis tepi untuk "${time.hour.toString().padLeft(2,"
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFFD8BF)),
+        border: Border.all(
+          color: const Color(0xFFFFD8BF), // Warna border atau garis tepi untuk "${time.hour.toString().padLeft(2,"
+        ),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x0A000000),
+            color: Color(0x0A000000), // Warna border atau garis tepi untuk "${time.hour.toString().padLeft(2,"
             blurRadius: 8,
             offset: Offset(0, 3),
           ),
@@ -361,7 +385,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEDDF),
+                  color: const Color(
+                    0xFFFFEDDF,
+                  ), // Warna teks pada "${time.hour.toString().padLeft(2,"
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -369,14 +395,21 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFFC2410C),
+                    color: Color(
+                      0xFFC2410C,
+                    ), // Warna teks pada "${time.hour.toString().padLeft(2,"
                   ),
                 ),
               ),
               const Spacer(),
               Text(
                 submittedTime,
-                style: const TextStyle(fontSize: 9, color: Color(0xFF8E837D)),
+                style: const TextStyle(
+                  fontSize: 9,
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "${time.hour.toString().padLeft(2,"
+                ),
               ),
             ],
           ),
@@ -386,7 +419,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
             style: const TextStyle(
               fontSize: 11,
               height: 1.4,
-              color: AppColors.textPrimaryDark,
+              color: AppColors.textPrimaryDark, // Warna teks pada "Dikirim oleh ${feedback.sender}"
             ),
           ),
           const SizedBox(height: 8),
@@ -397,7 +430,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   'Dikirim oleh ${feedback.sender}',
                   style: const TextStyle(
                     fontSize: 9.5,
-                    color: Color(0xFF6E6560),
+                    color: Color(
+                      0xFF6E6560,
+                    ), // Warna teks pada "Dikirim oleh ${feedback.sender}"
                   ),
                 ),
               ),
@@ -407,7 +442,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   (_) => const Icon(
                     Icons.star_rounded,
                     size: 13,
-                    color: Color(0xFFF58A45),
+                    color: Color(
+                      0xFFF58A45,
+                    ), // Warna ikon ikon untuk "${feedback.rating}/5"
                   ),
                 ),
                 const SizedBox(width: 3),
@@ -416,7 +453,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   style: const TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF6E6560),
+                    color: Color(
+                      0xFF6E6560,
+                    ), // Warna teks pada "${feedback.rating}/5"
                   ),
                 ),
               ],
@@ -431,9 +470,15 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color:
+            AppColors.white, // Warna border atau garis tepi bagian komponen ini
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi bagian komponen ini
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -448,7 +493,8 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                     Icon(
                       Icons.arrow_back_rounded,
                       size: 20,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors
+                          .textPrimaryDark, // Warna ikon ikon untuk "Profil"
                     ),
                     SizedBox(width: 8),
                     Text(
@@ -471,12 +517,12 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               width: 30,
               height: 30,
               decoration: const BoxDecoration(
-                color: Color(0xFF8D4315),
+                color: Color(0xFF8D4315), // Warna ikon ikon untuk "/profile"
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.person_rounded,
-                color: Colors.white,
+                color: Colors.white, // Warna ikon ikon untuk "/profile"
                 size: 17,
               ),
             ),
@@ -499,13 +545,21 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               height: 34,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFF5F3EF),
-                border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+                color: const Color(
+                  0xFFF5F3EF,
+                ), // Warna border atau garis tepi bagian komponen ini
+                border: Border.all(
+                  color: const Color(
+                    0xFFEBE8E3,
+                  ), // Warna ikon ikon pada bagian komponen ini
+                  width: 1.0,
+                ),
               ),
               child: const Icon(
                 Icons.arrow_back_rounded,
                 size: 18,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "Saran dan Kesan"
               ),
             ),
           ),
@@ -519,7 +573,8 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada "Saran dan Kesan"
                   ),
                 ),
                 Text(
@@ -528,7 +583,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                     fontSize: 8.5,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.5,
-                    color: Color(0xFF8E837D),
+                    color: Color(
+                      0xFF8E837D,
+                    ), // Warna teks pada "PEMROGRAMAN APLIKASI MOBILE"
                   ),
                 ),
               ],
@@ -551,13 +608,21 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               height: 28,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFFF5F3EF),
-                border: Border.all(color: const Color(0xFFE8E5DF)),
+                color: const Color(
+                  0xFFF5F3EF,
+                ), // Warna border atau garis tepi bagian komponen ini
+                border: Border.all(
+                  color: const Color(
+                    0xFFE8E5DF,
+                  ), // Warna ikon ikon pada bagian komponen ini
+                ),
               ),
               child: const Icon(
                 Icons.help_outline_rounded,
                 size: 15,
-                color: Color(0xFF6E6560),
+                color: Color(
+                  0xFF6E6560,
+                ), // Warna ikon ikon pada bagian komponen ini
               ),
             ),
           ),
@@ -570,9 +635,12 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
     return Container(
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF9F5),
+        color: const Color(0xFFFFF9F5), // Warna border atau garis tepi banner
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFFFD8BF), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFFFD8BF), // Warna border atau garis tepi banner
+          width: 1.0,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -581,12 +649,12 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEDDF),
+              color: const Color(0xFFFFEDDF), // Warna ikon ikon pada banner
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
               Icons.graphic_eq_rounded,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "Evaluasi Pembelajaran Mata Kuliah"
               size: 20,
             ),
           ),
@@ -600,7 +668,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   style: TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Evaluasi Pembelajaran Mata Kuliah"
                   ),
                 ),
                 SizedBox(height: 4),
@@ -608,7 +676,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   'Bagikan saran, kesan, dan pengalaman Anda selama mengikuti perkuliahan Pemrograman Aplikasi Mobile serta pengerjaan proyek akhir ini.',
                   style: TextStyle(
                     fontSize: 10,
-                    color: Color(0xFF6E6560),
+                    color: Color(
+                      0xFF6E6560,
+                    ), // Warna teks pada "Evaluasi Pembelajaran Mata Kuliah"
                     height: 1.35,
                   ),
                 ),
@@ -626,7 +696,12 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "Jenis Masukan *"
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -645,7 +720,12 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               ),
               Text(
                 'Pilih salah satu',
-                style: TextStyle(fontSize: 9.5, color: Color(0xFF8E837D)),
+                style: TextStyle(
+                  fontSize: 9.5,
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "Pilih salah satu"
+                ),
               ),
             ],
           ),
@@ -695,7 +775,10 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               ),
               Text(
                 'Detail & jujur',
-                style: TextStyle(fontSize: 9.5, color: Color(0xFF8E837D)),
+                style: TextStyle(
+                  fontSize: 9.5,
+                  color: Color(0xFF8E837D), // Warna teks pada "Detail & jujur"
+                ),
               ),
             ],
           ),
@@ -704,9 +787,15 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
           // Textarea Masukan
           Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFFAF9F7),
+              color: const Color(
+                0xFFFAF9F7,
+              ), // Warna border atau garis tepi untuk "Detail & jujur"
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFFEBE8E3)),
+              border: Border.all(
+                color: const Color(
+                  0xFFEBE8E3,
+                ), // Warna border atau garis tepi untuk "Detail & jujur"
+              ),
             ),
             child: TextField(
               controller: _feedbackController,
@@ -722,7 +811,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                 hintText: 'Tuliskan saran, kesan, atau kritik Anda untuk mata kuliah Pemrograman Aplikasi Mobile (misal: materi kuliah, praktikum Flutter, bimbingan proyek, atau saran pengembangan ke depan)...',
                 hintStyle: TextStyle(
                   fontSize: 10.5,
-                  color: Color(0xFF9E958F),
+                  color: Color(
+                    0xFF9E958F,
+                  ), // Warna teks pada "${_feedbackController.text.length}/500"
                   height: 1.35,
                 ),
                 border: InputBorder.none,
@@ -738,7 +829,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                 '${_feedbackController.text.length}/500',
                 style: const TextStyle(
                   fontSize: 9.5,
-                  color: Color(0xFF8E837D),
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "${_feedbackController.text.length}/500"
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -755,7 +848,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Rating Pengalaman Kuliah (Opsional)"
                 ),
               ),
               Text(
@@ -764,8 +857,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   fontSize: 9.5,
                   fontWeight: FontWeight.w700,
                   color: _rating > 0
-                      ? AppColors.primaryOrange
-                      : const Color(0xFF8E837D),
+                      ? AppColors
+                            .primaryOrange // Warna teks pada "Rating Pengalaman Kuliah (Opsional)"
+                      : const Color(0xFF8E837D), // Warna teks pada "Rating Pengalaman Kuliah (Opsional)"
                 ),
               ),
             ],
@@ -776,9 +870,11 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFFFAF9F7),
+              color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Rating Pengalaman Kuliah (Opsional)"
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFFEBE8E3)),
+              border: Border.all(
+                color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Rating Pengalaman Kuliah (Opsional)"
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -804,8 +900,10 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                           : Icons.star_border_rounded,
                       size: 28,
                       color: isSelected
-                          ? const Color(0xFFF58A45)
-                          : const Color(0xFFD4CFC9),
+                          ? const Color(
+                              0xFFF58A45,
+                            ) // Warna ikon ikon pada bagian komponen ini
+                          : const Color(0xFFD4CFC9), // Warna latar kotak atau kartu pada bagian komponen ini
                     ),
                   ),
                 );
@@ -818,7 +916,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFFEDEBE7),
+              color: const Color(
+                0xFFEDEBE7,
+              ), // Warna latar kotak atau kartu pada bagian komponen ini
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -827,13 +927,16 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   width: 22,
                   height: 22,
                   decoration: const BoxDecoration(
-                    color: Color(0xFF8D4315),
+                    color: Color(
+                      0xFF8D4315,
+                    ), // Warna ikon ikon pada bagian komponen ini
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.verified_user_rounded,
                     size: 13,
-                    color: Colors.white,
+                    color: Colors
+                        .white, // Warna ikon ikon untuk "Dikirim sebagai:"
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -844,7 +947,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                         'Dikirim sebagai: ',
                         style: TextStyle(
                           fontSize: 10,
-                          color: Color(0xFF6E6560),
+                          color: Color(
+                            0xFF6E6560,
+                          ), // Warna teks pada "Dikirim sebagai:"
                         ),
                       ),
                       Text(
@@ -852,7 +957,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                         style: const TextStyle(
                           fontSize: 10.5,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna teks pada "Dikirim sebagai:"
                         ),
                       ),
                       const SizedBox(width: 6),
@@ -862,7 +967,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                           vertical: 1,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFEDDF),
+                          color: const Color(0xFFFFEDDF), // Warna latar kotak atau kartu untuk "${profile.tier} Member"
                           borderRadius: BorderRadius.circular(3),
                         ),
                         child: Text(
@@ -870,7 +975,9 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                           style: const TextStyle(
                             fontSize: 7.5,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFFC2410C),
+                            color: Color(
+                              0xFFC2410C,
+                            ), // Warna teks pada "${profile.tier} Member"
                           ),
                         ),
                       ),
@@ -890,7 +997,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
             height: 42,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor: AppColors.primaryOrange, // Warna indikator loading pada bagian komponen ini
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -903,20 +1010,28 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                       height: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.white, // Warna indikator loading pada bagian komponen ini
+                        ),
                       ),
                     )
                   : const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.send_rounded, size: 15, color: Colors.white),
+                        Icon(
+                          Icons.send_rounded,
+                          size: 15,
+                          color: Colors
+                              .white, // Warna ikon ikon untuk "Kirim Masukan"
+                        ),
                         SizedBox(width: 6),
                         Text(
                           'Kirim Masukan',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w800,
-                            color: Colors.white,
+                            color:
+                                Colors.white, // Warna teks pada "Kirim Masukan"
                           ),
                         ),
                       ],
@@ -944,12 +1059,21 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFFFEDDF) : const Color(0xFFFAF9F7),
+          color: isSelected
+              ? const Color(
+                  0xFFFFEDDF,
+                ) // Warna latar kotak atau kartu pada bagian komponen ini
+              : const Color(
+                  0xFFFAF9F7,
+                ), // Warna border atau garis tepi bagian komponen ini
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected
-                ? AppColors.primaryOrange
-                : const Color(0xFFEBE8E3),
+                ? AppColors
+                      .primaryOrange // Warna border atau garis tepi bagian komponen ini
+                : const Color(
+                    0xFFEBE8E3,
+                  ), // Warna border atau garis tepi bagian komponen ini
             width: 1.0,
           ),
         ),
@@ -960,8 +1084,11 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
               icon,
               size: 14,
               color: isSelected
-                  ? AppColors.primaryOrange
-                  : const Color(0xFF6E6560),
+                  ? AppColors
+                        .primaryOrange // Warna ikon ikon pada bagian komponen ini
+                  : const Color(
+                      0xFF6E6560,
+                    ), // Warna ikon ikon pada bagian komponen ini
             ),
             const SizedBox(width: 5),
             Text(
@@ -970,8 +1097,11 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                 fontSize: 10.5,
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 color: isSelected
-                    ? AppColors.primaryOrange
-                    : const Color(0xFF5A524D),
+                    ? AppColors
+                          .primaryOrange // Warna teks pada bagian komponen ini
+                    : const Color(
+                        0xFF5A524D,
+                      ), // Warna teks pada bagian komponen ini
               ),
             ),
           ],
@@ -986,7 +1116,13 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.headset_mic_outlined, size: 14, color: Color(0xFF8E837D)),
+          Icon(
+            Icons.headset_mic_outlined,
+            size: 14,
+            color: Color(
+              0xFF8E837D,
+            ), // Warna ikon ikon pada bagian komponen ini
+          ),
           SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -996,7 +1132,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   'Saran dan kesan ini ditujukan untuk evaluasi proses pembelajaran mata kuliah Pemrograman Aplikasi Mobile.',
                   style: TextStyle(
                     fontSize: 9.5,
-                    color: Color(0xFF8E837D),
+                    color: Color(0xFF8E837D), // Warna teks pada "Mata Kuliah Pemrograman Aplikasi Mo..."
                     height: 1.3,
                   ),
                 ),
@@ -1006,7 +1142,7 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
                   style: TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFFB0AAA4),
+                    color: Color(0xFFB0AAA4), // Warna teks pada "Mata Kuliah Pemrograman Aplikasi Mo..."
                   ),
                 ),
               ],
@@ -1019,4 +1155,3 @@ class _SuggestionReviewPageState extends State<SuggestionReviewPage> {
 }
 
 typedef SuggestionReviewScreen = SuggestionReviewPage;
-

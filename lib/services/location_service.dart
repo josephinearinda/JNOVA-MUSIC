@@ -185,7 +185,7 @@ class LocationService {
       );
     }).toList();
 
-    list.sort((a, b) => (a.distanceMeters ?? double.infinity)
+    list.sort((a, b) => (a.distanceMeters ?? double.infinity) 
         .compareTo(b.distanceMeters ?? double.infinity));
 
     if (list.isNotEmpty) {

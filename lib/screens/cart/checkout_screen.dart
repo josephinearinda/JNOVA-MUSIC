@@ -54,7 +54,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     super.initState();
     _selectedStore = StoreBranch.branches.first;
     _cartService.addListener(_handleCartUpdated);
-    _detectLocationAndAutoSelectStore();
+    _detectLocationAndAutoSelectStore(); //deteksi lokasi
   }
 
   Future<void> _detectLocationAndAutoSelectStore() async {
@@ -67,10 +67,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final result = await _locationService.getCurrentLocation();
     if (!mounted) return;
 
-    if (result.isSuccess && result.latitude != null && result.longitude != null) {
+    if (result.isSuccess &&
+        result.latitude != null &&
+        result.longitude != null) {
       final lat = result.latitude!;
       final lng = result.longitude!;
-      final sorted = _locationService.sortStoresByDistance(lat, lng, StoreBranch.branches);
+      final sorted = _locationService.sortStoresByDistance(
+        lat,
+        lng,
+        StoreBranch.branches,
+      );
 
       setState(() {
         _isDetectingLocation = false;
@@ -131,7 +137,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return items.fold(0, (sum, item) => sum + item.itemTotal);
   }
 
-  int _calculateDiscount(int subtotal) {
+  int _calculateDiscount(int subtotal) { //perhitungan total item dikasli diskon
     return (subtotal * _cartService.discountRate).round();
   }
 
@@ -147,7 +153,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       _isProcessingPayment = true;
     });
 
-    final buyerName = BlockchainCertificateService.instance.getCurrentBuyerName();
+    final buyerName = BlockchainCertificateService.instance
+        .getCurrentBuyerName();
     final activeEmail = UserProfileService.instance.profile.email;
 
     final order = await _orderService.checkout(
@@ -166,11 +173,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     });
 
     // Navigasi ke halaman detail pengambilan toko
-    Navigator.pushReplacementNamed(
-      context,
-      '/pickup-detail',
-      arguments: order,
-    );
+    Navigator.pushReplacementNamed(context, '/pickup-detail', arguments: order);
   }
 
   void _handleBack() {
@@ -191,7 +194,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final totalPayment = _calculateTotal(subtotal, discount);
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.white, // Warna latar kotak untuk "/cart"
       body: SafeArea(
         child: Column(
           children: [
@@ -285,9 +288,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.white, // Warna border atau garis tepi untuk "/profile"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/profile"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -300,7 +308,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               child: Icon(
                 Icons.arrow_back_rounded,
                 size: 22,
-                color: AppColors.textPrimaryDark,
+                color: AppColors
+                    .textPrimaryDark, // Warna ikon ikon untuk "Checkout"
               ),
             ),
           ),
@@ -310,11 +319,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             style: TextStyle(
               fontSize: 16.5,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
+              color:
+                  AppColors.textPrimaryDark, // Warna ikon ikon untuk "Checkout"
             ),
           ),
           const Spacer(),
-          const Icon(Icons.shield_outlined, size: 20, color: Color(0xFF7E756F)),
+          const Icon(
+            Icons.shield_outlined,
+            size: 20,
+            color: Color(0xFF7E756F), // Warna ikon ikon untuk "Checkout"
+          ),
         ],
       ),
     );
@@ -323,7 +337,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget _buildTopSecurityBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
-      color: const Color(0xFFFAF9F7),
+      color: const Color(
+        0xFFFAF9F7,
+      ), // Warna latar kotak atau kartu untuk "Checkout"
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -334,7 +350,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 height: 6,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna teks pada "Ambil di Toko (Store Pickup)"
                 ),
               ),
               const SizedBox(width: 6),
@@ -343,7 +359,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 style: TextStyle(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna teks pada "Ambil di Toko (Store Pickup)"
                 ),
               ),
             ],
@@ -353,7 +369,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               Icon(
                 Icons.lock_outline_rounded,
                 size: 12,
-                color: Color(0xFF8E837D),
+                color: Color(0xFF8E837D), // Warna ikon ikon untuk "SSL 256-Bit"
               ),
               SizedBox(width: 3),
               Text(
@@ -361,7 +377,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF8E837D),
+                  color: Color(0xFF8E837D), // Warna teks pada "SSL 256-Bit"
                 ),
               ),
             ],
@@ -406,10 +422,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 margin: const EdgeInsets.only(bottom: 8.0),
                 padding: const EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFAF9F7),
+                  color: const Color(
+                    0xFFFAF9F7,
+                  ), // Warna border atau garis tepi bagian produk
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: const Color(0xFFEBE8E3),
+                    color: const Color(
+                      0xFFEBE8E3,
+                    ), // Warna border atau garis tepi bagian produk
                     width: 1.0,
                   ),
                 ),
@@ -424,7 +444,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           child: Container(
                             width: 64,
                             height: 64,
-                            color: Colors.white,
+                            color: Colors
+                                .white, // Warna ikon ikon pada bagian produk
                             child: Image.asset(
                               prod.image,
                               fit: BoxFit.contain,
@@ -443,7 +464,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 vertical: 1.5,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.primaryOrange,
+                                color: AppColors.primaryOrange, // Warna teks pada "ORIGINAL"
                                 borderRadius: BorderRadius.circular(3),
                               ),
                               child: const Text(
@@ -470,7 +491,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             style: const TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF8E837D),
+                              color: Color(0xFF8E837D), // Warna teks pada "${prod.brand.toUpperCase()} • ${pro..."
                               letterSpacing: 0.3,
                             ),
                           ),
@@ -482,7 +503,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w800,
-                              color: AppColors.textPrimaryDark,
+                              color: AppColors.textPrimaryDark, // Warna teks pada "3-Color Sunburst • Maple Fingerboard"
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -494,7 +515,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontSize: 10,
-                              color: Color(0xFF7E756F),
+                              color: Color(0xFF7E756F), // Warna teks pada "3-Color Sunburst • Maple Fingerboard"
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -506,7 +527,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w800,
-                                  color: AppColors.primaryOrange,
+                                  color: AppColors.primaryOrange, // Warna teks pada "3-Color Sunburst • Maple Fingerboard"
                                 ),
                               ),
                               Container(
@@ -515,7 +536,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFECEAE6),
+                                  color: const Color(0xFFECEAE6), // Warna teks pada "${item.quantity} Barang"
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
@@ -523,7 +544,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   style: const TextStyle(
                                     fontSize: 9.5,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xFF5A524D),
+                                    color: Color(0xFF5A524D), // Warna teks pada "${item.quantity} Barang"
                                   ),
                                 ),
                               ),
@@ -558,30 +579,31 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
           const SizedBox(height: 8),
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF7ED),
+              color: const Color(
+                0xFFFFF7ED,
+              ), // Warna border atau garis tepi untuk "Metode Pemenuhan"
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: AppColors.primaryOrange,
                 width: 1.5,
-              ),
+              ), // Warna border atau garis tepi untuk "Metode Pemenuhan"
             ),
             child: Row(
               children: [
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFEFE5),
+                    color: const Color(
+                      0xFFFFEFE5,
+                    ), // Warna ikon ikon untuk "Metode Pemenuhan"
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.storefront_rounded,
                     size: 22,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "Metode Pemenuhan"
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -594,7 +616,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna teks pada "Ambil di Toko Resmi (Store Pickup)"
                         ),
                       ),
                       SizedBox(height: 2),
@@ -602,16 +624,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         'Gratis Bebas Biaya • Sound Check & Unboxing di Toko',
                         style: TextStyle(
                           fontSize: 10,
-                          color: Color(0xFF7E756F),
+                          color: Color(0xFF7E756F), // Warna teks pada "Gratis Bebas Biaya • Sound Check &..."
                         ),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF16A34A).withValues(alpha: 0.12),
+                    color: const Color(0xFF16A34A).withValues(
+                      // Warna latar kotak atau kartu untuk "GRATIS"
+
+                      alpha: 0.12,
+                    ),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: const Text(
@@ -619,7 +648,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF16A34A),
+                      color: Color(0xFF16A34A), // Warna teks pada "GRATIS"
                     ),
                   ),
                 ),
@@ -636,9 +665,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -647,13 +679,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEDDF),
+              color: const Color(0xFFFFEDDF), // Warna ikon ikon pada kartu
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
               Icons.tune_rounded,
               size: 18,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon untuk "Gratis Sound Check & Luthier Setup"
             ),
           ),
           const SizedBox(width: 10),
@@ -666,7 +698,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors.textPrimaryDark, // Warna teks pada "Gratis Sound Check & Luthier Setup"
                   ),
                 ),
                 SizedBox(height: 3),
@@ -674,7 +706,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   'Ambil instrumen tanpa antre di toko resmi. Cek kelengkapan fisik, set action senar, dan uji soundboard bersama kru spesialis musik kami.',
                   style: TextStyle(
                     fontSize: 10,
-                    color: Color(0xFF5A524D),
+                    color: Color(
+                      0xFF5A524D,
+                    ), // Warna teks pada "Gratis Sound Check & Luthier Setup"
                     height: 1.35,
                   ),
                 ),
@@ -689,13 +723,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget _buildPickupStoresSection() {
     final List<StoreBranchWithDistance> sourceList =
         _sortedBranchesWithDistance.isNotEmpty
-            ? _sortedBranchesWithDistance
-            : StoreBranch.branches
-                .map((b) => StoreBranchWithDistance(branch: b, distanceMeters: null))
-                .toList();
+        ? _sortedBranchesWithDistance
+        : StoreBranch.branches
+              .map(
+                (b) => StoreBranchWithDistance(branch: b, distanceMeters: null),
+              )
+              .toList();
 
-    final displayedList =
-        _showAllBranches ? sourceList : sourceList.take(3).toList();
+    final displayedList = _showAllBranches
+        ? sourceList
+        : sourceList.take(3).toList();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -714,7 +751,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color: AppColors.textPrimaryDark, // Warna teks pada "Pilih Toko Pengambilan"
                       ),
                     ),
                     SizedBox(height: 1),
@@ -724,7 +761,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: AppColors.textMuted,
+                        color: AppColors.textMuted, // Warna teks pada "Cabang resmi JNOVAMUSIC (Pickup & Pay)"
                       ),
                     ),
                   ],
@@ -736,9 +773,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   final branch = await Navigator.push<StoreBranch>(
                     context,
                     MaterialPageRoute(
-                      builder: (ctx) => SelectPickupStorePage(
-                        selectedBranch: _selectedStore,
-                      ),
+                      builder: (ctx) =>
+                          SelectPickupStorePage(selectedBranch: _selectedStore),
                     ),
                   );
                   if (branch != null && mounted) {
@@ -752,7 +788,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Icon(
                       Icons.swap_horiz_rounded,
                       size: 14,
-                      color: AppColors.primaryOrange,
+                      color: AppColors
+                          .primaryOrange, // Warna ikon ikon untuk "Ganti Toko"
                     ),
                     SizedBox(width: 2),
                     Text(
@@ -760,14 +797,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna ikon ikon untuk "Ganti Toko"
                       ),
                     ),
                     SizedBox(width: 6),
                     Icon(
                       Icons.map_outlined,
                       size: 14,
-                      color: AppColors.primaryOrange,
+                      color: AppColors
+                          .primaryOrange, // Warna ikon ikon untuk "Peta & Rute"
                     ),
                     SizedBox(width: 2),
                     Text(
@@ -791,9 +829,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFFEF6F0),
+                color: const Color(
+                  0xFFFEF6F0,
+                ), // Warna border atau garis tepi bagian komponen ini
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFFFDEC9)),
+                border: Border.all(
+                  color: const Color(
+                    0xFFFFDEC9,
+                  ), // Warna border atau garis tepi bagian komponen ini
+                ),
               ),
               child: const Row(
                 children: [
@@ -802,7 +846,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     height: 13,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: AppColors.primaryOrange,
+                      color: AppColors.primaryOrange, // Warna indikator loading pada bagian komponen ini
                     ),
                   ),
                   SizedBox(width: 8),
@@ -811,7 +855,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       'Mencari toko JNOVA MUSIC terdekat dari koordinatmu...',
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: Color(0xFF8D4315),
+                        color: Color(0xFF8D4315), // Warna teks pada "Mencari toko JNOVA MUSIC terdekat d..."
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -824,21 +868,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFF0FDF4),
+                color: const Color(0xFFF0FDF4), // Warna border atau garis tepi untuk "Mencari toko JNOVA MUSIC terdekat d..."
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFBBF7D0)),
+                border: Border.all(
+                  color: const Color(0xFFBBF7D0), // Warna border atau garis tepi untuk "Mencari toko JNOVA MUSIC terdekat d..."
+                ),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.my_location_rounded,
-                      size: 15, color: Color(0xFF16A34A)),
+                  const Icon(
+                    Icons.my_location_rounded,
+                    size: 15,
+                    color: Color(0xFF16A34A), // Warna ikon ikon untuk "Lokasi terdeteksi. Cabang terdekat..."
+                  ),
                   const SizedBox(width: 8),
                   const Expanded(
                     child: Text(
                       'Lokasi terdeteksi. Cabang terdekat otomatis terpilih.',
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: Color(0xFF166534),
+                        color: Color(0xFF166534), // Warna teks pada "Lokasi terdeteksi. Cabang terdekat..."
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -862,21 +911,32 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFFBEB),
+                color: const Color(
+                  0xFFFFFBEB,
+                ), // Warna border atau garis tepi bagian komponen ini
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFFDE68A)),
+                border: Border.all(
+                  color: const Color(
+                    0xFFFDE68A,
+                  ), // Warna border atau garis tepi bagian komponen ini
+                ),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.location_off_outlined,
-                      size: 15, color: Color(0xFFD97706)),
+                  const Icon(
+                    Icons.location_off_outlined,
+                    size: 15,
+                    color: Color(
+                      0xFFD97706,
+                    ), // Warna ikon ikon pada bagian komponen ini
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       _locationStatusMessage!,
                       style: const TextStyle(
                         fontSize: 10,
-                        color: Color(0xFF92400E),
+                        color: Color(0xFF92400E), // Warna teks pada "Coba Lagi"
                       ),
                     ),
                   ),
@@ -900,7 +960,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             children: displayedList.map((item) {
               final branch = item.branch;
               final isSelected = _selectedStore.id == branch.id;
-              final isNearest = item.isNearest ||
+              final isNearest =
+                  item.isNearest ||
                   (_locationDetected &&
                       _sortedBranchesWithDistance.isNotEmpty &&
                       _sortedBranchesWithDistance.first.branch.id == branch.id);
@@ -909,13 +970,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 margin: const EdgeInsets.only(bottom: 8.0),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? const Color(0xFFFFFBF7)
-                      : const Color(0xFFFAF9F7),
+                      ? const Color(
+                          0xFFFFFBF7,
+                        ) // Warna border atau garis tepi bagian komponen ini
+                      : const Color(
+                          0xFFFAF9F7,
+                        ), // Warna border atau garis tepi bagian komponen ini
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isSelected
-                        ? AppColors.primaryOrange
-                        : const Color(0xFFEBE8E3),
+                        ? AppColors
+                              .primaryOrange // Warna border atau garis tepi bagian komponen ini
+                        : const Color(
+                            0xFFEBE8E3,
+                          ), // Warna border atau garis tepi bagian komponen ini
                     width: isSelected ? 1.5 : 1.0,
                   ),
                 ),
@@ -937,8 +1005,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               Icons.storefront_rounded,
                               size: 16,
                               color: isSelected
-                                  ? AppColors.primaryOrange
-                                  : const Color(0xFF7E756F),
+                                  ? AppColors
+                                        .primaryOrange // Warna ikon ikon pada bagian komponen ini
+                                  : const Color(0xFF7E756F), // Warna ikon ikon pada bagian komponen ini
                             ),
                             const SizedBox(width: 8),
                             Expanded(
@@ -947,7 +1016,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w800,
-                                  color: AppColors.textPrimaryDark,
+                                  color: AppColors.textPrimaryDark, // Warna ikon ikon pada bagian komponen ini
                                 ),
                               ),
                             ),
@@ -957,8 +1026,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   : Icons.radio_button_unchecked_rounded,
                               size: 18,
                               color: isSelected
-                                  ? AppColors.primaryOrange
-                                  : const Color(0xFFB0AAA4),
+                                  ? AppColors
+                                        .primaryOrange // Warna ikon ikon untuk "${branch.tag} • ${item.formattedDis..."
+                                  : const Color(
+                                      0xFFB0AAA4,
+                                    ), // Warna visual pada bagian komponen ini
                             ),
                           ],
                         ),
@@ -975,7 +1047,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 style: const TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.primaryOrange,
+                                  color: AppColors.primaryOrange, // Warna teks pada "${branch.tag} • ${branch.distance}"
                                 ),
                               ),
                             ),
@@ -987,7 +1059,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   vertical: 1.5,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFFEDDF),
+                                  color: const Color(0xFFFFEDDF), // Warna latar kotak atau kartu untuk "Toko Terdekat"
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: const Text(
@@ -995,7 +1067,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   style: TextStyle(
                                     fontSize: 8.5,
                                     fontWeight: FontWeight.w800,
-                                    color: Color(0xFFC2410C),
+                                    color: Color(
+                                      0xFFC2410C,
+                                    ), // Warna teks pada "Toko Terdekat"
                                   ),
                                 ),
                               ),
@@ -1007,7 +1081,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           branch.address,
                           style: const TextStyle(
                             fontSize: 10,
-                            color: Color(0xFF6E6560),
+                            color: Color(
+                              0xFF6E6560,
+                            ), // Warna teks pada "Toko Terdekat"
                             height: 1.3,
                           ),
                         ),
@@ -1019,14 +1095,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 const Icon(
                                   Icons.access_time_rounded,
                                   size: 12,
-                                  color: Color(0xFF8E837D),
+                                  color: Color(
+                                    0xFF8E837D,
+                                  ), // Warna ikon ikon untuk "Toko Terdekat"
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   branch.operatingHours,
                                   style: const TextStyle(
                                     fontSize: 9.5,
-                                    color: Color(0xFF6E6560),
+                                    color: Color(
+                                      0xFF6E6560,
+                                    ), // Warna teks pada "Toko Terdekat"
                                   ),
                                 ),
                               ],
@@ -1039,8 +1119,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? const Color(0xFFFFEFE5)
-                                    : const Color(0xFFECEAE6),
+                                    ? const Color(
+                                        0xFFFFEFE5,
+                                      ) // Warna teks pada "Toko Terdekat"
+                                    : const Color(
+                                        0xFFECEAE6,
+                                      ), // Warna teks pada "Toko Terdekat"
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -1049,8 +1133,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   fontSize: 9,
                                   fontWeight: FontWeight.w700,
                                   color: isSelected
-                                      ? AppColors.primaryOrange
-                                      : const Color(0xFF5A524D),
+                                      ? AppColors
+                                            .primaryOrange // Warna teks pada "Toko Terdekat"
+                                      : const Color(
+                                          0xFF5A524D,
+                                        ), // Warna teks pada "Toko Terdekat"
                                 ),
                               ),
                             ),
@@ -1071,10 +1158,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Colors.white, // Warna border atau garis tepi bagian komponen ini
                                     borderRadius: BorderRadius.circular(6),
                                     border: Border.all(
-                                      color: const Color(0xFFE0DDD7),
+                                      color: const Color(0xFFE0DDD7), // Warna ikon ikon untuk "Buka Rute Google Maps"
                                     ),
                                   ),
                                   child: const Row(
@@ -1083,7 +1170,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       Icon(
                                         Icons.directions_outlined,
                                         size: 12,
-                                        color: AppColors.primaryOrange,
+                                        color: AppColors.primaryOrange, // Warna ikon ikon untuk "Buka Rute Google Maps"
                                       ),
                                       SizedBox(width: 4),
                                       Flexible(
@@ -1094,7 +1181,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           style: TextStyle(
                                             fontSize: 9.5,
                                             fontWeight: FontWeight.w700,
-                                            color: AppColors.primaryOrange,
+                                            color: AppColors.primaryOrange, // Warna teks pada "Buka Rute Google Maps"
                                           ),
                                         ),
                                       ),
@@ -1110,7 +1197,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 style: TextStyle(
                                   fontSize: 9.5,
                                   fontWeight: FontWeight.w800,
-                                  color: AppColors.primaryOrange,
+                                  color: AppColors.primaryOrange, // Warna teks pada "✓ Toko Terpilih"
                                 ),
                               ),
                           ],
@@ -1138,7 +1225,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF6E6560),
+                  color: Color(
+                    0xFF6E6560,
+                  ), // Warna teks pada "Tampilkan Semua Cabang (${sourceLis..."
                 ),
               ),
             ),
@@ -1153,9 +1242,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1165,7 +1257,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               Icon(
                 Icons.info_outline_rounded,
                 size: 15,
-                color: Color(0xFF7E756F),
+                color: Color(
+                  0xFF7E756F,
+                ), // Warna ikon ikon untuk "Informasi Pengambilan Pesanan"
               ),
               SizedBox(width: 6),
               Text(
@@ -1173,7 +1267,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Informasi Pengambilan Pesanan"
                 ),
               ),
             ],
@@ -1207,7 +1301,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           height: 16,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: Color(0xFFECEAE6),
+            color: Color(
+              0xFFECEAE6,
+            ), // Warna latar kotak atau kartu pada bagian komponen ini
           ),
           child: Center(
             child: Text(
@@ -1215,7 +1311,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               style: const TextStyle(
                 fontSize: 9,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF5A524D),
+                color: Color(0xFF5A524D), // Warna teks pada bagian komponen ini
               ),
             ),
           ),
@@ -1226,7 +1322,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             text,
             style: const TextStyle(
               fontSize: 10,
-              color: Color(0xFF5A524D),
+              color: Color(0xFF5A524D), // Warna teks pada bagian komponen ini
               height: 1.35,
             ),
           ),
@@ -1240,9 +1336,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: Row(
         children: [
@@ -1250,13 +1349,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFEDDF),
+              color: const Color(0xFFFFEDDF), // Warna ikon ikon pada kartu
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
               Icons.military_tech_rounded,
               size: 18,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna ikon ikon pada kartu
             ),
           ),
           const SizedBox(width: 10),
@@ -1271,7 +1370,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       style: const TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimaryDark,
+                        color:
+                            AppColors.textPrimaryDark, // Warna teks pada kartu
                       ),
                     ),
                     const SizedBox(width: 6),
@@ -1282,14 +1382,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: _cartService.isMember
-                            ? AppColors.primaryOrange
-                            : const Color(0xFF8E837D),
+                            ? AppColors
+                                  .primaryOrange // Warna teks pada kartu
+                            : const Color(0xFF8E837D), // Warna teks pada kartu
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
                         _cartService.userTier,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Colors.white, // Warna teks pada "Diskon ${_cartService.discountPerce..."
                           fontSize: 7.5,
                           fontWeight: FontWeight.w800,
                         ),
@@ -1302,7 +1403,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   _cartService.discountPercentage > 0
                       ? 'Diskon ${_cartService.discountPercentage}% otomatis dipotong'
                       : 'Kumpulkan min. 1.000 poin untuk diskon Silver',
-                  style: const TextStyle(fontSize: 10, color: Color(0xFF7E756F)),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF7E756F), // Warna teks pada "Kumpulkan min. 1.000 poin untuk dis..."
+                  ),
                 ),
               ],
             ),
@@ -1312,7 +1416,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             style: const TextStyle(
               fontSize: 11.5,
               fontWeight: FontWeight.w800,
-              color: AppColors.primaryOrange,
+              color: AppColors.primaryOrange, // Warna teks pada "-${formatRupiah(discount)}"
             ),
           ),
         ],
@@ -1342,7 +1446,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF16A34A),
+                  color: Color(
+                    0xFF16A34A,
+                  ), // Warna teks pada "Bayar Langsung di Kasir"
                 ),
               ),
             ],
@@ -1352,25 +1458,29 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF7ED),
+              color: const Color(
+                0xFFFFF7ED,
+              ), // Warna border atau garis tepi untuk "Bayar Langsung di Kasir"
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: AppColors.primaryOrange,
                 width: 1.5,
-              ),
+              ), // Warna border atau garis tepi untuk "Bayar Langsung di Kasir"
             ),
             child: Row(
               children: [
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFEFE5),
+                    color: const Color(
+                      0xFFFFEFE5,
+                    ), // Warna ikon ikon untuk "Bayar Langsung di Kasir"
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.point_of_sale_rounded,
                     size: 22,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "Bayar Langsung di Kasir"
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -1383,7 +1493,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna teks pada "Bayar di Toko (Pickup & Pay)"
                         ),
                       ),
                       SizedBox(height: 2),
@@ -1391,7 +1501,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         'Bayar langsung di kasir toko saat pengambilan (Tunai, Kartu Debit/Kredit EDC, QRIS Toko)',
                         style: TextStyle(
                           fontSize: 10,
-                          color: Color(0xFF7E756F),
+                          color: Color(
+                            0xFF7E756F,
+                          ), // Warna teks pada "Bayar di Toko (Pickup & Pay)"
                         ),
                       ),
                     ],
@@ -1399,7 +1511,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 const Icon(
                   Icons.check_circle_rounded,
-                  color: AppColors.primaryOrange,
+                  color: AppColors.primaryOrange, // Warna ikon ikon untuk "Bayar di Toko (Pickup & Pay)"
                   size: 20,
                 ),
               ],
@@ -1421,16 +1533,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w800,
-              color: AppColors.textPrimaryDark,
+              color: AppColors
+                  .textPrimaryDark, // Warna teks pada "Ringkasan Biaya"
             ),
           ),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.all(12.0),
             decoration: BoxDecoration(
-              color: const Color(0xFFFAF9F7),
+              color: const Color(
+                0xFFFAF9F7,
+              ), // Warna border atau garis tepi untuk "Ringkasan Biaya"
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+              border: Border.all(
+                color: const Color(
+                  0xFFEBE8E3,
+                ), // Warna border atau garis tepi untuk "Ringkasan Biaya"
+                width: 1.0,
+              ),
             ),
             child: Column(
               children: [
@@ -1439,19 +1559,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 _buildSummaryRow(
                   'Diskon Membership Silver (10%)',
                   '-${formatRupiah(discount)}',
-                  valueColor: AppColors.primaryOrange,
+                  valueColor: AppColors
+                      .primaryOrange, // Warna visual pada bagian komponen ini
                 ),
                 const SizedBox(height: 6),
                 _buildSummaryRow(
                   'Biaya Ambil di Toko',
                   'Gratis (Rp 0)',
-                  valueColor: const Color(0xFF16A34A),
+                  valueColor: const Color(
+                    0xFF16A34A,
+                  ), // Warna visual pada bagian komponen ini
                 ),
                 const SizedBox(height: 6),
                 _buildSummaryRow(
                   'Asuransi & Setup Khusus Toko',
                   'Rp 0 (Gratis)',
-                  valueColor: const Color(0xFF16A34A),
+                  valueColor: const Color(
+                    0xFF16A34A,
+                  ), // Warna visual pada bagian komponen ini
                 ),
                 const SizedBox(height: 6),
                 _buildSummaryRow(
@@ -1460,7 +1585,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: Divider(color: Color(0xFFEBE8E3), height: 1),
+                  child: Divider(
+                    color: Color(
+                      0xFFEBE8E3,
+                    ), // Warna garis pemisah pada bagian komponen ini
+                    height: 1,
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1473,14 +1603,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.textPrimaryDark,
+                            color: AppColors.textPrimaryDark, // Warna teks pada "Total Tagihan"
                           ),
                         ),
                         Text(
                           'Termasuk PPN 11%',
                           style: TextStyle(
                             fontSize: 9.5,
-                            color: Color(0xFF8E837D),
+                            color: Color(
+                              0xFF8E837D,
+                            ), // Warna teks pada "Termasuk PPN 11%"
                           ),
                         ),
                       ],
@@ -1490,7 +1622,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       style: const TextStyle(
                         fontSize: 14.5,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.primaryOrange,
+                        color: AppColors.primaryOrange, // Warna teks pada "Termasuk PPN 11%"
                       ),
                     ),
                   ],
@@ -1509,14 +1641,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 10.5, color: Color(0xFF6E6560)),
+          style: const TextStyle(
+            fontSize: 10.5,
+            color: Color(0xFF6E6560), // Warna teks pada bagian komponen ini
+          ),
         ),
         Text(
           value,
           style: TextStyle(
             fontSize: 10.5,
             fontWeight: FontWeight.w700,
-            color: valueColor ?? AppColors.textPrimaryDark,
+            color:
+                valueColor ??
+                AppColors
+                    .textPrimaryDark, // Warna teks pada bagian komponen ini
           ),
         ),
       ],
@@ -1528,11 +1666,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.lock_outline_rounded, size: 13, color: Color(0xFF8E837D)),
+          Icon(
+            Icons.lock_outline_rounded,
+            size: 13,
+            color: Color(
+              0xFF8E837D,
+            ), // Warna ikon ikon untuk "Transaksi aman dengan enkripsi SSL..."
+          ),
           SizedBox(width: 4),
           Text(
             'Transaksi aman dengan enkripsi SSL 256-bit',
-            style: TextStyle(fontSize: 10, color: Color(0xFF8E837D)),
+            style: TextStyle(
+              fontSize: 10,
+              color: Color(
+                0xFF8E837D,
+              ), // Warna teks pada "Transaksi aman dengan enkripsi SSL..."
+            ),
           ),
         ],
       ),
@@ -1543,13 +1692,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white, // Warna border atau garis tepi untuk "Transaksi aman dengan enkripsi SSL..."
         border: const Border(
-          top: BorderSide(color: Color(0xFFF0EDE9), width: 1.0),
+          top: BorderSide(
+            color: Color(0xFFF0EDE9), // Warna border atau garis tepi untuk "Transaksi aman dengan enkripsi SSL..."
+            width: 1.0,
+          ),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(
+              // Warna latar kotak atau kartu untuk "Transaksi aman dengan enkripsi SSL..."
+
+              alpha: 0.04,
+            ),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -1564,7 +1720,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             children: [
               const Text(
                 'Total Pembayaran',
-                style: TextStyle(fontSize: 10.5, color: Color(0xFF7E756F)),
+                style: TextStyle(
+                  fontSize: 10.5,
+                  color: Color(
+                    0xFF7E756F,
+                  ), // Warna teks pada "Total Pembayaran"
+                ),
               ),
               const SizedBox(height: 1),
               Text(
@@ -1583,7 +1744,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             child: ElevatedButton(
               onPressed: () => _handlePayNow(items, total),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryOrange,
+                backgroundColor: AppColors.primaryOrange, // Warna latar tombol pada bagian komponen ini
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 shape: RoundedRectangleBorder(
@@ -1603,7 +1764,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   SizedBox(width: 6),
                   Icon(
                     Icons.arrow_forward_rounded,
-                    color: Colors.white,
+                    color: Colors.white, // Warna ikon ikon untuk "Konfirmasi Pesanan Pickup"
                     size: 14,
                   ),
                 ],

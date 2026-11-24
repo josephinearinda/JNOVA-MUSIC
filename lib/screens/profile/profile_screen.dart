@@ -56,7 +56,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final currentPoints = _membershipService.currentPoints;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors
+          .white, // Warna latar kotak atau kartu pada bagian komponen ini
       body: SafeArea(
         child: Column(
           children: [
@@ -107,7 +108,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Versi Aplikasi
                     const Text(
                       'JNOVAMUSIC Mobile v2.4.1 (Build 1204)',
-                      style: TextStyle(fontSize: 9.5, color: Color(0xFFB0AAA4)),
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        color: Color(0xFFB0AAA4), // Warna teks pada "JNOVAMUSIC Mobile v2.4.1 (Build 1204)"
+                      ),
                     ),
 
                     const SizedBox(height: 24),
@@ -139,9 +143,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: const BoxDecoration(
-        color: AppColors.white,
+        color: AppColors
+            .white, // Warna border atau garis tepi untuk "/order-detail"
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF2F0ED), width: 1.0),
+          bottom: BorderSide(
+            color: Color(
+              0xFFF2F0ED,
+            ), // Warna border atau garis tepi untuk "/order-detail"
+            width: 1.0,
+          ),
         ),
       ),
       child: Row(
@@ -154,7 +164,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 height: 20,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.graphic_eq_rounded,
-                  color: AppColors.primaryOrange,
+                  color:
+                      AppColors.primaryOrange, // Warna ikon ikon untuk "Profil"
                   size: 20,
                 ),
               ),
@@ -164,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors.textPrimaryDark, // Warna teks pada "Profil"
                 ),
               ),
             ],
@@ -175,7 +186,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               Navigator.pushNamed(context, '/notifications');
             },
-            color: const Color(0xFF4A403A),
+            color: const Color(
+              0xFF4A403A,
+            ), // Warna ikon ikon untuk "/notifications"
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -185,12 +198,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: 28,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFB45309),
+              color: Color(
+                0xFFB45309,
+              ), // Warna ikon ikon untuk "/notifications"
             ),
             child: const Icon(
               Icons.person_rounded,
               size: 17,
-              color: Colors.white,
+              color: Colors.white, // Warna ikon ikon untuk "/notifications"
             ),
           ),
         ],
@@ -212,12 +227,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors
+                      .textPrimaryDark, // Warna teks pada "Profil Saya"
                 ),
               ),
               Text(
                 'Kelola informasi dan akun JNOVAMUSIC kamu',
-                style: TextStyle(fontSize: 10.5, color: Color(0xFF8E837D)),
+                style: TextStyle(
+                  fontSize: 10.5,
+                  color: Color(
+                    0xFF8E837D,
+                  ), // Warna teks pada "Kelola informasi dan akun JNOVAMUSI..."
+                ),
               ),
             ],
           ),
@@ -226,7 +247,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Navigator.pushNamed(context, '/account-security');
             },
             icon: const Icon(Icons.settings_outlined, size: 21),
-            color: const Color(0xFF4A403A),
+            color: const Color(
+              0xFF4A403A,
+            ), // Warna ikon ikon untuk "/account-security"
           ),
         ],
       ),
@@ -238,9 +261,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "/account-security"
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "/account-security"
+          width: 1.0,
+        ),
       ),
       child: Column(
         children: [
@@ -258,7 +288,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: const Color(0xFFFFD8BF),
+                          color: const Color(0xFFFFD8BF), // Warna border atau garis tepi untuk "/profile-edit"
                           width: 2.0,
                         ),
                       ),
@@ -271,8 +301,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 18,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.primaryOrange,
-                        border: Border.all(color: Colors.white, width: 1.5),
+                        color: AppColors.primaryOrange, // Warna ikon ikon untuk "/profile-edit"
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.5,
+                        ), // Warna ikon ikon untuk "/profile-edit"
                       ),
                       child: const Icon(
                         Icons.camera_alt_rounded,
@@ -297,14 +330,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.textPrimaryDark,
+                            color: AppColors.textPrimaryDark, // Warna ikon ikon untuk "@${profile.username}"
                           ),
                         ),
                         const SizedBox(width: 4),
                         const Icon(
                           Icons.verified_rounded,
                           size: 15,
-                          color: Color(0xFF0284C7),
+                          color: Color(
+                            0xFF0284C7,
+                          ), // Warna ikon ikon untuk "@${profile.username}"
                         ),
                       ],
                     ),
@@ -312,14 +347,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       '@${profile.username}',
                       style: const TextStyle(
                         fontSize: 10,
-                        color: Color(0xFF6E6560),
+                        color: Color(
+                          0xFF6E6560,
+                        ), // Warna teks pada "@${profile.username}"
                       ),
                     ),
                     Text(
                       profile.email,
                       style: const TextStyle(
                         fontSize: 9.5,
-                        color: Color(0xFF8E837D),
+                        color: Color(
+                          0xFF8E837D,
+                        ), // Warna teks pada "@${profile.username}"
                       ),
                     ),
                     const SizedBox(height: 3),
@@ -329,7 +368,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         vertical: 1.5,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEDEBE7),
+                        color: const Color(0xFFEDEBE7), // Warna latar kotak atau kartu untuk "@${profile.username}"
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
@@ -338,7 +377,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fontSize: 8,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0.4,
-                          color: Color(0xFF5A524D),
+                          color: Color(
+                            0xFF5A524D,
+                          ), // Warna teks pada "@${profile.username}"
                         ),
                       ),
                     ),
@@ -355,7 +396,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: 34,
             child: TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: const Color(0xFFEDEBE7),
+                backgroundColor: const Color(
+                  0xFFEDEBE7,
+                ), // Warna latar tombol pada kartu
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -367,14 +410,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.edit_outlined, size: 14, color: Color(0xFF4A403A)),
+                  Icon(
+                    Icons.edit_outlined,
+                    size: 14,
+                    color: Color(
+                      0xFF4A403A,
+                    ), // Warna ikon ikon untuk "Edit Profil"
+                  ),
                   SizedBox(width: 6),
                   Text(
                     'Edit Profil',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF4A403A),
+                      color: Color(0xFF4A403A), // Warna teks pada "Edit Profil"
                     ),
                   ),
                 ],
@@ -391,9 +440,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi kartu
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi kartu
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -406,7 +458,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Icon(
                     Icons.badge_outlined,
                     size: 15,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna ikon ikon untuk "Informasi Pribadi"
                   ),
                   SizedBox(width: 6),
                   Text(
@@ -414,7 +466,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna teks pada "Informasi Pribadi"
                     ),
                   ),
                 ],
@@ -426,7 +478,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.primaryOrange,
+                    color: AppColors.primaryOrange, // Warna teks pada "Ubah"
                   ),
                 ),
               ),
@@ -446,11 +498,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       : 'Belum Verifikasi')
                 : null,
             tagColor: profile.isEmailVerified
-                ? const Color(0xFF15803D)
-                : const Color(0xFFB45309),
+                ? const Color(0xFF15803D) // Warna visual pada kartu
+                : const Color(0xFFB45309), // Warna visual pada kartu
             tagBgColor: profile.isEmailVerified
-                ? const Color(0xFFDCFCE7)
-                : const Color(0xFFFEF3C7),
+                ? const Color(0xFFDCFCE7) // Warna visual pada kartu
+                : const Color(0xFFFEF3C7), // Warna visual pada kartu
           ),
           const SizedBox(height: 6),
           _buildInfoRow(
@@ -464,11 +516,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       : 'Belum Verifikasi')
                 : null,
             tagColor: profile.isPhoneVerified
-                ? const Color(0xFF15803D)
-                : const Color(0xFFB45309),
+                ? const Color(0xFF15803D) // Warna visual pada kartu
+                : const Color(0xFFB45309), // Warna visual pada kartu
             tagBgColor: profile.isPhoneVerified
-                ? const Color(0xFFDCFCE7)
-                : const Color(0xFFFEF3C7),
+                ? const Color(0xFFDCFCE7) // Warna visual pada kartu
+                : const Color(
+                    0xFFFEF3C7,
+                  ), // Warna area atau kotak untuk "Username"
           ),
           const SizedBox(height: 6),
           _buildInfoRow('Username', '@${profile.username}'),
@@ -482,9 +536,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "Username"
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "Username"
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -497,7 +558,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Icon(
                     Icons.location_on_outlined,
                     size: 15,
-                    color: AppColors.primaryOrange,
+                    color: AppColors
+                        .primaryOrange, // Warna ikon ikon untuk "Alamat Saya"
                   ),
                   SizedBox(width: 6),
                   Text(
@@ -529,7 +591,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEDDF),
+                  color: const Color(
+                    0xFFFFEDDF,
+                  ), // Warna latar kotak atau kartu pada kartu
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -545,7 +609,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEDEBE7),
+                  color: const Color(
+                    0xFFEDEBE7,
+                  ), // Warna latar kotak atau kartu untuk "Alamat Utama"
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: const Text(
@@ -553,7 +619,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF5A524D),
+                    color: Color(0xFF5A524D), // Warna teks pada "Alamat Utama"
                   ),
                 ),
               ),
@@ -565,22 +631,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: const TextStyle(
               fontSize: 11.5,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimaryDark,
+              color: AppColors.textPrimaryDark, // Warna teks pada "${profile.streetAddress}, ${profile..."
             ),
           ),
           Text(
             'Kelurahan ${profile.kelurahan}, Kecamatan ${profile.kecamatan}',
-            style: const TextStyle(fontSize: 10, color: Color(0xFF6E6560)),
+            style: const TextStyle(
+              fontSize: 10,
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "Kelurahan ${profile.kelurahan}, Kec..."
+            ),
           ),
           Text(
             '${profile.city}, Provinsi ${profile.province}, ${profile.postalCode}',
-            style: const TextStyle(fontSize: 10, color: Color(0xFF6E6560)),
+            style: const TextStyle(
+              fontSize: 10,
+              color: Color(
+                0xFF6E6560,
+              ), // Warna teks pada "${profile.city}, Provinsi ${profile..."
+            ),
           ),
           const SizedBox(height: 6),
           Container(
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
-              color: const Color(0xFFEDEBE7),
+              color: const Color(0xFFEDEBE7), // Warna ikon ikon untuk "${profile.city}, Provinsi ${profile..."
               borderRadius: BorderRadius.circular(6),
             ),
             child: Row(
@@ -588,7 +664,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const Icon(
                   Icons.note_alt_outlined,
                   size: 13,
-                  color: Color(0xFF7E756F),
+                  color: Color(
+                    0xFF7E756F,
+                  ), // Warna ikon ikon untuk "Catatan: ${profile.courierNotes}"
                 ),
                 const SizedBox(width: 6),
                 Expanded(
@@ -596,7 +674,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     'Catatan: ${profile.courierNotes}',
                     style: const TextStyle(
                       fontSize: 9.5,
-                      color: Color(0xFF5A524D),
+                      color: Color(
+                        0xFF5A524D,
+                      ), // Warna teks pada "Catatan: ${profile.courierNotes}"
                     ),
                   ),
                 ),
@@ -606,7 +686,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 6),
           const Text(
             'Digunakan otomatis untuk kalkulasi kurir saat checkout instrumen.',
-            style: TextStyle(fontSize: 9, color: Color(0xFF8E837D)),
+            style: TextStyle(
+              fontSize: 9,
+              color: Color(
+                0xFF8E837D,
+              ), // Warna teks pada "Digunakan otomatis untuk kalkulasi..."
+            ),
           ),
         ],
       ),
@@ -618,9 +703,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(0xFFFAF9F7), // Warna border atau garis tepi untuk "Digunakan otomatis untuk kalkulasi..."
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFFEBE8E3), // Warna border atau garis tepi untuk "Digunakan otomatis untuk kalkulasi..."
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -630,7 +718,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Icon(
                 Icons.dashboard_customize_outlined,
                 size: 15,
-                color: AppColors.primaryOrange,
+                color: AppColors
+                    .primaryOrange, // Warna ikon ikon untuk "Aktivitas Saya"
               ),
               SizedBox(width: 6),
               Text(
@@ -670,13 +759,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildActivityItem(
             icon: Icons.verified_user_outlined,
             title: 'Sertifikat Keaslian Blockchain',
-            subtitle: BlockchainCertificateService.instance
+            subtitle:
+                BlockchainCertificateService.instance
                     .getUserCertificates()
                     .where((c) => c.isClaimed)
                     .isNotEmpty
                 ? '${BlockchainCertificateService.instance.getUserCertificates().where((c) => c.isClaimed).length} Instrumen Resmi Dimiliki'
                 : 'NFT Kepemilikan & Originalitas Instrumen Resmi',
-            onTap: () => Navigator.pushNamed(context, '/blockchain-certificates'),
+            onTap: () =>
+                Navigator.pushNamed(context, '/blockchain-certificates'),
           ),
           _buildActivityItem(
             icon: Icons.sports_esports_outlined,
@@ -712,9 +803,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       padding: const EdgeInsets.all(14.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF9F7),
+        color: const Color(
+          0xFFFAF9F7,
+        ), // Warna border atau garis tepi untuk "/ai-chat"
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEBE8E3), width: 1.0),
+        border: Border.all(
+          color: const Color(
+            0xFFEBE8E3,
+          ), // Warna border atau garis tepi untuk "/ai-chat"
+          width: 1.0,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -724,7 +822,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Icon(
                 Icons.tune_rounded,
                 size: 15,
-                color: AppColors.primaryOrange,
+                color: AppColors.primaryOrange, // Warna ikon ikon untuk "Pengaturan Aplikasi"
               ),
               SizedBox(width: 6),
               Text(
@@ -732,7 +830,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimaryDark,
+                  color: AppColors
+                      .textPrimaryDark, // Warna teks pada "Pengaturan Aplikasi"
                 ),
               ),
             ],
@@ -748,13 +847,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width: 30,
                   height: 30,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEDEBE7),
+                    color: const Color(
+                      0xFFEDEBE7,
+                    ), // Warna ikon ikon pada bagian komponen ini
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: const Icon(
                     Icons.fingerprint_rounded,
                     size: 17,
-                    color: Color(0xFF5A524D),
+                    color: Color(
+                      0xFF5A524D,
+                    ), // Warna ikon ikon untuk "Login Biometrik"
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -767,14 +870,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimaryDark,
+                          color: AppColors.textPrimaryDark, // Warna teks pada "Login Biometrik"
                         ),
                       ),
                       Text(
                         'Sidik Jari / Face Unlock',
                         style: TextStyle(
                           fontSize: 9.5,
-                          color: Color(0xFF7E756F),
+                          color: Color(
+                            0xFF7E756F,
+                          ), // Warna teks pada "Sidik Jari / Face Unlock"
                         ),
                       ),
                     ],
@@ -800,8 +905,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         SnackBar(
                           content: Text(res.message),
                           backgroundColor: res.isSuccess
-                              ? const Color(0xFF15803D)
-                              : const Color(0xFFDC2626),
+                              ? const Color(
+                                  0xFF15803D,
+                                ) // Warna visual pada bagian komponen ini
+                              : const Color(
+                                  0xFFDC2626,
+                                ), // Warna visual pada bagian komponen ini
                           duration: const Duration(seconds: 2),
                         ),
                       );
@@ -820,13 +929,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                   activeThumbColor: AppColors.primaryOrange,
                   activeTrackColor: AppColors.primaryOrange.withValues(
+                    // Warna visual pada bagian komponen ini
+
                     alpha: 0.5,
                   ),
                 ),
               ],
             ),
           ),
-          const Divider(color: Color(0xFFEBE8E3), height: 1),
+          const Divider(
+            color: Color(
+              0xFFEBE8E3,
+            ), // Warna garis pemisah pada bagian komponen ini
+            height: 1,
+          ),
 
           _buildActivityItem(
             icon: Icons.notifications_none_rounded,
@@ -880,10 +996,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               width: 30,
               height: 30,
               decoration: BoxDecoration(
-                color: const Color(0xFFEDEBE7),
+                color: const Color(
+                  0xFFEDEBE7,
+                ), // Warna ikon ikon pada bagian komponen ini
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: Icon(icon, size: 16, color: const Color(0xFF5A524D)),
+              child: Icon(
+                icon,
+                size: 16,
+                color: const Color(
+                  0xFF5A524D,
+                ), // Warna ikon ikon pada bagian komponen ini
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -895,14 +1019,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimaryDark,
+                      color: AppColors.textPrimaryDark, // Warna teks pada bagian komponen ini
                     ),
                   ),
                   Text(
                     subtitle,
                     style: const TextStyle(
                       fontSize: 9.5,
-                      color: Color(0xFF7E756F),
+                      color: Color(
+                        0xFF7E756F,
+                      ), // Warna teks pada bagian komponen ini
                     ),
                   ),
                 ],
@@ -913,7 +1039,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 margin: const EdgeInsets.only(right: 6),
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFECEAE6),
+                  color: const Color(
+                    0xFFECEAE6,
+                  ), // Warna latar kotak atau kartu pada bagian komponen ini
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -921,14 +1049,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: const TextStyle(
                     fontSize: 8.5,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF5A524D),
+                    color: Color(
+                      0xFF5A524D,
+                    ), // Warna ikon ikon pada bagian komponen ini
                   ),
                 ),
               ),
             const Icon(
               Icons.chevron_right_rounded,
               size: 16,
-              color: Color(0xFFB0AAA4),
+              color: Color(
+                0xFFB0AAA4,
+              ), // Warna ikon ikon pada bagian komponen ini
             ),
           ],
         ),
@@ -940,8 +1072,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String label,
     String value, {
     String? tag,
-    Color tagColor = const Color(0xFF15803D),
-    Color tagBgColor = const Color(0xFFDCFCE7),
+    Color tagColor = const Color(
+      0xFF15803D,
+    ), // Warna visual pada bagian komponen ini
+    Color tagBgColor = const Color(
+      0xFFDCFCE7,
+    ), // Warna visual pada bagian komponen ini
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -950,7 +1086,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           width: 90,
           child: Text(
             label,
-            style: const TextStyle(fontSize: 10.5, color: Color(0xFF7E756F)),
+            style: const TextStyle(
+              fontSize: 10.5,
+              color: Color(0xFF7E756F), // Warna teks pada bagian komponen ini
+            ),
           ),
         ),
         const SizedBox(width: 8),
@@ -967,7 +1106,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimaryDark,
+                    color: AppColors
+                        .textPrimaryDark, // Warna teks pada bagian komponen ini
                   ),
                 ),
               ),
@@ -1007,7 +1147,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         height: 40,
         child: TextButton(
           style: TextButton.styleFrom(
-            backgroundColor: const Color(0xFFFEF2F2),
+            backgroundColor: const Color(
+              0xFFFEF2F2,
+            ), // Warna latar tombol pada tombol
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -1015,21 +1157,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onPressed: () async {
             await AuthService.instance.logout();
             if (mounted) {
-              Navigator.of(context, rootNavigator: true)
-                  .pushNamedAndRemoveUntil('/login', (route) => false);
+              Navigator.of(
+                context,
+                rootNavigator: true,
+              ).pushNamedAndRemoveUntil('/login', (route) => false);
             }
           },
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.logout_rounded, size: 15, color: Color(0xFFDC2626)),
+              Icon(
+                Icons.logout_rounded,
+                size: 15,
+                color: Color(
+                  0xFFDC2626,
+                ), // Warna ikon ikon untuk "Keluar dari Akun"
+              ),
               SizedBox(width: 6),
               Text(
                 'Keluar dari Akun',
                 style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFFDC2626),
+                  color: Color(
+                    0xFFDC2626,
+                  ), // Warna teks pada "Keluar dari Akun"
                 ),
               ),
             ],
@@ -1042,11 +1194,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildAvatarImage(String photoUrl) {
     if (photoUrl.isEmpty) {
       return Container(
-        color: const Color(0xFFFFECE5),
+        color: const Color(0xFFFFECE5), // Warna ikon ikon untuk "http://"
         child: const Icon(
           Icons.person_rounded,
           size: 34,
-          color: AppColors.primaryOrange,
+          color: AppColors.primaryOrange, // Warna ikon ikon untuk "http://"
         ),
       );
     }
@@ -1057,7 +1209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         errorBuilder: (context, error, stackTrace) => const Icon(
           Icons.person_rounded,
           size: 34,
-          color: AppColors.primaryOrange,
+          color: AppColors.primaryOrange, // Warna ikon ikon untuk "http://"
         ),
       );
     }
@@ -1068,7 +1220,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         errorBuilder: (context, error, stackTrace) => const Icon(
           Icons.person_rounded,
           size: 34,
-          color: AppColors.primaryOrange,
+          color: AppColors.primaryOrange, // Warna ikon ikon untuk "http://"
         ),
       );
     }
@@ -1080,14 +1232,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         errorBuilder: (context, error, stackTrace) => const Icon(
           Icons.person_rounded,
           size: 34,
-          color: AppColors.primaryOrange,
+          color: AppColors.primaryOrange, // Warna ikon ikon untuk "http://"
         ),
       );
     }
     return const Icon(
       Icons.person_rounded,
       size: 34,
-      color: AppColors.primaryOrange,
+      color: AppColors.primaryOrange, // Warna ikon ikon untuk "http://"
     );
   }
 }
