@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jnova/models/product.dart';
-import 'package:jnova/screens/home_screen.dart';
-import 'package:jnova/screens/all_products_screen.dart';
+import 'package:jnova/screens/screens.dart';
 import 'package:jnova/widgets/product_favorite_card.dart';
 import 'package:jnova/core/network/network_info.dart';
 import 'package:jnova/services/cart_service.dart';

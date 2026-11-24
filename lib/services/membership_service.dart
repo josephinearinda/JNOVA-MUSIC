@@ -7,7 +7,7 @@ import '../data/datasources/remote/supabase_client_service.dart';
 import '../models/point_history_model.dart';
 import 'notification_background_sync_service.dart';
 import 'notification_service.dart';
-import 'point_history_repository.dart';
+import '../data/repositories/point_history_repository.dart';
 import 'user_profile_service.dart';
 
 /// Layanan manajemen saldo poin dan tier membership JNOVAMUSIC

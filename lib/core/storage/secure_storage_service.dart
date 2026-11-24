@@ -420,14 +420,9 @@ class SecureStorageService {
     } catch (_) {}
   }
 
-<<<<<<< HEAD
-  // Gemini API Key kustom yang dapat diinput langsung oleh pengguna untuk Gemini Vision
-  static const String _keyCustomGeminiApiKey = 'custom_gemini_vision_api_key';
-=======
   // Gemini & Groq API Key kustom yang dapat diinput langsung oleh pengguna untuk AI Vision
   static const String _keyCustomGeminiApiKey = 'custom_gemini_vision_api_key';
   static const String _keyCustomGroqApiKey = 'custom_groq_vision_api_key';
->>>>>>> 8971535 (fitur ai JNOVA MUSIC)
 
   Future<String?> getCustomGeminiApiKey() async {
     if (_memoryFallback.containsKey(_keyCustomGeminiApiKey)) {
@@ -461,8 +456,6 @@ class SecureStorageService {
     }
   }
 
-<<<<<<< HEAD
-=======
   Future<String?> getCustomGroqApiKey() async {
     if (_memoryFallback.containsKey(_keyCustomGroqApiKey)) {
       final val = _memoryFallback[_keyCustomGroqApiKey];
@@ -495,7 +488,6 @@ class SecureStorageService {
     }
   }
 
->>>>>>> 8971535 (fitur ai JNOVA MUSIC)
   // Remove Gemini keys saved by older app versions.
   static const String _keyGeminiApiKey = 'gemini_api_key';
 

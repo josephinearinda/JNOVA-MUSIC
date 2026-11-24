@@ -116,6 +116,24 @@ class GeminiService {
     final supabase = SupabaseClientService.instance;
     final isOnline = await NetworkInfo.instance.isConnected;
 
+    if (!isOnline) {
+      return const GeminiResponse(
+        isSuccess: false,
+        errorCode: 'offline',
+        text: 'Koneksi internet tidak tersedia. Pastikan perangkat terhubung, lalu coba lagi.',
+      );
+    }
+
+    if (!AppConfig.isAiBackendConfigured ||
+        !supabase.isInitialized ||
+        supabase.client == null) {
+      return const GeminiResponse(
+        isSuccess: false,
+        errorCode: 'backend_not_configured',
+        text: 'Jnova AI sedang tidak tersedia. Silakan coba lagi nanti.',
+      );
+    }
+
     if (AppConfig.isAiBackendConfigured &&
         isOnline &&
         supabase.isInitialized &&
@@ -213,9 +231,8 @@ class GeminiService {
     final clean = query.toLowerCase();
 
     // Format angka titik/koma lengkap: "7.000.000", "7000000", "7,000,000"
-    final fullNumberMatch = RegExp(
-      r'(\d{1,3}(?:[.,]\d{3})+|\d{5,9})',
-    ).firstMatch(clean);
+    final fullNumberMatch = RegExp(r'(\d{1,3}(?:[.,]\d{3})+|\d{5,9})')
+        .firstMatch(clean);
     if (fullNumberMatch != null) {
       final numStr = fullNumberMatch
           .group(1)!
@@ -226,9 +243,8 @@ class GeminiService {
     }
 
     // Format singkatan juta: "7jt", "7 jt", "7 juta", "2.5jt"
-    final jtMatch = RegExp(
-      r'(\d+(?:[.,]\d+)?)\s*(?:jt|juta)',
-    ).firstMatch(clean);
+    final jtMatch = RegExp(r'(\d+(?:[.,]\d+)?)\s*(?:jt|juta)')
+        .firstMatch(clean);
     if (jtMatch != null) {
       final numStr = jtMatch.group(1)!.replaceAll(',', '.');
       final val = double.tryParse(numStr);
@@ -236,9 +252,8 @@ class GeminiService {
     }
 
     // Format singkatan ribu: "500rb", "500 ribu", "100rb"
-    final rbMatch = RegExp(
-      r'(\d+(?:[.,]\d+)?)\s*(?:rb|ribu)',
-    ).firstMatch(clean);
+    final rbMatch = RegExp(r'(\d+(?:[.,]\d+)?)\s*(?:rb|ribu)')
+        .firstMatch(clean);
     if (rbMatch != null) {
       final numStr = rbMatch.group(1)!.replaceAll(',', '.');
       final val = double.tryParse(numStr);
@@ -285,7 +300,9 @@ class GeminiService {
               'Jika Anda mencari fleksibilitas nada panggung dan rekaman terbaik di JNOVAMUSIC, Ibanez SR300E adalah rekomendasi bass aktif nomor satu kami!',
           recommendedProduct: bass,
           badge: 'REKOMENDASI JNOVA AI',
-          pointsLabel: bass != null ? '+${(bass.price / 20000).round()} Poin Member' : null,
+          pointsLabel: bass != null
+              ? '+${(bass.price / 20000).round()} Poin Member'
+              : null,
         );
       }
 
@@ -332,7 +349,9 @@ class GeminiService {
             'Bass ini dilengkapi 3-Band Active EQ dan pickup PowerSpan Dual Coil, sangat fleksibel untuk bermain pop, jazz, rock, hingga funk!',
         recommendedProduct: bass,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: bass != null ? '+${(bass.price / 20000).round()} Poin Member' : null,
+        pointsLabel: bass != null
+            ? '+${(bass.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
@@ -371,13 +390,17 @@ class GeminiService {
               '• Sangat serasi dipadukan dengan amplifier BOSS Katana 50 MkII!',
           recommendedProduct: guitar,
           badge: 'REKOMENDASI JNOVA AI',
-          pointsLabel: guitar != null ? '+${(guitar.price / 20000).round()} Poin Member' : null,
+          pointsLabel: guitar != null
+              ? '+${(guitar.price / 20000).round()} Poin Member'
+              : null,
         );
       }
 
       // Gitar Akustik / Pemula
       final acoustic = _findProductById('p6');
-      final budgetStr = budget != null ? ' dengan budget ${_formatRupiah(budget)}' : '';
+      final budgetStr = budget != null
+          ? ' dengan budget ${_formatRupiah(budget)}'
+          : '';
       return GeminiResponse(
         isSuccess: true,
         text:
@@ -388,7 +411,9 @@ class GeminiService {
             'Berikut kartu produk resminya:',
         recommendedProduct: acoustic,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: acoustic != null ? '+${(acoustic.price / 20000).round()} Poin Member' : null,
+        pointsLabel: acoustic != null
+            ? '+${(acoustic.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
@@ -404,7 +429,9 @@ class GeminiService {
             '• Sangat hemat ruang dan ramah bagi tetangga!',
         recommendedProduct: drum,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: drum != null ? '+${(drum.price / 20000).round()} Poin Member' : null,
+        pointsLabel: drum != null
+            ? '+${(drum.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
@@ -423,7 +450,9 @@ class GeminiService {
             '• Paket sudah mencakup Stand L-125 dan pedal sustain!',
         recommendedProduct: piano,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: piano != null ? '+${(piano.price / 20000).round()} Poin Member' : null,
+        pointsLabel: piano != null
+            ? '+${(piano.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
@@ -442,7 +471,9 @@ class GeminiService {
             '• Terintegrasi dengan lebih dari 60 efek legendaris BOSS yang dapat diedit via BOSS Tone Studio!',
         recommendedProduct: amp,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: amp != null ? '+${(amp.price / 20000).round()} Poin Member' : null,
+        pointsLabel: amp != null
+            ? '+${(amp.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
@@ -462,7 +493,9 @@ class GeminiService {
             '• Respon frekuensi luas menghasilkan suara vokal yang hangat, tebal, dan sangat jernih.',
         recommendedProduct: mic,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: mic != null ? '+${(mic.price / 20000).round()} Poin Member' : null,
+        pointsLabel: mic != null
+            ? '+${(mic.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
@@ -476,12 +509,17 @@ class GeminiService {
             'Dibuat dari kayu European Spruce dan Maple pilihan yang menghasilkan intonasi presisi bagi siswa musik hingga pemain orkestra.',
         recommendedProduct: violin,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: violin != null ? '+${(violin.price / 20000).round()} Poin Member' : null,
+        pointsLabel: violin != null
+            ? '+${(violin.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
     // 8. KATEGORI SAXOPHONE
-    if (q.contains('sax') || q.contains('saxophone') || q.contains('selmer') || q.contains('tiup')) {
+    if (q.contains('sax') ||
+        q.contains('saxophone') ||
+        q.contains('selmer') ||
+        q.contains('tiup')) {
       final sax = _findProductById('p9');
       return GeminiResponse(
         isSuccess: true,
@@ -490,7 +528,9 @@ class GeminiService {
             'Memiliki respon nada akustik yang kaya, ergonomi tombol presisi, dan finishing Gold Lacquer mewah.',
         recommendedProduct: sax,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: sax != null ? '+${(sax.price / 20000).round()} Poin Member' : null,
+        pointsLabel: sax != null
+            ? '+${(sax.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
@@ -508,12 +548,17 @@ class GeminiService {
             'Pedal ikonik ini telah mewarnai rekaman artis legendaris dunia dari era rock klasik hingga alternative grunge!',
         recommendedProduct: pedal,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: pedal != null ? '+${(pedal.price / 20000).round()} Poin Member' : null,
+        pointsLabel: pedal != null
+            ? '+${(pedal.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
     // 10. KATEGORI KABEL JACK & AKSESORIS
-    if (q.contains('kabel') || q.contains('cable') || q.contains('jack') || q.contains('mogami')) {
+    if (q.contains('kabel') ||
+        q.contains('cable') ||
+        q.contains('jack') ||
+        q.contains('mogami')) {
       final cable = _findProductById('p11');
       return GeminiResponse(
         isSuccess: true,
@@ -522,7 +567,9 @@ class GeminiService {
             'Menggunakan tembaga bebas oksigen OFC dengan konektor Neutrik Gold untuk transfer sinyal tanpa noise dan ketahanan bertahun-tahun.',
         recommendedProduct: cable,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: cable != null ? '+${(cable.price / 20000).round()} Poin Member' : null,
+        pointsLabel: cable != null
+            ? '+${(cable.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
@@ -535,11 +582,16 @@ class GeminiService {
             'Ukuran gauge .010 - .046 memberikan keseimbangan ideal antara playability bending yang empuk dan ketebalan nada rhythm.',
         recommendedProduct: strings,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: strings != null ? '+${(strings.price / 20000).round()} Poin Member' : null,
+        pointsLabel: strings != null
+            ? '+${(strings.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
-    if (q.contains('case') || q.contains('tas') || q.contains('hardcase') || q.contains('gigbag')) {
+    if (q.contains('case') ||
+        q.contains('tas') ||
+        q.contains('hardcase') ||
+        q.contains('gigbag')) {
       final ccase = _findProductById('p15');
       return GeminiResponse(
         isSuccess: true,
@@ -548,7 +600,9 @@ class GeminiService {
             'Dilengkapi cangkang polyethylene kokoh berstandar militer TSA-approved latch untuk keamanan penerbangan.',
         recommendedProduct: ccase,
         badge: 'REKOMENDASI JNOVA AI',
-        pointsLabel: ccase != null ? '+${(ccase.price / 20000).round()} Poin Member' : null,
+        pointsLabel: ccase != null
+            ? '+${(ccase.price / 20000).round()} Poin Member'
+            : null,
       );
     }
 
@@ -572,11 +626,12 @@ class GeminiService {
       );
     }
 
-    if (q.contains('terima kasih') || q.contains('makasih') || q.contains('thanks')) {
+    if (q.contains('terima kasih') ||
+        q.contains('makasih') ||
+        q.contains('thanks')) {
       return const GeminiResponse(
         isSuccess: true,
-        text:
-            'Sama-sama! Senang bisa membantu Anda di JNOVAMUSIC. Jika ada pertanyaan lain seputar alat musik, teknik bermain, atau katalog produk, tanyakan kapan saja ya! 🎶',
+        text: 'Sama-sama! Senang bisa membantu Anda di JNOVAMUSIC. Jika ada pertanyaan lain seputar alat musik, teknik bermain, atau katalog produk, tanyakan kapan saja ya! 🎶',
       );
     }
 
