@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../core/utils/currency_formatter.dart';
-import '../../models/order_model.dart';
-import '../../models/store_branch.dart';
-import '../../services/order_service.dart';
-import '../../widgets/app_bottom_nav.dart';
-import '../../widgets/qr_code_widget.dart';
-import '../../services/blockchain_certificate_service.dart';
-import '../certificate/certificate_detail_screen.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/core/utils/currency_formatter.dart';
+import 'package:jnova/models/order_model.dart';
+import 'package:jnova/models/store_branch.dart';
+import 'package:jnova/services/order_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
+import 'package:jnova/widgets/qr_code_widget.dart';
+import 'package:jnova/services/blockchain_certificate_service.dart';
+import 'package:jnova/screens/certificate/certificate_detail_screen.dart';
 
 /// Halaman DETAIL PESANAN JNOVAMUSIC dengan alur Ambil di Toko Resmi (Store Pickup)
 /// sesuai standar showroom & luthier desk JNOVA MUSIC

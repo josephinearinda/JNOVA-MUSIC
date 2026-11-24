@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../services/user_profile_service.dart';
-import '../../widgets/app_bottom_nav.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/services/user_profile_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
 
 /// Halaman UBAH ALAMAT JNOVAMUSIC
 /// Disesuaikan agar struktur dan nama field persis seperti formulir alamat saat registrasi akun.

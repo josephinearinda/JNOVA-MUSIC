@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/utils/currency_formatter.dart';
-import '../../services/cart_service.dart';
-import '../../services/currency_service.dart';
-import '../../widgets/app_bottom_nav.dart';
-import '../../widgets/cart_item_card.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/core/utils/currency_formatter.dart';
+import 'package:jnova/services/cart_service.dart';
+import 'package:jnova/services/currency_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
+import 'package:jnova/widgets/cart_item_card.dart';
 
 /// Halaman Keranjang Saya JNOVAMUSIC sesuai spesifikasi desain Figma
 class CartScreen extends StatefulWidget {

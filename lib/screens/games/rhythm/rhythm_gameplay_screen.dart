@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_colors.dart';
-import '../../../services/game_sensor_service.dart';
-import '../../../services/jnova_rhythm_audio_service.dart';
-import 'rhythm_result_screen.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/services/game_sensor_service.dart';
+import 'package:jnova/services/jnova_rhythm_audio_service.dart';
+import 'package:jnova/screens/games/rhythm/rhythm_result_screen.dart';
 
 /// Halaman ketiga: gameplay goyang HP selama 10 detik.
 class JNovaRhythmGameplayPage extends StatefulWidget {

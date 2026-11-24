@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../widgets/app_bottom_nav.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
 
 class MusicCategoryItem {
   final String title;

@@ -1,9 +1,9 @@
-import '../../core/config/app_config.dart';
-import '../../core/network/network_info.dart';
-import '../../core/storage/secure_storage_service.dart';
-import '../datasources/local/app_database.dart';
-import '../datasources/remote/supabase_client_service.dart';
-import '../../models/point_history_model.dart';
+import 'package:jnova/core/config/app_config.dart';
+import 'package:jnova/core/network/network_info.dart';
+import 'package:jnova/core/storage/secure_storage_service.dart';
+import 'package:jnova/data/datasources/local/app_database.dart';
+import 'package:jnova/data/datasources/remote/supabase_client_service.dart';
+import 'package:jnova/models/point_history_model.dart';
 
 /// Repository untuk data riwayat poin JNOVAMUSIC
 /// Memisahkan data riwayat per akun, pengguna baru mulai dengan riwayat kosong

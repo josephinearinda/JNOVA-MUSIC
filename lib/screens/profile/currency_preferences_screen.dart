@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../services/currency_service.dart';
-import '../../widgets/app_bottom_nav.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/services/currency_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
 
 /// Halaman PREFERENSI MATA UANG JNOVAMUSIC sesuai desain Figma 7
 class CurrencyPreferencesPage extends StatefulWidget {

@@ -3,8 +3,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../models/store_branch.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/models/store_branch.dart';
 
 /// Halaman Pemilihan Toko Pickup dengan Google Maps & Lokasi Pelanggan
 class SelectPickupStorePage extends StatefulWidget {

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
-import '../../../services/membership_service.dart';
+import 'package:jnova/services/membership_service.dart';
 
 class JNovaDodgeGamePage extends StatefulWidget {
   const JNovaDodgeGamePage({super.key});

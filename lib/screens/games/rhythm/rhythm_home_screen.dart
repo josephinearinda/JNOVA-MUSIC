@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_colors.dart';
-import '../../../services/membership_service.dart';
-import '../../../services/jnova_rhythm_audio_service.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/services/membership_service.dart';
+import 'package:jnova/services/jnova_rhythm_audio_service.dart';
 
 /// Beranda mini-game JNova Rhythm.
 class JNovaRhythmHomePage extends StatefulWidget {

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../core/utils/currency_formatter.dart';
-import '../../models/ai_scan_result.dart';
-import '../../models/product.dart';
-import '../product/product_detail_screen.dart';
-import '../../services/gemini_vision_service.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/core/utils/currency_formatter.dart';
+import 'package:jnova/models/ai_scan_result.dart';
+import 'package:jnova/models/product.dart';
+import 'package:jnova/screens/product/product_detail_screen.dart';
+import 'package:jnova/services/gemini_vision_service.dart';
 
 /// Halaman Fitur AI Object Scanner JNOVA MUSIC
 /// Terintegrasi langsung dengan Groq Vision (Llama 3.2 Vision) & Google Gemini Multimodal.

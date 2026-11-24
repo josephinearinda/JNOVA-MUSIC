@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../models/product.dart';
-import '../../services/cart_service.dart';
-import '../../services/currency_service.dart';
-import '../../services/favorite_service.dart';
-import '../../services/notification_service.dart';
-import '../../services/product_stock_service.dart';
-import '../../widgets/app_bottom_nav.dart';
-import '../../widgets/product_favorite_card.dart';
+import 'package:jnova/models/product.dart';
+import 'package:jnova/services/cart_service.dart';
+import 'package:jnova/services/currency_service.dart';
+import 'package:jnova/services/favorite_service.dart';
+import 'package:jnova/services/notification_service.dart';
+import 'package:jnova/services/product_stock_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
+import 'package:jnova/widgets/product_favorite_card.dart';
 
 /// Halaman Beranda (Dashboard) JNOVAMUSIC
 /// Sesuai referensi visual resmi JNOVAMUSIC dengan Banner JNOVA GAMES,

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/utils/currency_formatter.dart';
-import '../../models/blockchain_certificate.dart';
-import '../../widgets/qr_code_widget.dart';
+import 'package:jnova/core/utils/currency_formatter.dart';
+import 'package:jnova/models/blockchain_certificate.dart';
+import 'package:jnova/widgets/qr_code_widget.dart';
 
 /// Halaman Sertifikat Keaslian Digital Blockchain (NFT ERC-721 On-Chain Pass)
 /// Menampilkan bukti kepemilikan dan audit originalitas instrumen musik resmi JNOVAMUSIC

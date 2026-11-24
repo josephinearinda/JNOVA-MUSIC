@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../services/game_sensor_service.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/services/game_sensor_service.dart';
 
 /// Halaman Pertama: Izin Sensor Gerak (MotionPermissionPage) sesuai Figma Game 9
 class MotionPermissionPage extends StatefulWidget {

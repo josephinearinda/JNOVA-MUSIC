@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
-import '../../services/notification_service.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/services/notification_service.dart';
 
 
 class SplashScreen extends StatefulWidget {

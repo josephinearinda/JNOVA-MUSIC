@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../models/product.dart';
-import '../../services/cart_service.dart';
-import '../../services/currency_service.dart';
-import '../../services/favorite_service.dart';
-import '../../widgets/app_bottom_nav.dart';
-import '../../widgets/product_favorite_card.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/models/product.dart';
+import 'package:jnova/services/cart_service.dart';
+import 'package:jnova/services/currency_service.dart';
+import 'package:jnova/services/favorite_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
+import 'package:jnova/widgets/product_favorite_card.dart';
 
 /// Halaman Favorit Saya JNOVAMUSIC sesuai spesifikasi desain Figma
 class FavoriteScreen extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/app_colors.dart';
-import '../../../services/membership_service.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/services/membership_service.dart';
 
 /// Data hasil permainan JNova Rhythm.
 class GameResultData {

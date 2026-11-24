@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
+import 'package:jnova/core/constants/app_colors.dart';
 
 class GameSelectionPage extends StatelessWidget {
   const GameSelectionPage({super.key});

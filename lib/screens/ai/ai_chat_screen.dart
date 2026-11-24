@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../models/ai_chat_message.dart';
-import '../../models/product.dart';
-import '../../services/ai_chat_service.dart';
-import '../../services/gemini_service.dart';
-import '../../widgets/app_bottom_nav.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/models/ai_chat_message.dart';
+import 'package:jnova/models/product.dart';
+import 'package:jnova/services/ai_chat_service.dart';
+import 'package:jnova/services/gemini_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
 
-export '../../models/ai_chat_message.dart';
+export 'package:jnova/models/ai_chat_message.dart';
 
 /// Halaman AI ASSISTANT JNOVAMUSIC sesuai desain Figma (figma_slice_13_593x762.png)
 class AIChatPage extends StatefulWidget {

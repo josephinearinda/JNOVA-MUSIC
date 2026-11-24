@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../services/membership_service.dart';
-import '../../services/user_profile_service.dart';
-import '../../widgets/app_bottom_nav.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/services/membership_service.dart';
+import 'package:jnova/services/user_profile_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
 
 /// Halaman UBAH MEMBERSHIP JNOVAMUSIC sesuai desain Figma 4 / 7
 class MembershipSettingsPage extends StatefulWidget {

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../models/order_model.dart';
-import '../../services/order_service.dart';
-import '../../widgets/app_bottom_nav.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/models/order_model.dart';
+import 'package:jnova/services/order_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
 
 /// Halaman LACAK PENGIRIMAN JNOVAMUSIC sesuai desain Figma 7
 class TrackingScreen extends StatelessWidget {

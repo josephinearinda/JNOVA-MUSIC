@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../core/utils/currency_formatter.dart';
-import '../../models/blockchain_certificate.dart';
-import '../../services/blockchain_certificate_service.dart';
-import 'certificate_detail_screen.dart';
+import 'package:jnova/core/utils/currency_formatter.dart';
+import 'package:jnova/models/blockchain_certificate.dart';
+import 'package:jnova/services/blockchain_certificate_service.dart';
+import 'package:jnova/screens/certificate/certificate_detail_screen.dart';
 
 /// Halaman Daftar Sertifikat Keaslian Instrumen Musik (NFT Pass Portofolio)
 class MyCertificatesScreen extends StatefulWidget {

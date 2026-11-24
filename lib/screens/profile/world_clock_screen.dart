@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../widgets/app_bottom_nav.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
 
 /// Halaman JAM DUNIA JNOVAMUSIC sesuai desain Figma 7
 class WorldClockPage extends StatefulWidget {

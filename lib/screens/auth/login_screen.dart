@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../core/storage/secure_storage_service.dart';
-import '../../services/auth_service.dart';
-import '../../services/biometric_service.dart';
-import '../../services/cart_service.dart';
-import '../../services/favorite_service.dart';
-import '../../services/membership_service.dart';
-import '../../services/order_service.dart';
-import '../../services/user_profile_service.dart';
-import 'register_screen.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/core/storage/secure_storage_service.dart';
+import 'package:jnova/services/auth_service.dart';
+import 'package:jnova/services/biometric_service.dart';
+import 'package:jnova/services/cart_service.dart';
+import 'package:jnova/services/favorite_service.dart';
+import 'package:jnova/services/membership_service.dart';
+import 'package:jnova/services/order_service.dart';
+import 'package:jnova/services/user_profile_service.dart';
+import 'package:jnova/screens/auth/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback? onRegisterPressed;

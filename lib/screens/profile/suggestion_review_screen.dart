@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../data/repositories/user_feedback_repository.dart';
-import '../../models/user_feedback.dart';
-import '../../models/user_profile.dart';
-import '../../services/user_profile_service.dart';
-import '../../widgets/app_bottom_nav.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/data/repositories/user_feedback_repository.dart';
+import 'package:jnova/models/user_feedback.dart';
+import 'package:jnova/models/user_profile.dart';
+import 'package:jnova/services/user_profile_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
 
 /// Halaman SARAN DAN KESAN JNOVAMUSIC sesuai desain Figma (figma_slice_11_905x782.png)
 class SuggestionReviewPage extends StatefulWidget {

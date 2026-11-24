@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../models/user_profile.dart';
-import '../../services/user_profile_service.dart';
-import '../../widgets/app_bottom_nav.dart';
+import 'package:jnova/core/constants/app_colors.dart';
+import 'package:jnova/models/user_profile.dart';
+import 'package:jnova/services/user_profile_service.dart';
+import 'package:jnova/widgets/app_bottom_nav.dart';
 
 /// Halaman EDIT PROFIL JNOVAMUSIC sesuai desain Figma 9
 class EditProfilePage extends StatefulWidget {

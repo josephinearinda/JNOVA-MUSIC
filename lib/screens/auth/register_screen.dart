@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../services/auth_service.dart';
-import '../../services/cart_service.dart';
-import '../../services/favorite_service.dart';
-import '../../services/membership_service.dart';
-import '../../services/order_service.dart';
-import '../../services/user_profile_service.dart';
+import 'package:jnova/services/auth_service.dart';
+import 'package:jnova/services/cart_service.dart';
+import 'package:jnova/services/favorite_service.dart';
+import 'package:jnova/services/membership_service.dart';
+import 'package:jnova/services/order_service.dart';
+import 'package:jnova/services/user_profile_service.dart';
 
 /// Halaman Registrasi Akun Baru JNOVAMUSIC
 /// Dibuat persis sesuai desain referensi visual resmi JNOVAMUSIC.
